@@ -5,16 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        Background="#252525"
+        >
         
     <Grid>
 
-        <!-- <Grid.ColumnDefinitions> -->
-        <!--      -->
-        <!--     <ColumnDefinition Width="8*"/> -->
-        <!--     <ColumnDefinition Width="2*"/> -->
-        <!--      -->
-        <!-- </Grid.ColumnDefinitions> -->
+        <Grid.ColumnDefinitions>
+        
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        
+        </Grid.ColumnDefinitions>
+        
+        <Border 
+            Background="DimGray"
+            BorderThickness="10"
+            BorderBrush="Gainsboro"
+            >
+            
+            
+            
+        </Border>
+        
+        <Border Grid.Column="1" Background="#252525"></Border>
         
     </Grid>
     
