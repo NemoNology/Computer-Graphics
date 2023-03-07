@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.IO;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
 
@@ -41,10 +40,16 @@ namespace WPF
             int px = Convert.ToInt32(inputDrawPixelSize.Text);
 
 
-            DrawPixel(ref bmp, x, y, px, colorEllipseBorder);
+            DrawPixel(ref bmp, x, y, px + 2, colorEllipseCenter);
 
             MainView.Source = BitmapToImageSource(bmp);
 
+        }
+
+        private void DrawEllipse(ref Bitmap bmp,
+            int x, int y, int width, int height, Color drawColor)
+        {
+            
         }
 
         #region Features
