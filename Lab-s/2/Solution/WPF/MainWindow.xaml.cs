@@ -60,61 +60,6 @@ namespace WPF
 
         }
 
-        private void ButtonDrawCircle_Click(object sender, RoutedEventArgs e)
-        {
-            if (!IsValidInput())
-            {
-                return;
-            }
-
-            int x = Convert.ToInt32(inputX.Text);
-            int y = Convert.ToInt32(inputY.Text);
-            int r = Convert.ToInt32(inputWidth.Text);
-            int px = Convert.ToInt32(inputDrawPixelSize.Text);
-
-
-            ClearBitmap(ref bmp, colorEmpty);
-
-            DrawCircle(ref bmp, x, y, r, px, colorEllipseBorder);
-
-            DrawPixel(ref bmp, x, y, colorEllipseCenter, px);
-
-            MainView.Source = BitmapToImageSource(bmp);
-        }
-
-        private void DrawCircle(ref Bitmap bmp,
-            int x, int y, int radius, int pixelSize, Color drawColor)
-        {
-            int X = x, Y = y - radius / 2;
-
-            int d = 3 - 2 * radius;
-            int u = 6;
-            int v = 10 - 4 * radius;
-
-            while (v < 10)
-            {
-                DrawPixel(ref bmp, X, Y, drawColor, pixelSize,
-                    new System.Drawing.Point(x, y), 
-                    true, true);
-                X++;
-
-                u += 4;
-
-                if (d < 0)
-                {
-                    d += u;
-                    v += 4;
-                }
-                else
-                {
-                    d += v;
-                    v += 8;
-
-                    Y++;
-                }
-            }
-
-        }
         private void DrawEllipse(ref Bitmap bmp,
             int x, int y, int width, int height, int pixelSize, Color drawColor)
         {

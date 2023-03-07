@@ -178,15 +178,6 @@
                     Click="ButtonDrawEllipse_Click"
                     />
 
-                <Button
-                    Content="Draw Circle"
-                    Height="50"
-                    FontWeight="DemiBold"
-                    FontSize="18"
-                    Margin="20"
-                    Click="ButtonDrawCircle_Click"
-                    />
-
                 <Label
                     x:Name="status"
                     Content="..."
