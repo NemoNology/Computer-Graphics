@@ -23,9 +23,15 @@ namespace WPF
         public MainWindow()
         {
             InitializeComponent();
+            _bs = new WriteableBitmap(PixelWidth, PixelHeight, 
+                96, 96, 
+                PixelFormats.Rgb24, BitmapPalettes.Halftone27);
+            l_pixelSize.Content = $"{PixelWidth} x {PixelHeight}";
         }
-        
-        private string pixelSize = "20 x 20";
+
+        private const int PixelWidth = 100;
+        private const int PixelHeight = 60;
+        private BitmapSource? _bs;
 
         private void ButtonDraw_Click(object sender, RoutedEventArgs e)
         {

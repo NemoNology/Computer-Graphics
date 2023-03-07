@@ -10,12 +10,6 @@
         Background="Lavender"
         >
     
-    <Window.DataContext>
-        
-        <local:MainWindowVM x:Name="VM"/>
-        
-    </Window.DataContext>
-        
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -46,15 +40,40 @@
             HorizontalAlignment="Center"
             >
             
-            <Label
-                Content="Picture pixel size (Width x Height):"
-                FontWeight="Medium"
-            />
-            
-            <Label 
-                Content="{Binding PixelSize}"
-                HorizontalAlignment="Center"
+            <StackPanel>
+                
+                <Label
+                    Content="Picture pixel size (Width x Height):"
+                    FontWeight="Medium"
                 />
+            
+                <Label 
+                    x:Name="l_pixelSize"
+                    HorizontalAlignment="Center"
+                />
+                
+            </StackPanel>
+            
+            <StackPanel 
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                >
+                
+                <Label
+                    Content="Pixel Draw Size:"
+                    FontWeight="Medium"
+                    />
+                
+                <TextBox
+                    x:Name="drawPixelSize"
+                    MinWidth="35"
+                    />
+                
+                <Label 
+                    Content="px"
+                    />
+                
+            </StackPanel>
             
         </StackPanel>
         
@@ -152,6 +171,14 @@
                     FontSize="18"
                     Margin="20"
                     Click="ButtonDraw_Click"
+                    />
+                
+                <Label
+                    x:Name="status"
+                    Content="..."
+                    HorizontalAlignment="Center"
+                    Foreground="Brown"
+                    FontWeight="Medium"
                     />
                 
             </StackPanel>
