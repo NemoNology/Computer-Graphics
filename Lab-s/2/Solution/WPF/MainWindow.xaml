@@ -65,7 +65,8 @@
                     />
                 
                 <TextBox
-                    x:Name="drawPixelSize"
+                    x:Name="inputDrawPixelSize"
+                    Text="3"
                     MinWidth="35"
                     />
                 
@@ -105,6 +106,7 @@
                         
                         <TextBox
                             x:Name="inputX"
+                            Text="50"
                             MinWidth="50"
                             />
                         
@@ -113,11 +115,12 @@
                     <StackPanel Orientation="Horizontal">
                         
                         <Label 
-                            x:Name="inputY"
                             Content="Y:"
                         />
                         
                         <TextBox
+                            x:Name="inputY"
+                            Text="30"
                             MinWidth="50"
                         />
                         
@@ -144,6 +147,7 @@
                         
                         <TextBox
                             x:Name="inputWidth"
+                            Text="20"
                             MinWidth="50"
                         />
                         
@@ -156,7 +160,8 @@
                         />
                         
                         <TextBox
-                            x:Name="inpuHeight"
+                            x:Name="inputHeight"
+                            Text="10"
                             MinWidth="50"
                         />
                         
