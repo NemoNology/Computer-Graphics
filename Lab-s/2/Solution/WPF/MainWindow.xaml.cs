@@ -24,6 +24,7 @@ namespace WPF
             inputY.Text = ((bmp.Height - 1) / 2).ToString();
             inputWidth.Text = (bmp.Width / 3).ToString();
             inputHeight.Text = (bmp.Height / 3).ToString();
+            l_pixelSize.Content = $"{PixelWidth} x {PixelHeight}";
         }
 
         private const int PixelWidth = 100;
@@ -63,8 +64,8 @@ namespace WPF
         private void DrawEllipse(ref Bitmap bmp,
             int x, int y, int width, int height, int pixelSize, Color drawColor)
         {
-            width /= 2;
-            height /= 2;
+            width = (int) Math.Round((double)width / 2, MidpointRounding.AwayFromZero);
+            height = (int) Math.Round((double)height / 2, MidpointRounding.AwayFromZero);
 
             int d = 0;
             int u = 12 * height;
@@ -75,7 +76,9 @@ namespace WPF
 
             while (L > 0)
             {
-                DrawPixel(ref bmp, X, Y, drawColor, pixelSize);
+                DrawPixel(ref bmp, X, Y, drawColor, pixelSize, 
+                    new Point(x, y), 
+                    true, true);
                 X++;
                 
                 u += 8 * height;
