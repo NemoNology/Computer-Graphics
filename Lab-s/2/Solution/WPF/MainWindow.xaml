@@ -5,9 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
-        Background="#252525"
+        Title="Ellipse Draw" 
+        Height="450" Width="800"
+        Background="Lavender"
         >
+    
+    <Window.DataContext>
+        
+        <local:MainWindowVM x:Name="VM"/>
+        
+    </Window.DataContext>
         
     <Grid>
 
@@ -19,16 +26,139 @@
         </Grid.ColumnDefinitions>
         
         <Border 
-            Background="DimGray"
-            BorderThickness="10"
-            BorderBrush="Gainsboro"
+            
+            BorderThickness="5"
+            BorderBrush="DimGray"
+            
             >
+            
+            <Image
+                x:Name="MainView"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                />
+            
+        </Border>
+        
+        <StackPanel
+            Grid.Column="1"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Center"
+            >
+            
+            <Label
+                Content="Picture pixel size (Width x Height):"
+                FontWeight="Medium"
+            />
+            
+            <Label 
+                Content="{Binding PixelSize}"
+                HorizontalAlignment="Center"
+                />
+            
+        </StackPanel>
+        
+        <Border 
+            Grid.Column="1" 
+            Background="Lavender"
+            VerticalAlignment="Center"
+            >
+            
+            
+            <StackPanel>
+                
+                <Label 
+                    Content="Coordinates:"
+                    FontWeight="Medium"
+                    HorizontalAlignment="Center"
+                    />
+                
+                <StackPanel 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    >
+                    
+                    <StackPanel Orientation="Horizontal">
+                        
+                        <Label 
+                            Content="X:"
+                            />
+                        
+                        <TextBox
+                            x:Name="inputX"
+                            MinWidth="50"
+                            />
+                        
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal">
+                        
+                        <Label 
+                            x:Name="inputY"
+                            Content="Y:"
+                        />
+                        
+                        <TextBox
+                            MinWidth="50"
+                        />
+                        
+                    </StackPanel>
+                    
+                </StackPanel>
+                
+                <Label 
+                    Content="Ellipse params:"
+                    FontWeight="Medium"
+                    HorizontalAlignment="Center"
+                />
+                
+                <StackPanel 
+                    Orientation="Horizontal"
+                    Margin="10,0"
+                    >
+                    
+                    <StackPanel Orientation="Horizontal">
+                        
+                        <Label 
+                            Content="Width:"
+                        />
+                        
+                        <TextBox
+                            x:Name="inputWidth"
+                            MinWidth="50"
+                        />
+                        
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal">
+                        
+                        <Label 
+                            Content="Height:"
+                        />
+                        
+                        <TextBox
+                            x:Name="inpuHeight"
+                            MinWidth="50"
+                        />
+                        
+                    </StackPanel>
+                    
+                </StackPanel>
+                
+                <Button
+                    Content="Draw Ellipse"
+                    Height="50"
+                    FontWeight="DemiBold"
+                    FontSize="18"
+                    Margin="20"
+                    Click="ButtonDraw_Click"
+                    />
+                
+            </StackPanel>
             
             
             
         </Border>
-        
-        <Border Grid.Column="1" Background="#252525"></Border>
         
     </Grid>
     

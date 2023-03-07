@@ -24,5 +24,12 @@ namespace WPF
         {
             InitializeComponent();
         }
+        
+        private string pixelSize = "20 x 20";
+
+        private void ButtonDraw_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }
