@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
 
@@ -16,7 +17,12 @@ namespace WPF
         {
             InitializeComponent();
             bmp = new Bitmap(PixelWidth, PixelHeight);
+            ClearBitmap(ref bmp, colorEmpty);
             MainView.Source = BitmapToImageSource(bmp);
+            inputX.Text = ((bmp.Width - 1) / 2).ToString();
+            inputY.Text = ((bmp.Height - 1) / 2).ToString();
+            inputWidth.Text = (bmp.Width / 3).ToString();
+            inputHeight.Text = (bmp.Height / 3).ToString();
         }
 
         private const int PixelWidth = 100;
@@ -25,8 +31,11 @@ namespace WPF
 
         private Color colorEllipseBorder = Color.Black;
         private Color colorEllipseCenter = Color.DarkMagenta;
+        private Color colorEmpty = Color.White;
 
-        private void ButtonDraw_Click(object sender, RoutedEventArgs e)
+        // TODO: Complete Ellipse draw
+
+        private void ButtonDrawEllipse_Click(object sender, RoutedEventArgs e)
         {
             if (!IsValidInput())
             {
@@ -40,29 +49,154 @@ namespace WPF
             int px = Convert.ToInt32(inputDrawPixelSize.Text);
 
 
-            DrawPixel(ref bmp, x, y, px + 2, colorEllipseCenter);
+            ClearBitmap(ref bmp, colorEmpty);
+
+            DrawEllipse(ref bmp, x, y, w, h, px, colorEllipseBorder);
+
+            DrawPixel(ref bmp, x, y, px, colorEllipseCenter);
 
             MainView.Source = BitmapToImageSource(bmp);
 
         }
 
-        private void DrawEllipse(ref Bitmap bmp,
-            int x, int y, int width, int height, Color drawColor)
+        private void ButtonDrawCircle_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (!IsValidInput())
+            {
+                return;
+            }
+
+            int x = Convert.ToInt32(inputX.Text);
+            int y = Convert.ToInt32(inputY.Text);
+            int r = Convert.ToInt32(inputWidth.Text);
+            int px = Convert.ToInt32(inputDrawPixelSize.Text);
+
+
+            ClearBitmap(ref bmp, colorEmpty);
+
+            DrawCircle(ref bmp, x, y, r, px, colorEllipseBorder);
+
+            DrawPixel(ref bmp, x, y, px, colorEllipseCenter);
+
+            MainView.Source = BitmapToImageSource(bmp);
+        }
+
+        private void DrawCircle(ref Bitmap bmp,
+            int x, int y, int radius, int pixelSize, Color drawColor)
+        {
+            int X = x, Y = y - radius / 2;
+
+            int d = 3 - 2 * radius;
+            int u = 6;
+            int v = 10 - 4 * radius;
+
+            while (v < 10)
+            {
+                DrawPixel(ref bmp, X, Y, pixelSize, drawColor, new System.Drawing.Point(x, y), true);
+                X++;
+
+                u += 4;
+
+                if (d < 0)
+                {
+                    d += u;
+                    v += 4;
+                }
+                else
+                {
+                    d += v;
+                    v += 8;
+
+                    Y++;
+                }
+            }
+
+        }
+
+
+
+        private void DrawEllipse(ref Bitmap bmp,
+            int x, int y, int width, int height, int pixelSize, Color drawColor)
+        {
+            width /= 2;
+            height /= 2;
+
+            int d = 0;
+            int u = 12 * height;
+            int v = 12 * height + 8 * width;
+            int L = width * height;
+
+            int X = x, Y = y - height / 2;
+
+            while (L > 0)
+            {
+                DrawPixel(ref bmp, X, Y, pixelSize, drawColor);
+                X++;
+
+
+                u += 8 * height;
+
+                if (d < 0)
+                {
+                    d += u;
+                    v += 8 * width;
+                    L -= height;
+                }
+                else
+                {
+                    d += v;
+                    v += 8 * (height + width);
+                    L -= (width + height);
+
+                    Y++;
+                }
+            }
         }
 
         #region Features
 
-        private void DrawPixel(ref Bitmap bmp, int x, int y, int pixelSize, Color color)
+        private void ClearBitmap(ref Bitmap bmp, Color color)
         {
-            for (int i = y - pixelSize / 2; i < y + pixelSize / 2; i++)
+            for (int i = 0; i < bmp.Height; i++)
             {
-                for (int j = x - pixelSize / 2; j < x + pixelSize / 2; j++)
+                for (int j = 0; j < bmp.Width; j++)
+                {
+                    bmp.SetPixel(j, i, color);
+                }
+            }
+        }
+
+        private void DrawPixel(ref Bitmap bmp, int x, int y, int pixelSize, Color color, 
+            System.Drawing.Point inversionCenter = new System.Drawing.Point(), 
+            bool inversionY = false, bool inversionX = false)
+        {
+            int endY = pixelSize == 1 ? y + 1 : y + pixelSize / 2;
+            int endX = pixelSize == 1 ? x + 1 : x + pixelSize / 2;
+
+            for (int i = y - pixelSize / 2; i < endY; i++)
+            {
+                for (int j = x - pixelSize / 2; j < endX; j++)
                 {
                     if (i >= 0 && i < bmp.Height && j >= 0 && j < bmp.Width)
                     {
-                        bmp.SetPixel(i, j, color);
+                        bmp.SetPixel(j, i, color);
+                    }
+
+                        // TODO: Fixe inversion
+
+                    if (inversionY)
+                    {
+                        int dX = Math.Abs(inversionCenter.X - j) * inversionCenter.X < j ? -1 : 1;
+                        int iX = inversionCenter.X + dX;
+
+                        DrawPixel(ref bmp, iX, i, pixelSize, color);
+                    }
+                    if (inversionX)
+                    {
+                        int dY = Math.Abs(inversionCenter.Y - i) * inversionCenter.Y < i ? -1 : 1;
+                        int iY = inversionCenter.Y + dY;
+
+                        DrawPixel(ref bmp, iY, j, pixelSize, color);
                     }
                 }
             }

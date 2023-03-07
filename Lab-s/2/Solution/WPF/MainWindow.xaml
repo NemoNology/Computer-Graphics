@@ -30,6 +30,7 @@
                 x:Name="MainView"
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch"
+                RenderOptions.BitmapScalingMode="NearestNeighbor"
                 />
             
         </Border>
@@ -147,7 +148,6 @@
                         
                         <TextBox
                             x:Name="inputWidth"
-                            Text="20"
                             MinWidth="50"
                         />
                         
@@ -161,7 +161,6 @@
                         
                         <TextBox
                             x:Name="inputHeight"
-                            Text="10"
                             MinWidth="50"
                         />
                         
@@ -175,9 +174,18 @@
                     FontWeight="DemiBold"
                     FontSize="18"
                     Margin="20"
-                    Click="ButtonDraw_Click"
+                    Click="ButtonDrawEllipse_Click"
                     />
-                
+
+                <Button
+                    Content="Draw Circle"
+                    Height="50"
+                    FontWeight="DemiBold"
+                    FontSize="18"
+                    Margin="20"
+                    Click="ButtonDrawCircle_Click"
+                    />
+
                 <Label
                     x:Name="status"
                     Content="..."
