@@ -92,7 +92,9 @@ namespace WPF
 
             while (v < 10)
             {
-                DrawPixel(ref bmp, X, Y, pixelSize, drawColor, new System.Drawing.Point(x, y), true);
+                DrawPixel(ref bmp, X, Y, pixelSize, drawColor, 
+                    new System.Drawing.Point(x, y), 
+                    true, true);
                 X++;
 
                 u += 4;
@@ -186,17 +188,17 @@ namespace WPF
 
                     if (inversionY)
                     {
-                        int dX = Math.Abs(inversionCenter.X - j) * inversionCenter.X < j ? -1 : 1;
-                        int iX = inversionCenter.X + dX;
+                        int dX = Math.Abs(inversionCenter.X - j);
+                        int iX = inversionCenter.X + (inversionCenter.X < j ? -dX : dX);
 
                         DrawPixel(ref bmp, iX, i, pixelSize, color);
                     }
                     if (inversionX)
                     {
-                        int dY = Math.Abs(inversionCenter.Y - i) * inversionCenter.Y < i ? -1 : 1;
-                        int iY = inversionCenter.Y + dY;
+                        int dY = Math.Abs(inversionCenter.Y - i);
+                        int iY = inversionCenter.Y + (inversionCenter.Y < i ? -dY : dY);
 
-                        DrawPixel(ref bmp, iY, j, pixelSize, color);
+                        DrawPixel(ref bmp, j, iY, pixelSize, color, inversionCenter, inversionY);
                     }
                 }
             }
