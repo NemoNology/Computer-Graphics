@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
+using Point = System.Drawing.Point;
 
 namespace WPF
 {
@@ -53,7 +54,7 @@ namespace WPF
 
             DrawEllipse(ref bmp, x, y, w, h, px, colorEllipseBorder);
 
-            DrawPixel(ref bmp, x, y, px, colorEllipseCenter);
+            DrawPixel(ref bmp, x, y, colorEllipseCenter, px);
 
             MainView.Source = BitmapToImageSource(bmp);
 
@@ -76,7 +77,7 @@ namespace WPF
 
             DrawCircle(ref bmp, x, y, r, px, colorEllipseBorder);
 
-            DrawPixel(ref bmp, x, y, px, colorEllipseCenter);
+            DrawPixel(ref bmp, x, y, colorEllipseCenter, px);
 
             MainView.Source = BitmapToImageSource(bmp);
         }
@@ -92,7 +93,7 @@ namespace WPF
 
             while (v < 10)
             {
-                DrawPixel(ref bmp, X, Y, pixelSize, drawColor, 
+                DrawPixel(ref bmp, X, Y, drawColor, pixelSize,
                     new System.Drawing.Point(x, y), 
                     true, true);
                 X++;
@@ -114,9 +115,6 @@ namespace WPF
             }
 
         }
-
-
-
         private void DrawEllipse(ref Bitmap bmp,
             int x, int y, int width, int height, int pixelSize, Color drawColor)
         {
@@ -132,10 +130,9 @@ namespace WPF
 
             while (L > 0)
             {
-                DrawPixel(ref bmp, X, Y, pixelSize, drawColor);
+                DrawPixel(ref bmp, X, Y, drawColor, pixelSize);
                 X++;
-
-
+                
                 u += 8 * height;
 
                 if (d < 0)
@@ -168,16 +165,15 @@ namespace WPF
             }
         }
 
-        private void DrawPixel(ref Bitmap bmp, int x, int y, int pixelSize, Color color, 
+        private void DrawPixel(ref Bitmap bmp, int x, int y, Color color, int pixelSize = 1, 
             System.Drawing.Point inversionCenter = new System.Drawing.Point(), 
             bool inversionY = false, bool inversionX = false)
         {
-            int endY = pixelSize == 1 ? y + 1 : y + pixelSize / 2;
-            int endX = pixelSize == 1 ? x + 1 : x + pixelSize / 2;
-
-            for (int i = y - pixelSize / 2; i < endY; i++)
+            int px = (int)Math.Round((double)pixelSize / 2, MidpointRounding.AwayFromZero);
+            
+            for (int i = y - pixelSize / 2; i < y + px; i++)
             {
-                for (int j = x - pixelSize / 2; j < endX; j++)
+                for (int j = x - pixelSize / 2; j < x + px; j++)
                 {
                     if (i >= 0 && i < bmp.Height && j >= 0 && j < bmp.Width)
                     {
@@ -191,14 +187,14 @@ namespace WPF
                         int dX = Math.Abs(inversionCenter.X - j);
                         int iX = inversionCenter.X + (inversionCenter.X < j ? -dX : dX);
 
-                        DrawPixel(ref bmp, iX, i, pixelSize, color);
+                        DrawPixel(ref bmp, iX, i, color);
                     }
                     if (inversionX)
                     {
                         int dY = Math.Abs(inversionCenter.Y - i);
                         int iY = inversionCenter.Y + (inversionCenter.Y < i ? -dY : dY);
 
-                        DrawPixel(ref bmp, j, iY, pixelSize, color, inversionCenter, inversionY);
+                        DrawPixel(ref bmp, j, iY, color, 1, inversionCenter, inversionY);
                     }
                 }
             }
