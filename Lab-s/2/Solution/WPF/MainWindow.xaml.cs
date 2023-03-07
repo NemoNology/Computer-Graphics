@@ -124,9 +124,8 @@ namespace WPF
                     {
                         bmp.SetPixel(j, i, color);
                     }
-
-                        // TODO: Fixe inversion
-
+                    
+                    
                     if (inversionY)
                     {
                         int dX = Math.Abs(inversionCenter.X - j);
@@ -134,6 +133,7 @@ namespace WPF
 
                         DrawPixel(ref bmp, iX, i, color);
                     }
+                    
                     if (inversionX)
                     {
                         int dY = Math.Abs(inversionCenter.Y - i);
