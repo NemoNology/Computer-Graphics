@@ -41,19 +41,17 @@
             HorizontalAlignment="Center"
             >
             
-            <StackPanel>
-                
-                <Label
-                    Content="Picture pixel size (Width x Height):"
-                    FontWeight="Medium"
+            <Label
+                Content="Canvas size is always"
+                HorizontalAlignment="Center"
+                FontStyle="Italic"
                 />
             
-                <Label 
-                    x:Name="PixelSize"
-                    HorizontalAlignment="Center"
+            <Label 
+                Content="double ellipse width and height"
+                HorizontalAlignment="Center"
+                FontStyle="Italic"
                 />
-                
-            </StackPanel>
             
             <StackPanel 
                 Orientation="Horizontal"
@@ -108,8 +106,8 @@
                         
                         <TextBox
                             x:Name="InputX"
-                            Text="50"
                             MinWidth="50"
+                            Text="100"
                             VerticalContentAlignment="Center"
                             />
                         
@@ -123,8 +121,8 @@
                         
                         <TextBox
                             x:Name="InputY"
-                            Text="30"
                             MinWidth="50"
+                            Text="60"
                             VerticalContentAlignment="Center"
                         />
                         
@@ -152,6 +150,7 @@
                         <TextBox
                             x:Name="InputWidth"
                             MinWidth="50"
+                            Text="100"
                             VerticalContentAlignment="Center"
                         />
                         
@@ -166,6 +165,7 @@
                         <TextBox
                             x:Name="InputHeight"
                             MinWidth="50"
+                            Text="60"
                             VerticalContentAlignment="Center"
                         />
                         
