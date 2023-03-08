@@ -2,8 +2,8 @@
 using System.Drawing;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 
@@ -12,30 +12,28 @@ namespace WPF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public MainWindow()
         {
             InitializeComponent();
-            bmp = new Bitmap(PixelWidth, PixelHeight);
-            ClearBitmap(ref bmp, colorEmpty);
-            MainView.Source = BitmapToImageSource(bmp);
-            inputX.Text = ((bmp.Width - 1) / 2).ToString();
-            inputY.Text = ((bmp.Height - 1) / 2).ToString();
-            inputWidth.Text = (bmp.Width / 3).ToString();
-            inputHeight.Text = (bmp.Height / 3).ToString();
-            l_pixelSize.Content = $"{PixelWidth} x {PixelHeight}";
+            _bmp = new Bitmap(PixelWidth, PixelHeight);
+            ClearBitmap(ref _bmp, _colorEmpty);
+            MainView.Source = BitmapToImageSource(_bmp);
+            InputX.Text = ((_bmp.Width - 1) / 2).ToString();
+            InputY.Text = ((_bmp.Height - 1) / 2).ToString();
+            InputWidth.Text = (_bmp.Width / 3).ToString();
+            InputHeight.Text = (_bmp.Height / 3).ToString();
+            PixelSize.Content = $"{PixelWidth} x {PixelHeight}";
         }
 
         private const int PixelWidth = 100;
         private const int PixelHeight = 60;
-        private Bitmap bmp;
+        private Bitmap _bmp;
 
-        private Color colorEllipseBorder = Color.Black;
-        private Color colorEllipseCenter = Color.DarkMagenta;
-        private Color colorEmpty = Color.White;
-
-        // TODO: Complete Ellipse draw
+        private readonly Color _colorEllipseBorder = Color.Black;
+        private readonly Color _colorEllipseCenter = Color.DarkMagenta;
+        private readonly Color _colorEmpty = Color.White;
 
         private void ButtonDrawEllipse_Click(object sender, RoutedEventArgs e)
         {
@@ -44,78 +42,123 @@ namespace WPF
                 return;
             }
 
-            int x = Convert.ToInt32(inputX.Text);
-            int y = Convert.ToInt32(inputY.Text);
-            int w = Convert.ToInt32(inputWidth.Text);
-            int h = Convert.ToInt32(inputHeight.Text);
-            int px = Convert.ToInt32(inputDrawPixelSize.Text);
+            int x = Convert.ToInt32(InputX.Text);
+            int y = Convert.ToInt32(InputY.Text);
+            int w = Convert.ToInt32(InputWidth.Text);
+            int h = Convert.ToInt32(InputHeight.Text);
+            int px = Convert.ToInt32(InputDrawPixelSize.Text);
 
 
-            ClearBitmap(ref bmp, colorEmpty);
+            ClearBitmap(ref _bmp, _colorEmpty);
 
-            DrawEllipse(ref bmp, x, y, w, h, px, colorEllipseBorder);
+            DrawEllipse(ref _bmp, 
+                new Point(x, y), 
+                w, h, 
+                _colorEllipseBorder, px);
 
-            DrawPixel(ref bmp, x, y, colorEllipseCenter, px);
+            DrawPixel(ref _bmp, x, y, _colorEllipseCenter, px);
 
-            MainView.Source = BitmapToImageSource(bmp);
-
+            MainView.Source = BitmapToImageSource(_bmp);
         }
 
-        private void DrawEllipse(ref Bitmap bmp,
-            int x, int y, int width, int height, int pixelSize, Color drawColor)
+        private void DrawEllipse(ref Bitmap canvas,
+            Point ellipseCenter, int width, int height, Color drawColor, int pixelSize = 1)
         {
-            width = (int) Math.Round((double)width / 2, MidpointRounding.AwayFromZero);
-            height = (int) Math.Round((double)height / 2, MidpointRounding.AwayFromZero);
+            int a = (int) Math.Round(width * 0.5, MidpointRounding.AwayFromZero);
+            int b = (int) Math.Round(height * 0.5, MidpointRounding.AwayFromZero);
 
-            int d = 0;
-            int u = 12 * height;
-            int v = 12 * height + 8 * width;
-            int L = width * height;
-
-            int X = x, Y = y - height / 2;
-
-            while (L > 0)
+            
+            // Start point = (x, y + height / 2)
+            int x = ellipseCenter.X, y = ellipseCenter.Y + b;
+            
+            var a2 = a * a;
+            var b2 = b * b;
+            
+            // Delta is d
+            // d(x, y) = 4 * b^2 * (x+1)^2 + a^2 * (2y-1)^2 - 4 * a^2 * b^2
+            var d = 4 * b2 * Math.Pow(x + 1, 2) + 
+                       a2 * Math.Pow(2 * y - 1, 2) -
+                       4 * a2 * b2;
+            
+            // Draw horizontal part of arc
+            // End horizontal path point coordinates
+            // is point where b^2 * x = a^2 * y;   
+            while (b2 * x != a2 * y)
             {
-                DrawPixel(ref bmp, X, Y, drawColor, pixelSize, 
+                DrawPixelWithInversion(ref canvas, x, y, 
+                    drawColor, pixelSize, 
                     new Point(x, y), 
                     true, true);
-                X++;
-                
-                u += 8 * height;
+
+                // Algorithm always move right
+                // so we can take out step to right
+                x++;
 
                 if (d < 0)
                 {
-                    d += u;
-                    v += 8 * width;
-                    L -= height;
+                    // d(x + 1, y) - Horizontal step - Move right
+                    // d = d + 4 * b^2 * (2x+3)
+                    d += 4 * b2 * (2 * x + 3);
                 }
                 else
                 {
-                    d += v;
-                    v += 8 * (height + width);
-                    L -= (width + height);
+                    // d(x + 1, y + 1) - Diagonal step - Move right and down
+                    // d = d + 4 * b^2 * (2x+3) - 8 * a^2 * (y-1) 
+                    d += 4 * b2 * (2 * x + 3) - 
+                        8 * a2 * (y - 1);
+                    
+                    y--;
+                }
+            }
+            
+            // d(x, y) = b^2 * (2x+1)^2 + 4 * a^2 * (y+1)^2 - 4 * a^2 * b^2
+            d = b2 * Math.Pow(2 * x + 1, 2) + 
+                4 * a2 * Math.Pow(y + 1, 2) -
+                4 * a2 * b2;
+            
+            // Draw vertical part
+            // Vertical part end is place where y = centerEllipse.Y
+            while (y != ellipseCenter.Y)
+            {
+                DrawPixel(ref canvas, x, y, drawColor, pixelSize);
+                
+                // Algorithm always move down
+                // so we can take out step to down 
+                y--;
 
-                    Y++;
+                if (d < 0)
+                {
+                    // d(x, y - 1) - Vertical step - Move down
+                    // d = d + 4 * a^2 * (2y + 3)
+                    d += 4 * a2 * (2 * y + 3);
+                }
+                else
+                {
+                    // d(x + 1, y - 1) - Diagonal step - Move down and right
+                    // d = d + 4 * a^2 * (2y + 3) - 8 * b^2 * (x + 1)
+                    d += 4 * a2 * (2 * y + 3) - 
+                         8 * b2 * (x + 1);
+                    
+                    x++;
                 }
             }
         }
+        
 
         #region Features
 
-        private void ClearBitmap(ref Bitmap bmp, Color color)
+        public void ClearBitmap(ref Bitmap canvas, Color color)
         {
-            for (int i = 0; i < bmp.Height; i++)
+            for (int i = 0; i < canvas.Height; i++)
             {
-                for (int j = 0; j < bmp.Width; j++)
+                for (int j = 0; j < canvas.Width; j++)
                 {
-                    bmp.SetPixel(j, i, color);
+                    canvas.SetPixel(j, i, color);
                 }
             }
         }
 
-        private void DrawPixel(ref Bitmap bmp, int x, int y, Color color, int pixelSize = 1, 
-            System.Drawing.Point inversionCenter = new System.Drawing.Point(), 
-            bool inversionY = false, bool inversionX = false)
+        public void DrawPixel(ref Bitmap canvas, int x, int y, Color color, int pixelSize = 1)
         {
             int px = (int)Math.Round((double)pixelSize / 2, MidpointRounding.AwayFromZero);
             
@@ -123,28 +166,35 @@ namespace WPF
             {
                 for (int j = x - pixelSize / 2; j < x + px; j++)
                 {
-                    if (i >= 0 && i < bmp.Height && j >= 0 && j < bmp.Width)
+                    if (i >= 0 && i < canvas.Height && j >= 0 && j < canvas.Width)
                     {
-                        bmp.SetPixel(j, i, color);
-                    }
-                    
-                    
-                    if (inversionY)
-                    {
-                        int dX = Math.Abs(inversionCenter.X - j);
-                        int iX = inversionCenter.X + (inversionCenter.X < j ? -dX : dX);
-
-                        DrawPixel(ref bmp, iX, i, color);
-                    }
-                    
-                    if (inversionX)
-                    {
-                        int dY = Math.Abs(inversionCenter.Y - i);
-                        int iY = inversionCenter.Y + (inversionCenter.Y < i ? -dY : dY);
-
-                        DrawPixel(ref bmp, j, iY, color, 1, inversionCenter, inversionY);
+                        canvas.SetPixel(j, i, color);
                     }
                 }
+            }
+        }
+
+        public void DrawPixelWithInversion(ref Bitmap canvas, int x, int y, 
+            Color color, int pixelSize,
+            Point inversionCenter, bool inversionOnAxisY, bool inversionOnAxisX = false)
+        {
+            DrawPixel(ref canvas, x, y, color, pixelSize);
+            
+            if (inversionOnAxisY)
+            {
+                int dX = Math.Abs(inversionCenter.X - x);
+                int iX = inversionCenter.X + (inversionCenter.X < x ? -dX : dX);
+
+                DrawPixel(ref canvas, iX, y, color, pixelSize);
+            }
+            
+            if (inversionOnAxisX)
+            {
+                int dY = Math.Abs(inversionCenter.Y - y);
+                int iY = inversionCenter.Y + (inversionCenter.Y < y ? -dY : dY);
+
+                DrawPixelWithInversion(ref canvas, x, iY, color, pixelSize, 
+                    inversionCenter, inversionOnAxisY);
             }
         }
 
@@ -152,18 +202,18 @@ namespace WPF
         {
             try
             {
-                status.Content = "Invalid Data: Pixel Draw Size";
-                Convert.ToUInt32(inputDrawPixelSize.Text);
-                status.Content = "Invalid Data: X coordinate";
-                Convert.ToUInt32(inputX.Text);
-                status.Content = "Invalid Data: Y coordinate";
-                Convert.ToUInt32(inputY.Text);
-                status.Content = "Invalid Data: Width";
-                Convert.ToUInt32(inputWidth.Text);
-                status.Content = "Invalid Data: Height";
-                Convert.ToUInt32(inputHeight.Text);
+                Status.Content = "Invalid Data: Pixel Draw Size";
+                Convert.ToUInt32(InputDrawPixelSize.Text);
+                Status.Content = "Invalid Data: X coordinate";
+                Convert.ToUInt32(InputX.Text);
+                Status.Content = "Invalid Data: Y coordinate";
+                Convert.ToUInt32(InputY.Text);
+                Status.Content = "Invalid Data: Width";
+                Convert.ToUInt32(InputWidth.Text);
+                Status.Content = "Invalid Data: Height";
+                Convert.ToUInt32(InputHeight.Text);
 
-                status.Content = "...";
+                Status.Content = "...";
                 return true;
             }
             catch
@@ -172,7 +222,7 @@ namespace WPF
             }
         }
 
-        private BitmapImage BitmapToImageSource(Bitmap bitmap)
+        public BitmapImage BitmapToImageSource(Bitmap bitmap)
         {
             using (MemoryStream memory = new MemoryStream())
             {
