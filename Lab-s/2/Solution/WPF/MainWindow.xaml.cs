@@ -17,18 +17,8 @@ namespace WPF
         public MainWindow()
         {
             InitializeComponent();
-            _bmp = new Bitmap(PixelWidth, PixelHeight);
-            ClearBitmap(ref _bmp, _colorEmpty);
-            MainView.Source = BitmapToImageSource(_bmp);
-            InputX.Text = ((_bmp.Width - 1) / 2).ToString();
-            InputY.Text = ((_bmp.Height - 1) / 2).ToString();
-            InputWidth.Text = (_bmp.Width / 3).ToString();
-            InputHeight.Text = (_bmp.Height / 3).ToString();
-            PixelSize.Content = $"{PixelWidth} x {PixelHeight}";
         }
 
-        private const int PixelWidth = 100;
-        private const int PixelHeight = 60;
         private Bitmap _bmp;
 
         private readonly Color _colorEllipseBorder = Color.Black;
@@ -47,9 +37,8 @@ namespace WPF
             int w = Convert.ToInt32(InputWidth.Text);
             int h = Convert.ToInt32(InputHeight.Text);
             int px = Convert.ToInt32(InputDrawPixelSize.Text);
-
-
-            ClearBitmap(ref _bmp, _colorEmpty);
+            
+            _bmp = ClearedBitmap(w * 2, h * 2, _colorEmpty);
 
             DrawEllipse(ref _bmp, 
                 new Point(x, y), 
@@ -142,15 +131,19 @@ namespace WPF
         
         #region Features
 
-        public void ClearBitmap(ref Bitmap canvas, Color color)
+        public Bitmap ClearedBitmap(int width, int height, Color color)
         {
-            for (int i = 0; i < canvas.Height; i++)
+            Bitmap bmp = new Bitmap(width, height);
+            
+            for (int i = 0; i < bmp.Height; i++)
             {
-                for (int j = 0; j < canvas.Width; j++)
+                for (int j = 0; j < bmp.Width; j++)
                 {
-                    canvas.SetPixel(j, i, color);
+                    bmp.SetPixel(j, i, color);
                 }
             }
+
+            return bmp;
         }
 
         public void DrawPixel(ref Bitmap canvas, int x, int y, Color color, int pixelSize = 1)
