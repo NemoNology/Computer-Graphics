@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WPF"
         mc:Ignorable="d"
         Title="Ellipse Draw" 
         Height="500" Width="800"
@@ -50,7 +49,7 @@
                 />
             
                 <Label 
-                    x:Name="l_pixelSize"
+                    x:Name="PixelSize"
                     HorizontalAlignment="Center"
                 />
                 
@@ -67,9 +66,10 @@
                     />
                 
                 <TextBox
-                    x:Name="inputDrawPixelSize"
-                    Text="3"
+                    x:Name="InputDrawPixelSize"
+                    Text="1"
                     MinWidth="35"
+                    VerticalContentAlignment="Center"
                     />
                 
                 <Label 
@@ -107,9 +107,10 @@
                             />
                         
                         <TextBox
-                            x:Name="inputX"
+                            x:Name="InputX"
                             Text="50"
                             MinWidth="50"
+                            VerticalContentAlignment="Center"
                             />
                         
                     </StackPanel>
@@ -121,9 +122,10 @@
                         />
                         
                         <TextBox
-                            x:Name="inputY"
+                            x:Name="InputY"
                             Text="30"
                             MinWidth="50"
+                            VerticalContentAlignment="Center"
                         />
                         
                     </StackPanel>
@@ -148,8 +150,9 @@
                         />
                         
                         <TextBox
-                            x:Name="inputWidth"
+                            x:Name="InputWidth"
                             MinWidth="50"
+                            VerticalContentAlignment="Center"
                         />
                         
                     </StackPanel>
@@ -161,8 +164,9 @@
                         />
                         
                         <TextBox
-                            x:Name="inputHeight"
+                            x:Name="InputHeight"
                             MinWidth="50"
+                            VerticalContentAlignment="Center"
                         />
                         
                     </StackPanel>
@@ -179,7 +183,7 @@
                     />
 
                 <Label
-                    x:Name="status"
+                    x:Name="Status"
                     Content="..."
                     HorizontalAlignment="Center"
                     Foreground="Brown"
