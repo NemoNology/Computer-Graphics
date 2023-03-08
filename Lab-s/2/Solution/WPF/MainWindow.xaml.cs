@@ -61,90 +61,85 @@ namespace WPF
             MainView.Source = BitmapToImageSource(_bmp);
         }
 
+        /// <summary>
+        /// Algorithm was created by John Kennedy<br/>
+        /// https://web.archive.org/web/20120225095359/http://homepage.smc.edu/kennedy_john/belipse.pdf
+        /// </summary>
         private void DrawEllipse(ref Bitmap canvas,
             Point ellipseCenter, int width, int height, Color drawColor, int pixelSize = 1)
         {
             int a = (int) Math.Round(width * 0.5, MidpointRounding.AwayFromZero);
             int b = (int) Math.Round(height * 0.5, MidpointRounding.AwayFromZero);
+            
+            // Start point = (x, y - height / 2)
+            int x = ellipseCenter.X + a;
+            int y = ellipseCenter.Y;
+            
+            // a22 = 2 * a^2; b22 = 2 * b^2
+            var a22 = 2 * a * a;
+            var b22 = 2 * b * b;
 
-            
-            // Start point = (x, y + height / 2)
-            int x = ellipseCenter.X, y = ellipseCenter.Y + b;
-            
-            var a2 = a * a;
-            var b2 = b * b;
-            
-            // Delta is d
-            // d(x, y) = 4 * b^2 * (x+1)^2 + a^2 * (2y-1)^2 - 4 * a^2 * b^2
-            var d = 4 * b2 * Math.Pow(x + 1, 2) + 
-                       a2 * Math.Pow(2 * y - 1, 2) -
-                       4 * a2 * b2;
-            
-            // Draw horizontal part of arc
-            // End horizontal path point coordinates
-            // is point where b^2 * x = a^2 * y;   
-            while (b2 * x != a2 * y)
+            var dX = b * b * (1 - 2 * a);
+            var dY = a * a;
+            var ellipseError = 0;
+
+            var endX = b22 * a;
+            var endY = ellipseCenter.Y;
+
+            // 1st set of points, y > 1
+            while (endX >= endY)
             {
                 DrawPixelWithInversion(ref canvas, x, y, 
                     drawColor, pixelSize, 
-                    new Point(x, y), 
+                    new Point(ellipseCenter.X, ellipseCenter.Y), 
                     true, true);
 
-                // Algorithm always move right
-                // so we can take out step to right
-                x++;
+                y++;
+                endY += a22;
+                ellipseError += dY;
+                dY += a22;
 
-                if (d < 0)
+                if (2 * ellipseError + dX > 0)
                 {
-                    // d(x + 1, y) - Horizontal step - Move right
-                    // d = d + 4 * b^2 * (2x+3)
-                    d += 4 * b2 * (2 * x + 3);
-                }
-                else
-                {
-                    // d(x + 1, y + 1) - Diagonal step - Move right and down
-                    // d = d + 4 * b^2 * (2x+3) - 8 * a^2 * (y-1) 
-                    d += 4 * b2 * (2 * x + 3) - 
-                        8 * a2 * (y - 1);
-                    
-                    y--;
+                    x--;
+                    endX -= b22;
+                    ellipseError += dX;
+                    dX += b22;
                 }
             }
-            
-            // d(x, y) = b^2 * (2x+1)^2 + 4 * a^2 * (y+1)^2 - 4 * a^2 * b^2
-            d = b2 * Math.Pow(2 * x + 1, 2) + 
-                4 * a2 * Math.Pow(y + 1, 2) -
-                4 * a2 * b2;
-            
-            // Draw vertical part
-            // Vertical part end is place where y = centerEllipse.Y
-            while (y != ellipseCenter.Y)
-            {
-                DrawPixel(ref canvas, x, y, drawColor, pixelSize);
-                
-                // Algorithm always move down
-                // so we can take out step to down 
-                y--;
 
-                if (d < 0)
+            x = ellipseCenter.X;
+            y = ellipseCenter.Y - b;
+
+            dX = b * b;
+            dY = a * a * (1 - 2 * b);
+            ellipseError = 0;
+            endX = 0;
+            endY = a22 * b;
+
+            // 2nd set of points, y < -1
+            while (endX <= endY)
+            {
+                DrawPixelWithInversion(ref canvas, x, y, 
+                    drawColor, pixelSize, 
+                    new Point(ellipseCenter.X, ellipseCenter.Y), 
+                    true, true);
+
+                x++;
+                endX += b22;
+                ellipseError += dX;
+                dX += b22;
+
+                if (2 * ellipseError + dY > 0)
                 {
-                    // d(x, y - 1) - Vertical step - Move down
-                    // d = d + 4 * a^2 * (2y + 3)
-                    d += 4 * a2 * (2 * y + 3);
-                }
-                else
-                {
-                    // d(x + 1, y - 1) - Diagonal step - Move down and right
-                    // d = d + 4 * a^2 * (2y + 3) - 8 * b^2 * (x + 1)
-                    d += 4 * a2 * (2 * y + 3) - 
-                         8 * b2 * (x + 1);
-                    
-                    x++;
+                    y++;
+                    endY -= a22;
+                    ellipseError += dY;
+                    dY += a22;
                 }
             }
         }
         
-
         #region Features
 
         public void ClearBitmap(ref Bitmap canvas, Color color)
