@@ -41,6 +41,8 @@
             outputCPY = new ToolStripStatusLabel();
             toolStripStatusLabel7 = new ToolStripStatusLabel();
             b_chooseCP = new ToolStripStatusLabel();
+            toolStripStatusLabel8 = new ToolStripStatusLabel();
+            b_color = new ToolStripStatusLabel();
             menuStrip1 = new MenuStrip();
             tool_image = new ToolStripMenuItem();
             image_clear = new ToolStripMenuItem();
@@ -49,16 +51,16 @@
             toolStripSeparator1 = new ToolStripSeparator();
             image = new ToolStripMenuItem();
             image_load = new ToolStripMenuItem();
-            mainView = new PictureBox();
+            _mainView = new PictureBox();
             statusStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)mainView).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)_mainView).BeginInit();
             SuspendLayout();
             // 
             // statusStrip1
             // 
             statusStrip1.BackColor = SystemColors.Control;
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel4, toolStripStatusLabel1, outputX, toolStripStatusLabel2, outputY, toolStripStatusLabel3, toolStripStatusLabel5, outputCPX, toolStripStatusLabel6, outputCPY, toolStripStatusLabel7, b_chooseCP });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel4, toolStripStatusLabel1, outputX, toolStripStatusLabel2, outputY, toolStripStatusLabel3, toolStripStatusLabel5, outputCPX, toolStripStatusLabel6, outputCPY, toolStripStatusLabel7, b_chooseCP, toolStripStatusLabel8, b_color });
             statusStrip1.Location = new Point(0, 426);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(800, 24);
@@ -165,8 +167,31 @@
             b_chooseCP.Name = "b_chooseCP";
             b_chooseCP.Size = new Size(51, 19);
             b_chooseCP.Text = "Choose";
+            b_chooseCP.MouseDown += b_chooseCP_MouseDown;
             b_chooseCP.MouseEnter += b_chooseCP_MouseEnter;
             b_chooseCP.MouseLeave += b_chooseCP_MouseLeave;
+            // 
+            // toolStripStatusLabel8
+            // 
+            toolStripStatusLabel8.BorderSides = ToolStripStatusLabelBorderSides.Left | ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
+            toolStripStatusLabel8.BorderStyle = Border3DStyle.Bump;
+            toolStripStatusLabel8.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            toolStripStatusLabel8.Name = "toolStripStatusLabel8";
+            toolStripStatusLabel8.Size = new Size(43, 19);
+            toolStripStatusLabel8.Text = "Color:";
+            // 
+            // b_color
+            // 
+            b_color.BackColor = Color.Black;
+            b_color.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
+            b_color.BorderStyle = Border3DStyle.Bump;
+            b_color.ForeColor = Color.White;
+            b_color.Name = "b_color";
+            b_color.Size = new Size(39, 19);
+            b_color.Text = "Black";
+            b_color.Click += b_color_Click;
+            b_color.MouseEnter += b_chooseCP_MouseEnter;
+            b_color.MouseLeave += b_chooseCP_MouseLeave;
             // 
             // menuStrip1
             // 
@@ -225,31 +250,33 @@
             image_load.Size = new Size(149, 22);
             image_load.Text = "Load";
             // 
-            // mainView
+            // _mainView
             // 
-            mainView.BackColor = SystemColors.Window;
-            mainView.Dock = DockStyle.Fill;
-            mainView.Location = new Point(0, 24);
-            mainView.Name = "mainView";
-            mainView.Size = new Size(800, 402);
-            mainView.TabIndex = 7;
-            mainView.TabStop = false;
+            _mainView.BackColor = SystemColors.Window;
+            _mainView.Dock = DockStyle.Fill;
+            _mainView.Location = new Point(0, 24);
+            _mainView.Name = "_mainView";
+            _mainView.Size = new Size(800, 402);
+            _mainView.TabIndex = 7;
+            _mainView.TabStop = false;
+            _mainView.Paint += MainView_Paint;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(mainView);
+            Controls.Add(_mainView);
             Controls.Add(menuStrip1);
             Controls.Add(statusStrip1);
             Name = "MainForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Paint by NemoNology";
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)mainView).EndInit();
+            ((System.ComponentModel.ISupportInitialize)_mainView).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -277,6 +304,8 @@
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripMenuItem image;
         private ToolStripMenuItem image_load;
-        private PictureBox mainView;
+        private PictureBox _mainView;
+        private ToolStripStatusLabel toolStripStatusLabel8;
+        private ToolStripStatusLabel b_color;
     }
 }
