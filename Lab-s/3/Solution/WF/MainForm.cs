@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Drawing;
-using System.Reflection.Metadata.Ecma335;
+﻿using System.Drawing.Imaging;
 
 namespace WF
 {
@@ -10,38 +8,83 @@ namespace WF
         {
             InitializeComponent();
 
-            _mainView.Image = _bmp;
-
-            b_color.BackColor = _color;
-            b_color.ForeColor = InverseColor(_color);
+            b_chooseColor.BackColor = _color;
+            b_chooseColor.ForeColor = InverseColor(_color);
 
             ColorSelect.OnColorCahnged += ColorChanged;
+
+            _mainView.Image = new Bitmap(_mainView.Width, _mainView.Height);
+
+            _centralPoint = new Point(
+                (int)_mainView.Width / 2,
+                _mainView.Height / 2);
+
+            ChangeInfo();
+
+            _g = Graphics.FromImage(_mainView.Image);
+
+            _pen = new Pen(_color, 3f);
+
+            DrawCentralPoint(null, null);
         }
-
-
 
         private bool _isChosingCP;
         private Color _color = Color.Black;
+        private Pen _pen;
 
-        private Bitmap _bmp = new Bitmap(100, 60);
+        private Point _centralPoint;
         private Graphics _g;
 
-        private ColorSelect _colorSelection;
+        private ColorSelect? _colorSelection;
+        private PictureResize? _pictureResizing;
 
 
-        private void MainView_Paint(object sender, PaintEventArgs e)
+        /// <summary>
+        /// MainView Mouse_Move EventHandler - Drawing
+        /// </summary>
+        private void MainView_Draw(object sender, MouseEventArgs e)
         {
-            //_g.DrawRectangle()
+            _outputMouseCoordinates.Text = $"{e.X}, {e.Y}";
+
+            if (e.Button != MouseButtons.Left) return;
+
+            //using(Graphics g = Graphics.FromImage(_mainView.Image))
+            //{
+            //    g.DrawRectangle(_pen, e.X, e.Y, 1, 1);
+            //}
+
+            _g.DrawRectangle(_pen, e.X, e.Y, 1, 1);
+
+            _mainView.Image = (Bitmap)_mainView.Image;
         }
 
+
         #region Features
+
+        private void DrawCentralPoint(object sender, EventArgs e)
+        {
+            _g.DrawEllipse(new Pen(Color.DarkMagenta,
+                    5f),
+                    _centralPoint.X, _centralPoint.Y,
+                    5, 5);
+
+            _mainView.Image = (Bitmap)_mainView.Image;
+        }
 
         private void ColorChanged(Color color)
         {
             _color = color;
-            b_color.Text = color.Name;
-            b_color.BackColor = color;
-            b_color.ForeColor = InverseColor(color);
+            b_chooseColor.Text = color.Name;
+            b_chooseColor.BackColor = color;
+            b_chooseColor.ForeColor = InverseColor(color);
+
+            _pen.Color = color;
+        }
+
+        private void ChangeInfo()
+        {
+            _outputPictureSize.Text = $"{_mainView.Width} x {_mainView.Height} (px)";
+            _outputCentralPointCoordinates.Text = $"{_centralPoint.X}, {_centralPoint.Y}";
         }
 
         private void b_chooseCP_MouseEnter(object sender, EventArgs e)
@@ -78,6 +121,19 @@ namespace WF
             return Color.FromArgb(~color.ToArgb());
         }
 
+        private void ImageSave_Click(object sender, EventArgs e)
+        {
+            saveFileDialog.Filter = "PNG files (*.png)|*.png";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                _mainView.Image.Save(saveFileDialog.FileName,
+                    ImageFormat.Png);
+            }
+        }
+
         #endregion
+
+
     }
 }

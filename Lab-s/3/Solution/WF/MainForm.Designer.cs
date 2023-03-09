@@ -30,21 +30,17 @@
         {
             statusStrip1 = new StatusStrip();
             toolStripStatusLabel4 = new ToolStripStatusLabel();
-            toolStripStatusLabel1 = new ToolStripStatusLabel();
-            outputX = new ToolStripStatusLabel();
-            toolStripStatusLabel2 = new ToolStripStatusLabel();
-            outputY = new ToolStripStatusLabel();
+            _outputMouseCoordinates = new ToolStripStatusLabel();
             toolStripStatusLabel3 = new ToolStripStatusLabel();
-            toolStripStatusLabel5 = new ToolStripStatusLabel();
-            outputCPX = new ToolStripStatusLabel();
-            toolStripStatusLabel6 = new ToolStripStatusLabel();
-            outputCPY = new ToolStripStatusLabel();
+            _outputCentralPointCoordinates = new ToolStripStatusLabel();
             toolStripStatusLabel7 = new ToolStripStatusLabel();
             b_chooseCP = new ToolStripStatusLabel();
             toolStripStatusLabel8 = new ToolStripStatusLabel();
-            b_color = new ToolStripStatusLabel();
+            b_chooseColor = new ToolStripStatusLabel();
+            toolStripStatusLabel9 = new ToolStripStatusLabel();
+            _outputPictureSize = new ToolStripStatusLabel();
             menuStrip1 = new MenuStrip();
-            tool_image = new ToolStripMenuItem();
+            menu_image = new ToolStripMenuItem();
             image_clear = new ToolStripMenuItem();
             image_resize = new ToolStripMenuItem();
             image_rotate = new ToolStripMenuItem();
@@ -52,6 +48,7 @@
             image = new ToolStripMenuItem();
             image_load = new ToolStripMenuItem();
             _mainView = new PictureBox();
+            saveFileDialog = new SaveFileDialog();
             statusStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)_mainView).BeginInit();
@@ -60,7 +57,7 @@
             // statusStrip1
             // 
             statusStrip1.BackColor = SystemColors.Control;
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel4, toolStripStatusLabel1, outputX, toolStripStatusLabel2, outputY, toolStripStatusLabel3, toolStripStatusLabel5, outputCPX, toolStripStatusLabel6, outputCPY, toolStripStatusLabel7, b_chooseCP, toolStripStatusLabel8, b_color });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel4, _outputMouseCoordinates, toolStripStatusLabel3, _outputCentralPointCoordinates, toolStripStatusLabel7, b_chooseCP, toolStripStatusLabel8, b_chooseColor, toolStripStatusLabel9, _outputPictureSize });
             statusStrip1.Location = new Point(0, 426);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(800, 24);
@@ -71,86 +68,36 @@
             // 
             toolStripStatusLabel4.BorderSides = ToolStripStatusLabelBorderSides.Left | ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
             toolStripStatusLabel4.BorderStyle = Border3DStyle.Bump;
-            toolStripStatusLabel4.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            toolStripStatusLabel4.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             toolStripStatusLabel4.Name = "toolStripStatusLabel4";
-            toolStripStatusLabel4.Size = new Size(115, 19);
-            toolStripStatusLabel4.Text = "Mouse coordinates:";
+            toolStripStatusLabel4.Size = new Size(151, 19);
+            toolStripStatusLabel4.Text = "Mouse coordinates (X, Y):";
             // 
-            // toolStripStatusLabel1
+            // _outputMouseCoordinates
             // 
-            toolStripStatusLabel1.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
-            toolStripStatusLabel1.BorderStyle = Border3DStyle.Bump;
-            toolStripStatusLabel1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            toolStripStatusLabel1.Size = new Size(22, 19);
-            toolStripStatusLabel1.Text = "X:";
-            // 
-            // outputX
-            // 
-            outputX.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
-            outputX.BorderStyle = Border3DStyle.Bump;
-            outputX.Name = "outputX";
-            outputX.Size = new Size(20, 19);
-            outputX.Text = "...";
-            // 
-            // toolStripStatusLabel2
-            // 
-            toolStripStatusLabel2.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
-            toolStripStatusLabel2.BorderStyle = Border3DStyle.Bump;
-            toolStripStatusLabel2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            toolStripStatusLabel2.Size = new Size(21, 19);
-            toolStripStatusLabel2.Text = "Y:";
-            // 
-            // outputY
-            // 
-            outputY.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
-            outputY.BorderStyle = Border3DStyle.Bump;
-            outputY.Name = "outputY";
-            outputY.Size = new Size(20, 19);
-            outputY.Text = "...";
+            _outputMouseCoordinates.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
+            _outputMouseCoordinates.BorderStyle = Border3DStyle.Bump;
+            _outputMouseCoordinates.Name = "_outputMouseCoordinates";
+            _outputMouseCoordinates.Size = new Size(20, 19);
+            _outputMouseCoordinates.Text = "...";
             // 
             // toolStripStatusLabel3
             // 
             toolStripStatusLabel3.BorderSides = ToolStripStatusLabelBorderSides.Left | ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
             toolStripStatusLabel3.BorderStyle = Border3DStyle.Bump;
+            toolStripStatusLabel3.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            toolStripStatusLabel3.Size = new Size(150, 19);
-            toolStripStatusLabel3.Text = "Central Point Coordinates:";
+            toolStripStatusLabel3.Size = new Size(187, 19);
+            toolStripStatusLabel3.Text = "Central Point Coordinates (X, Y):";
+            toolStripStatusLabel3.MouseEnter += DrawCentralPoint;
             // 
-            // toolStripStatusLabel5
+            // _outputCentralPointCoordinates
             // 
-            toolStripStatusLabel5.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
-            toolStripStatusLabel5.BorderStyle = Border3DStyle.Bump;
-            toolStripStatusLabel5.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            toolStripStatusLabel5.Name = "toolStripStatusLabel5";
-            toolStripStatusLabel5.Size = new Size(22, 19);
-            toolStripStatusLabel5.Text = "X:";
-            // 
-            // outputCPX
-            // 
-            outputCPX.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
-            outputCPX.BorderStyle = Border3DStyle.Bump;
-            outputCPX.Name = "outputCPX";
-            outputCPX.Size = new Size(20, 19);
-            outputCPX.Text = "...";
-            // 
-            // toolStripStatusLabel6
-            // 
-            toolStripStatusLabel6.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
-            toolStripStatusLabel6.BorderStyle = Border3DStyle.Bump;
-            toolStripStatusLabel6.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            toolStripStatusLabel6.Name = "toolStripStatusLabel6";
-            toolStripStatusLabel6.Size = new Size(21, 19);
-            toolStripStatusLabel6.Text = "Y:";
-            // 
-            // outputCPY
-            // 
-            outputCPY.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
-            outputCPY.BorderStyle = Border3DStyle.Bump;
-            outputCPY.Name = "outputCPY";
-            outputCPY.Size = new Size(20, 19);
-            outputCPY.Text = "...";
+            _outputCentralPointCoordinates.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
+            _outputCentralPointCoordinates.BorderStyle = Border3DStyle.Bump;
+            _outputCentralPointCoordinates.Name = "_outputCentralPointCoordinates";
+            _outputCentralPointCoordinates.Size = new Size(20, 19);
+            _outputCentralPointCoordinates.Text = "...";
             // 
             // toolStripStatusLabel7
             // 
@@ -180,35 +127,52 @@
             toolStripStatusLabel8.Size = new Size(43, 19);
             toolStripStatusLabel8.Text = "Color:";
             // 
-            // b_color
+            // b_chooseColor
             // 
-            b_color.BackColor = Color.Black;
-            b_color.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
-            b_color.BorderStyle = Border3DStyle.Bump;
-            b_color.ForeColor = Color.White;
-            b_color.Name = "b_color";
-            b_color.Size = new Size(39, 19);
-            b_color.Text = "Black";
-            b_color.Click += b_color_Click;
-            b_color.MouseEnter += b_chooseCP_MouseEnter;
-            b_color.MouseLeave += b_chooseCP_MouseLeave;
+            b_chooseColor.BackColor = Color.Black;
+            b_chooseColor.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
+            b_chooseColor.BorderStyle = Border3DStyle.Bump;
+            b_chooseColor.ForeColor = Color.White;
+            b_chooseColor.Name = "b_chooseColor";
+            b_chooseColor.Size = new Size(39, 19);
+            b_chooseColor.Text = "Black";
+            b_chooseColor.Click += b_color_Click;
+            b_chooseColor.MouseEnter += b_chooseCP_MouseEnter;
+            b_chooseColor.MouseLeave += b_chooseCP_MouseLeave;
+            // 
+            // toolStripStatusLabel9
+            // 
+            toolStripStatusLabel9.BorderSides = ToolStripStatusLabelBorderSides.Left | ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
+            toolStripStatusLabel9.BorderStyle = Border3DStyle.Bump;
+            toolStripStatusLabel9.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            toolStripStatusLabel9.Name = "toolStripStatusLabel9";
+            toolStripStatusLabel9.Size = new Size(80, 19);
+            toolStripStatusLabel9.Text = "Picture Size:";
+            // 
+            // _outputPictureSize
+            // 
+            _outputPictureSize.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
+            _outputPictureSize.BorderStyle = Border3DStyle.Bump;
+            _outputPictureSize.Name = "_outputPictureSize";
+            _outputPictureSize.Size = new Size(20, 19);
+            _outputPictureSize.Text = "...";
             // 
             // menuStrip1
             // 
             menuStrip1.BackColor = SystemColors.Control;
-            menuStrip1.Items.AddRange(new ToolStripItem[] { tool_image });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { menu_image });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 24);
             menuStrip1.TabIndex = 6;
             menuStrip1.Text = "menuStrip1";
             // 
-            // tool_image
+            // menu_image
             // 
-            tool_image.DropDownItems.AddRange(new ToolStripItem[] { image_clear, image_resize, image_rotate, toolStripSeparator1, image, image_load });
-            tool_image.Name = "tool_image";
-            tool_image.Size = new Size(52, 20);
-            tool_image.Text = "Image";
+            menu_image.DropDownItems.AddRange(new ToolStripItem[] { image_clear, image_resize, image_rotate, toolStripSeparator1, image, image_load });
+            menu_image.Name = "menu_image";
+            menu_image.Size = new Size(52, 20);
+            menu_image.Text = "Image";
             // 
             // image_clear
             // 
@@ -242,6 +206,7 @@
             image.ShortcutKeys = Keys.Control | Keys.S;
             image.Size = new Size(149, 22);
             image.Text = "Save";
+            image.Click += ImageSave_Click;
             // 
             // image_load
             // 
@@ -259,7 +224,7 @@
             _mainView.Size = new Size(800, 402);
             _mainView.TabIndex = 7;
             _mainView.TabStop = false;
-            _mainView.Paint += MainView_Paint;
+            _mainView.MouseMove += MainView_Draw;
             // 
             // MainForm
             // 
@@ -286,18 +251,16 @@
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripStatusLabel4;
         private ToolStripStatusLabel toolStripStatusLabel1;
-        private ToolStripStatusLabel outputX;
         private ToolStripStatusLabel toolStripStatusLabel2;
-        private ToolStripStatusLabel outputY;
+        private ToolStripStatusLabel _outputMouseCoordinates;
         private ToolStripStatusLabel toolStripStatusLabel3;
         private ToolStripStatusLabel toolStripStatusLabel5;
-        private ToolStripStatusLabel outputCPX;
         private ToolStripStatusLabel toolStripStatusLabel6;
-        private ToolStripStatusLabel outputCPY;
+        private ToolStripStatusLabel _outputCentralPointCoordinates;
         private ToolStripStatusLabel toolStripStatusLabel7;
         private ToolStripStatusLabel b_chooseCP;
         private MenuStrip menuStrip1;
-        private ToolStripMenuItem tool_image;
+        private ToolStripMenuItem menu_image;
         private ToolStripMenuItem image_clear;
         private ToolStripMenuItem image_resize;
         private ToolStripMenuItem image_rotate;
@@ -306,6 +269,9 @@
         private ToolStripMenuItem image_load;
         private PictureBox _mainView;
         private ToolStripStatusLabel toolStripStatusLabel8;
-        private ToolStripStatusLabel b_color;
+        private ToolStripStatusLabel b_chooseColor;
+        private ToolStripStatusLabel toolStripStatusLabel9;
+        private ToolStripStatusLabel _outputPictureSize;
+        private SaveFileDialog saveFileDialog;
     }
 }
