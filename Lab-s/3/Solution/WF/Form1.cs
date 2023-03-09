@@ -1,9 +1,10 @@
-namespace WF;
-
-public partial class Form1 : Form
+namespace WF
 {
-    public Form1()
+    public partial class Form1 : Form
     {
-        InitializeComponent();
+        public Form1()
+        {
+            InitializeComponent();
+        }
     }
 }
