@@ -1,4 +1,5 @@
-﻿using System.Drawing.Imaging;
+﻿using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace WF
 {
@@ -11,7 +12,8 @@ namespace WF
             b_chooseColor.BackColor = _color;
             b_chooseColor.ForeColor = InverseColor(_color);
 
-            ColorSelect.OnColorCahnged += ColorChanged;
+            ColorSelect.OnColorChanged += ColorChanged;
+            PictureResize.OnPictureSizeChanged += MainView_Resize;
 
             _mainView.Image = new Bitmap(_mainView.Width, _mainView.Height);
 
@@ -26,6 +28,8 @@ namespace WF
             _pen = new Pen(_color, 3f);
 
             DrawCentralPoint(null, null);
+
+            saveFileDialog.Filter = openFileDialog.Filter = "PNG files (*.png)|*.png";
         }
 
         private bool _isChosingCP;
@@ -48,20 +52,72 @@ namespace WF
 
             if (e.Button != MouseButtons.Left) return;
 
-            //using(Graphics g = Graphics.FromImage(_mainView.Image))
-            //{
-            //    g.DrawRectangle(_pen, e.X, e.Y, 1, 1);
-            //}
-
             _g.DrawRectangle(_pen, e.X, e.Y, 1, 1);
 
             _mainView.Image = (Bitmap)_mainView.Image;
         }
 
+        private void MainView_Resize(Point newSize)
+        {
+            if (newSize.X > this.Width)
+            {
+                newSize = new Point(this.Width, newSize.Y);
+            }
+
+            if (newSize.Y > (this.Height - statusStrip1.Height - menuStrip1.Height))
+            {
+                newSize = new Point(newSize.X,
+                    this.Height - statusStrip1.Height - menuStrip1.Height);
+            }
+
+            var kX = (float)newSize.X / _mainView.Width;
+            var kY = (float)newSize.Y / _mainView.Height;
+
+            var oldImage = (Bitmap)_mainView.Image;
+
+            var newImage = new Bitmap(newSize.X, newSize.Y);
+
+            var g = Graphics.FromImage(newImage);
+
+            SolidBrush brush = new SolidBrush(Color.Black);
+
+            for (int i = 0; i < oldImage.Width; i++)
+            {
+                for (int j = 0; j < oldImage.Height; j++)
+                {
+                    brush.Color = oldImage.GetPixel(i, j);
+
+                    g.FillRectangle(brush,
+                        i * kX, j * kY,
+                        kX, kY);
+                }
+            }
+
+            _mainView.Image = newImage;
+
+            _mainView.Image = (Bitmap)_mainView.Image;
+
+            _g = Graphics.FromImage(_mainView.Image);
+
+            ChangeInfo();
+        }
+
 
         #region Features
 
-        private void DrawCentralPoint(object sender, EventArgs e)
+
+        private void ImageResize_Click(object sender, EventArgs e)
+        {
+            if (_pictureResizing == null || _pictureResizing.IsDisposed)
+            {
+                _pictureResizing = new PictureResize(new Point(
+                    _mainView.Width, _mainView.Height));
+            }
+
+            _pictureResizing?.Show();
+        }
+
+        private void DrawCentralPoint(object? sender, EventArgs? e)
         {
             _g.DrawEllipse(new Pen(Color.DarkMagenta,
                     5f),
@@ -83,7 +139,7 @@ namespace WF
 
         private void ChangeInfo()
         {
-            _outputPictureSize.Text = $"{_mainView.Width} x {_mainView.Height} (px)";
+            _outputPictureSize.Text = $"{_mainView.Image.Width} x {_mainView.Image.Height} (px)";
             _outputCentralPointCoordinates.Text = $"{_centralPoint.X}, {_centralPoint.Y}";
         }
 
@@ -123,8 +179,6 @@ namespace WF
 
         private void ImageSave_Click(object sender, EventArgs e)
         {
-            saveFileDialog.Filter = "PNG files (*.png)|*.png";
-
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 _mainView.Image.Save(saveFileDialog.FileName,
@@ -132,8 +186,27 @@ namespace WF
             }
         }
 
+        private void ImageLoad_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                _mainView.Image = new Bitmap(openFileDialog.FileName);
+
+                _g = Graphics.FromImage(_mainView.Image);
+            }
+        }
+
+        private void MainView_MouseLeave(object sender, EventArgs e)
+        {
+            _outputMouseCoordinates.Text = "...";
+        }
+
+        private void MainView_Move(object sender, EventArgs e)
+        {
+            _g = Graphics.FromImage(((PictureBox)sender).Image);
+        }
+
+
         #endregion
-
-
     }
 }

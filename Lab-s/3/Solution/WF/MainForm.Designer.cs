@@ -49,6 +49,7 @@
             image_load = new ToolStripMenuItem();
             _mainView = new PictureBox();
             saveFileDialog = new SaveFileDialog();
+            openFileDialog = new OpenFileDialog();
             statusStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)_mainView).BeginInit();
@@ -187,6 +188,7 @@
             image_resize.ShortcutKeys = Keys.Control | Keys.C;
             image_resize.Size = new Size(149, 22);
             image_resize.Text = "Resize";
+            image_resize.Click += ImageResize_Click;
             // 
             // image_rotate
             // 
@@ -214,6 +216,7 @@
             image_load.ShortcutKeys = Keys.Control | Keys.O;
             image_load.Size = new Size(149, 22);
             image_load.Text = "Load";
+            image_load.Click += ImageLoad_Click;
             // 
             // _mainView
             // 
@@ -222,9 +225,16 @@
             _mainView.Location = new Point(0, 24);
             _mainView.Name = "_mainView";
             _mainView.Size = new Size(800, 402);
+            _mainView.SizeMode = PictureBoxSizeMode.AutoSize;
             _mainView.TabIndex = 7;
             _mainView.TabStop = false;
+            _mainView.ClientSizeChanged += MainView_Move;
+            _mainView.MouseLeave += MainView_MouseLeave;
             _mainView.MouseMove += MainView_Draw;
+            // 
+            // openFileDialog
+            // 
+            openFileDialog.FileName = "openFileDialog1";
             // 
             // MainForm
             // 
@@ -273,5 +283,6 @@
         private ToolStripStatusLabel toolStripStatusLabel9;
         private ToolStripStatusLabel _outputPictureSize;
         private SaveFileDialog saveFileDialog;
+        private OpenFileDialog openFileDialog;
     }
 }

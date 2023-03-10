@@ -7,7 +7,7 @@ namespace WF
     {
         public delegate void ColorChanged(Color newColor);
 
-        public static event ColorChanged? OnColorCahnged;
+        public static event ColorChanged? OnColorChanged;
 
         public ColorSelect(Color currentColor)
         {
@@ -27,7 +27,7 @@ namespace WF
 
             _outputColor.BackColor = chosenColor;
 
-            OnColorCahnged?.Invoke(chosenColor);
+            OnColorChanged?.Invoke(chosenColor);
         }
 
     }
