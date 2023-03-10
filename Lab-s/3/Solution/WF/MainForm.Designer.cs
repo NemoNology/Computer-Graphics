@@ -221,7 +221,6 @@
             // _mainView
             // 
             _mainView.BackColor = SystemColors.Window;
-            _mainView.Dock = DockStyle.Fill;
             _mainView.Location = new Point(0, 24);
             _mainView.Name = "_mainView";
             _mainView.Size = new Size(800, 402);
@@ -240,6 +239,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.ScrollBar;
             ClientSize = new Size(800, 450);
             Controls.Add(_mainView);
             Controls.Add(menuStrip1);

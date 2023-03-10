@@ -99,6 +99,10 @@ namespace WF
 
             _g = Graphics.FromImage(_mainView.Image);
 
+            _centralPoint = new Point(
+                (int)(_centralPoint.X * kX),
+                (int)(_centralPoint.Y * kY));
+
             ChangeInfo();
         }
 
