@@ -6,7 +6,7 @@ def PrintMatrix(matrix):
 
         for j in range(0, matrix.shape[1]):
 
-            print(f"({im[i][j][0]},{im[i][j][1]})", end='')
+            print(f"({matrix[i][j][0]:6.3f}, {matrix[i][j][1]:6.3f})", end='')
 
         print()
 
@@ -22,20 +22,17 @@ for i in range(1, mX + 1):
 
         im.append([i, j])
 
-im = np.array(im, int)
-
-im = np.reshape(im, (mX, mY, 2))
+im = np.reshape(np.array(im, int), (mX, mY, 2))
 
 
 PrintMatrix(im)
 
 angle = 90;
-
-resize = np.array(([2, 0], [0, 1.5]), int)
+resize = np.array(([2, 0], [0, 1.5]))
 rotate = np.array(([np.cos(angle), np.sin(angle)], [-np.sin(angle), np.cos(angle)]), float)
 
-imResized = []
-imRotated = np.array(im.shape, float)
+imResized = np.array(im)
+imRotated = []
 
 rotatePoint = (mX / 2, mY / 2);
 
@@ -43,14 +40,15 @@ for i in range(0, mX):
 
     for j in range(0, mY):
 
-        imResized[i][j] = np.matmul(im[i][j], resize)
-        # imRotated[i][j] = im[i][j]  TODO: Rotation...
+        imResized[i] = np.matmul(im[i], resize)
 
-print()
-print()
-PrintMatrix(imResized)
+        X = float((im[i][j][0] - rotatePoint[0]) * np.cos(angle) - (im[i][j][1] - rotatePoint[1]) * np.sin(angle) + rotatePoint[0])
+        Y = float((im[i][j][0] - rotatePoint[0]) * np.sin(angle) + (im[i][j][1] - rotatePoint[1]) * np.sin(angle) + rotatePoint[1])
+
+        imRotated.append([X, Y])
 
 
+imRotated = np.reshape(np.array(imRotated, float), (mX, mY, 2))
 
-print()
-input("Program is ended")
+print(); print(); PrintMatrix(imResized)
+print(); print(); PrintMatrix(imRotated)
