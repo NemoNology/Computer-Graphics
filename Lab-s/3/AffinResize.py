@@ -47,7 +47,7 @@ imRotated = []
 # rotatePoint = (mX / 2, mY / 2);
 rotatePoint = (0, 0);
 
-minX = 1;
+minX = 1;   
 minY = 1;
 
 maxX = int(mX);
@@ -86,4 +86,4 @@ print(); print(f"Rotation angle: {np.degrees(angle)} degrees"); PrintMatrixFloat
 
 print(); print(f'MinX: {minX:.3f}, MinY: {minY:.3f}')
 print(f'MaxX: {maxX:.3f}, MaxY: {maxY:.3f}')
-print(f'New size: {int(np.abs(maxX - minX)) + 1} x {int(np.abs(maxY - minY)) + 1}')
+print(f'New size: {int(maxX - minX) + 1} x {int(maxY - minY) + 1}')
