@@ -11,8 +11,8 @@ def PrintMatrix(matrix):
         print()
 
 
-mY = 4
-mX = 4
+mY = int(4)
+mX = int(4)
 
 im = []
 
@@ -29,17 +29,28 @@ im = np.reshape(im, (mX, mY, 2))
 
 PrintMatrix(im)
 
+angle = 90;
+
 resize = np.array(([2, 0], [0, 1.5]), int)
+rotate = np.array(([np.cos(angle), np.sin(angle)], [-np.sin(angle), np.cos(angle)]), float)
+
+imResized = []
+imRotated = np.array(im.shape, float)
+
+rotatePoint = (mX / 2, mY / 2);
 
 for i in range(0, mX):
 
     for j in range(0, mY):
 
-        im[i][j] = np.matmul(im[i][j], resize)
+        imResized[i][j] = np.matmul(im[i][j], resize)
+        # imRotated[i][j] = im[i][j]  TODO: Rotation...
 
 print()
 print()
-PrintMatrix(im)
+PrintMatrix(imResized)
+
+
 
 print()
 input("Program is ended")
