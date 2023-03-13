@@ -35,6 +35,7 @@ namespace WF
         private bool _isChosingCP;
         private Color _color = Color.Black;
         private Pen _pen;
+        private Point _firstLinePoint;
 
         private Point _centralPoint;
         private Graphics _g;
@@ -104,6 +105,24 @@ namespace WF
                 (int)(_centralPoint.Y * kY));
 
             ChangeInfo();
+        }
+
+        private void MainView_LineDrawStart(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                _firstLinePoint = e.Location;
+            }
+        }
+
+        private void MainView_LineDrawEnd(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && !_firstLinePoint.IsEmpty)
+            {
+                _g.DrawLine(_pen, _firstLinePoint, e.Location);
+
+                _mainView.Image = (Bitmap)_mainView.Image;
+            }
         }
 
 

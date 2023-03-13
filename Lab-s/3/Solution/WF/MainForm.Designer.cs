@@ -228,8 +228,10 @@
             _mainView.TabIndex = 7;
             _mainView.TabStop = false;
             _mainView.ClientSizeChanged += MainView_Move;
+            _mainView.MouseDown += MainView_LineDrawStart;
             _mainView.MouseLeave += MainView_MouseLeave;
             _mainView.MouseMove += MainView_Draw;
+            _mainView.MouseUp += MainView_LineDrawEnd;
             // 
             // openFileDialog
             // 
