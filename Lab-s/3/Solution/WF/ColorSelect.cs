@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using System.Security.AccessControl;
-
-namespace WF
+﻿namespace WF
 {
     public partial class ColorSelect : Form
     {

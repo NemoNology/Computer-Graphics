@@ -32,10 +32,10 @@
 
         private void UpdateInfo(object newSize, EventArgs e)
         {
-            _size = (Point)newSize; 
+            _size = (Point)newSize;
 
             _outputPictureSize.Text = $"{_size.X} x {_size.Y} (px)";
-            
+
             _inputWidth.Maximum = _size.X * 5;
             _inputHeight.Maximum = _size.Y * 5;
 
