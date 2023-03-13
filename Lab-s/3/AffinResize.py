@@ -40,7 +40,6 @@ im = np.reshape(np.array(im, int), (mX, mY, 2))
 angle = np.radians(90);
 
 resize = np.array(([2, 0], [0, 1.5]))
-rotate = np.array(([np.cos(angle), np.sin(angle)], [-np.sin(angle), np.cos(angle)]), float)
 
 imResized = np.array(im)
 imRotated = []
