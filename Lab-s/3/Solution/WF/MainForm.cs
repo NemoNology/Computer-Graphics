@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Tracing;
-using System.Drawing.Imaging;
+﻿using System.Drawing.Imaging;
 
 namespace WF
 {
@@ -14,6 +13,7 @@ namespace WF
 
             ColorSelect.OnColorChanged += ColorChanged;
             PictureResize.OnPictureSizeChanged += MainView_Resize;
+            PictureRotate.OnImageRotate += MainView_Rotate;
 
             _mainView.Image = new Bitmap(_mainView.Width, _mainView.Height);
 
@@ -51,7 +51,7 @@ namespace WF
         /// <summary>
         /// MainView Mouse_Move EventHandler - Drawing
         /// </summary>
-        private void MainView_Draw(object sender, MouseEventArgs e)
+        private void MainView_Draw(object? sender, MouseEventArgs e)
         {
             _outputMouseCoordinates.Text = $"{e.X}, {e.Y}";
 
@@ -60,6 +60,56 @@ namespace WF
             _g.DrawRectangle(_pen, e.X, e.Y, 1, 1);
 
             _mainView.Image = (Bitmap)_mainView.Image;
+        }
+
+        private void MainView_Rotate(object sender, EventArgs e)
+        {
+            var angle = (Math.PI / 180) * (int)sender;
+
+            Point[,] newCoordinates = new Point[_mainView.Image.Width, _mainView.Image.Height];
+
+            int minX = 0, minY = 0, maxX = _mainView.Image.Width, maxY = _mainView.Image.Height;
+
+            int X, Y;
+
+            for (int x = 0; x < _mainView.Image.Width; x++)
+            {
+                for (int y = 0; y < _mainView.Image.Height; y++)
+                {
+                    X = (int)Math.Round(
+                        (x - _centralPoint.X) * Math.Cos(angle) -
+                        (y - _centralPoint.Y) * Math.Sin(angle) + _centralPoint.X,
+                        MidpointRounding.AwayFromZero);
+
+                    Y = (int)Math.Round(
+                        (x - _centralPoint.X) * Math.Sin(angle) +
+                        (y - _centralPoint.Y) * Math.Cos(angle) + _centralPoint.Y,
+                        MidpointRounding.AwayFromZero);
+
+                    newCoordinates[x, y] = new Point((int)X, (int)Y);
+
+                    if (X < minX) minX = X;
+                    if (X > maxX) maxX = X;
+
+                    if (Y < minY) minY = Y;
+                    if (Y > maxY) maxY = Y;
+                }
+            }
+
+            Bitmap newImage = new Bitmap(maxX - minX, maxY - minY);
+
+            _centralPoint = new Point(
+                _centralPoint.X * newImage.Width / _mainView.Image.Width,
+                _centralPoint.Y * newImage.Height / _mainView.Image.Height);
+
+
+            for (int x = 0; x < _mainView.Image.Width; x++)
+            {
+                for (int y = 0; y < _mainView.Image.Height; y++)
+                {
+
+                }
+            }
         }
 
         private void MainView_Resize(Point newSize)
@@ -146,7 +196,6 @@ namespace WF
 
 
         #region Features
-
 
         private void ImageResize_Click(object sender, EventArgs e)
         {
@@ -257,7 +306,6 @@ namespace WF
 
             DrawCentralPoint(this, EventArgs.Empty);
         }
-
 
         #endregion
     }
