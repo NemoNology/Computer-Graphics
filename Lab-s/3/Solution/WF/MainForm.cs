@@ -120,7 +120,7 @@ namespace WF
                 DrawCentralPoint(true, EventArgs.Empty);
 
                 _centralPoint = e.Location;
-                
+
                 DrawCentralPoint(this, EventArgs.Empty);
 
                 ChangeInfo();
@@ -161,7 +161,8 @@ namespace WF
 
         private void DrawCentralPoint(object sender, EventArgs e)
         {
-            _g.DrawEllipse(new Pen(sender.GetType() == typeof(bool) ? Color.White : Color.DarkMagenta,
+            _g.DrawEllipse(new Pen(sender.GetType() == typeof(bool) ?
+                Color.DarkOliveGreen : Color.DarkMagenta,
                     5f),
                     _centralPoint.X, _centralPoint.Y,
                     5, 5);
@@ -246,6 +247,15 @@ namespace WF
         private void MainView_Move(object sender, EventArgs e)
         {
             _g = Graphics.FromImage(((PictureBox)sender).Image);
+        }
+
+        private void ImageClear_Click(object sender, EventArgs e)
+        {
+            _mainView.Image = new Bitmap(_mainView.Image.Width, _mainView.Image.Height);
+
+            _g = Graphics.FromImage(_mainView.Image);
+
+            DrawCentralPoint(this, EventArgs.Empty);
         }
 
 

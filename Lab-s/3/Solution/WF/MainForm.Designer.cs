@@ -181,6 +181,7 @@
             image_clear.ShortcutKeys = Keys.Control | Keys.N;
             image_clear.Size = new Size(149, 22);
             image_clear.Text = "Clear";
+            image_clear.Click += ImageClear_Click;
             // 
             // image_resize
             // 
