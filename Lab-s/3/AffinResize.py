@@ -81,6 +81,9 @@ minX, minY, maxX, maxY = 1, 1, 1, 1;
 
 ###############################################################################
 
+ccos = np.cos(angle)
+csin = np.sin(angle)
+
 
 for i in range(0, mX):
 
@@ -91,8 +94,8 @@ for i in range(0, mX):
         # O (x0, y0) - Rotation Center Point 
         # x' = (x - x0) * cos(alpha) - (y - y0) * sin(alpha) + x0
         # y' = (x - x0) * sin(alpha) + (y - y0) * cos(alpha) + y0
-        X = (im[i][j][0] - rotatePoint[0]) * np.cos(angle) - (im[i][j][1] - rotatePoint[1]) * np.sin(angle) + rotatePoint[0]
-        Y = (im[i][j][0] - rotatePoint[0]) * np.sin(angle) + (im[i][j][1] - rotatePoint[1]) * np.cos(angle) + rotatePoint[1]
+        X = (im[i][j][0] - rotatePoint[0]) * ccos - (im[i][j][1] - rotatePoint[1]) * csin + rotatePoint[0]
+        Y = (im[i][j][0] - rotatePoint[0]) * csin + (im[i][j][1] - rotatePoint[1]) * ccos + rotatePoint[1]
 
         if X < minX: minX = X
         if Y < minY: minY = Y

@@ -72,18 +72,20 @@ namespace WF
 
             int X, Y;
 
-            for (int x = 0; x < _mainView.Image.Width; x++)
+            (double ccos, double csin) = Math.SinCos(angle);
+
+            for (int y = 0; y < _mainView.Image.Height; y++)
             {
-                for (int y = 0; y < _mainView.Image.Height; y++)
+                for (int x = 0; x < _mainView.Image.Width; x++)
                 {
                     X = (int)Math.Round(
-                        (x - _centralPoint.X) * Math.Cos(angle) -
-                        (y - _centralPoint.Y) * Math.Sin(angle) + _centralPoint.X,
+                        (x - _centralPoint.X) * ccos -
+                        (y - _centralPoint.Y) * csin + _centralPoint.X,
                         MidpointRounding.AwayFromZero);
 
                     Y = (int)Math.Round(
-                        (x - _centralPoint.X) * Math.Sin(angle) +
-                        (y - _centralPoint.Y) * Math.Cos(angle) + _centralPoint.Y,
+                        (x - _centralPoint.X) * csin +
+                        (y - _centralPoint.Y) * ccos + _centralPoint.Y,
                         MidpointRounding.AwayFromZero);
 
                     newCoordinates[x, y] = new Point((int)X, (int)Y);
