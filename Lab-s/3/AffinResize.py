@@ -20,44 +20,71 @@ def PrintMatrixInt(matrix):
 
         print()
 
+###############################################################################
 
-mY = int(4)
-mX = int(4)
+mX = int(input("Input matrix Height: "))
+mY = int(input("Input matrix Width: "))
 
-im = []
-
-for i in range(1, mX + 1):
-
-    for j in range(1, mY + 1):
-
-        im.append([j, i])
-
-im = np.reshape(np.array(im, int), (mX, mY, 2))
-
-
-# PrintMatrixInt(im)
-
-angle = np.radians(90);
-
-resize = np.array(([2, 0], [0, 1.5]))
-
-imResized = np.array(im)
-imRotated = []
-
-# rotatePoint = (mX / 2, mY / 2);
-rotatePoint = (0, 0);
-
-minX = 1;   
-minY = 1;
-
-maxX = int(mX);
-maxY = int(mY);
+im = np.array(np.zeros((mX, mY, 2)), int)
 
 for i in range(0, mX):
 
     for j in range(0, mY):
 
+        im[i][j] = [i + 1, j + 1]
+
+print(); print('Base Matrix:'); PrintMatrixInt(im); print();
+
+###############################################################################
+
+if (bool(input('Calculate Resized Matrix? (Enter - NO, Another - YES): '))):
+
+    rx = float(input("Input resize Width coefficient (Base Matrix Width *= coefficient): "))
+    ry = float(input("Input resize Height coefficient (Base Matrix Height *= coefficient): "))
+
+    resize = np.array(([rx, 0], [0, ry]))
+
+    imResized = np.array(im)
+
+    for i in range(0, mX):
+
         imResized[i] = np.matmul(im[i], resize)
+
+    print(); PrintMatrixInt(imResized)
+
+###############################################################################
+
+
+imRotated = []
+
+print('Input Rotation Point Coordinates (Default is Matrix Center)? (Enter - NO, Another - YES): ', end='')
+
+if (bool(input())):
+
+    rpx = int((input("Input Rotation Point X coordinate: ")))
+    rpy = int((input("Input Rotation Point Y coordinate: ")))
+
+else:
+
+    rpx = int(np.round(mX / 2));
+    rpy = int(np.round(mY / 2));
+
+print(f"Rotation Point is ( {rpx}, {rpy} )")
+
+rotatePoint = (rpx, rpy);
+
+angle = np.radians(int(input("Input Rotation Angle in degrees: ")));
+
+minX, minY = 1, 1;
+
+maxX, maxY = int(mX), int(mY);
+
+###############################################################################
+
+
+for i in range(0, mX):
+
+    for j in range(0, mY):
 
         # Info taken from https://ip76.ru/short-stories/rect-no-center-rotate/
 
@@ -76,12 +103,14 @@ for i in range(0, mX):
         imRotated.append([X, Y])
 
 
-print(); PrintMatrixInt(im)
+###############################################################################
+
+print(); print(f"Base Matrix size: {mX} x {mY}"); PrintMatrixInt(im)
 
 imRotated = np.reshape(np.array(imRotated, float), (mX, mY, 2))
 
-print(); PrintMatrixInt(imResized)
-print(); print(f"Rotation angle: {np.degrees(angle)} degrees"); PrintMatrixFloat(imRotated)
+print(); print(f"Rotation angle: {np.degrees(angle)} degrees") 
+print(f"Rotated Matrix size: {maxX - minX} x {maxY} - NOT TRUE!"); PrintMatrixFloat(imRotated)
 
 
 print(); print(f'MinX: {minX:.3f}, MinY: {minY:.3f}')
