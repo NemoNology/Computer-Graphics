@@ -22,14 +22,14 @@ for i in range(1, mX + 1):
 
         im.append([i, j])
 
-im = np.array(im, float)
+im = np.array(im, int)
 
 im = np.reshape(im, (mX, mY, 2))
 
 
 PrintMatrix(im)
 
-resize = np.array(([2, 0], [0, 1.5]), float)
+resize = np.array(([2, 0], [0, 1.5]), int)
 
 for i in range(0, mX):
 
@@ -43,5 +43,3 @@ PrintMatrix(im)
 
 print()
 input("Program is ended")
-
-    
