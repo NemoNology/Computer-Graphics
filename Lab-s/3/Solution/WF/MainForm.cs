@@ -1,4 +1,4 @@
-﻿using System.Drawing.Drawing2D;
+﻿using System.Diagnostics.Tracing;
 using System.Drawing.Imaging;
 
 namespace WF
@@ -32,6 +32,8 @@ namespace WF
             saveFileDialog.Filter = openFileDialog.Filter = "PNG files (*.png)|*.png";
         }
 
+        public static event EventHandler? OnMainViewResize;
+
         private bool _isChosingCP;
         private Color _color = Color.Black;
         private Pen _pen;
@@ -42,6 +44,8 @@ namespace WF
 
         private ColorSelect? _colorSelection;
         private PictureResize? _pictureResizing;
+
+        public Point MainViewSize => new Point(_mainView.Image.Width, _mainView.Image.Height);
 
 
         /// <summary>
@@ -105,6 +109,8 @@ namespace WF
                 (int)(_centralPoint.Y * kY));
 
             ChangeInfo();
+
+            OnMainViewResize?.Invoke(newSize, EventArgs.Empty);
         }
 
         private void MainView_LineDrawStart(object sender, MouseEventArgs e)

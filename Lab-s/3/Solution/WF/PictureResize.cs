@@ -12,7 +12,9 @@
 
             _size = size;
 
-            UpdateInfo();
+            UpdateInfo(size, EventArgs.Empty);
+
+            MainForm.OnMainViewResize += UpdateInfo;
         }
 
         private void ButtonResize_Click(object sender, EventArgs e)
@@ -24,21 +26,21 @@
                     (int)_inputHeight.Value);
 
             OnPictureSizeChanged?.Invoke(_size);
-
-            UpdateInfo();
         }
 
         private Point _size;
 
-        private void UpdateInfo()
+        private void UpdateInfo(object newSize, EventArgs e)
         {
-            _outputPictureSize.Text = $"{_size.X} x {_size.Y} (px)";
+            var size = (Point)newSize; 
 
-            _inputWidth.Maximum = _size.X * 5;
-            _inputHeight.Maximum = _size.Y * 5;
+            _outputPictureSize.Text = $"{size.X} x {size.Y} (px)";
+            
+            _inputWidth.Maximum = size.X * 5;
+            _inputHeight.Maximum = size.Y * 5;
 
-            _inputWidth.Value = _size.X;
-            _inputHeight.Value = _size.Y;
+            _inputWidth.Value = size.X;
+            _inputHeight.Value = size.Y;
         }
 
         private bool IsValidInput()
