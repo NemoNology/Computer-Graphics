@@ -27,7 +27,7 @@ namespace WF
 
             _pen = new Pen(_color, 3f);
 
-            DrawCentralPoint(null, null);
+            DrawCentralPoint(this, EventArgs.Empty);
 
             saveFileDialog.Filter = openFileDialog.Filter = "PNG files (*.png)|*.png";
         }
@@ -115,6 +115,19 @@ namespace WF
 
         private void MainView_LineDrawStart(object sender, MouseEventArgs e)
         {
+            if (_isChosingCP)
+            {
+                DrawCentralPoint(true, EventArgs.Empty);
+
+                _centralPoint = e.Location;
+                
+                DrawCentralPoint(this, EventArgs.Empty);
+
+                ChangeInfo();
+
+                _isChosingCP = false;
+            }
+
             if (e.Button == MouseButtons.Right)
             {
                 _firstLinePoint = e.Location;
@@ -146,9 +159,9 @@ namespace WF
             _pictureResizing?.Show();
         }
 
-        private void DrawCentralPoint(object? sender, EventArgs? e)
+        private void DrawCentralPoint(object sender, EventArgs e)
         {
-            _g.DrawEllipse(new Pen(Color.DarkMagenta,
+            _g.DrawEllipse(new Pen(sender.GetType() == typeof(bool) ? Color.White : Color.DarkMagenta,
                     5f),
                     _centralPoint.X, _centralPoint.Y,
                     5, 5);
