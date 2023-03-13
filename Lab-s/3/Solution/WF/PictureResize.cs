@@ -32,15 +32,15 @@
 
         private void UpdateInfo(object newSize, EventArgs e)
         {
-            var size = (Point)newSize; 
+            _size = (Point)newSize; 
 
-            _outputPictureSize.Text = $"{size.X} x {size.Y} (px)";
+            _outputPictureSize.Text = $"{_size.X} x {_size.Y} (px)";
             
-            _inputWidth.Maximum = size.X * 5;
-            _inputHeight.Maximum = size.Y * 5;
+            _inputWidth.Maximum = _size.X * 5;
+            _inputHeight.Maximum = _size.Y * 5;
 
-            _inputWidth.Value = size.X;
-            _inputHeight.Value = size.Y;
+            _inputWidth.Value = _size.X;
+            _inputHeight.Value = _size.Y;
         }
 
         private bool IsValidInput()
