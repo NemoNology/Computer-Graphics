@@ -42,6 +42,11 @@ for i in range(0, mX):
 
         imResized[i] = np.matmul(im[i], resize)
 
+        # Info taken from https://ip76.ru/short-stories/rect-no-center-rotate/
+        
+        # O (x0, y0) - Rotation Center Point 
+        # x' = (x - x0) * cos(alpha) - (y - y0) * sin(alpha) + x0
+        # y' = (x - x0) * sin(alpha) + (y - y0) * cos(alpha) + y0
         X = float((im[i][j][0] - rotatePoint[0]) * np.cos(angle) - (im[i][j][1] - rotatePoint[1]) * np.sin(angle) + rotatePoint[0])
         Y = float((im[i][j][0] - rotatePoint[0]) * np.sin(angle) + (im[i][j][1] - rotatePoint[1]) * np.sin(angle) + rotatePoint[1])
 
