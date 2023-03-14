@@ -61,6 +61,7 @@
             // 
             inputRotationDegree.Location = new Point(164, 72);
             inputRotationDegree.Maximum = new decimal(new int[] { 360, 0, 0, 0 });
+            inputRotationDegree.Minimum = new decimal(new int[] { 360, 0, 0, int.MinValue });
             inputRotationDegree.Name = "inputRotationDegree";
             inputRotationDegree.Size = new Size(71, 23);
             inputRotationDegree.TabIndex = 2;

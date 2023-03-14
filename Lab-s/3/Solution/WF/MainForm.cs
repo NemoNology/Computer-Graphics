@@ -15,11 +15,12 @@ namespace WF
             PictureResize.OnPictureSizeChanged += MainView_Resize;
             PictureRotate.OnImageRotate += MainView_Rotate;
 
-            _mainView.Image = new Bitmap(_mainView.Width, _mainView.Height);
+            //_mainView.Image = new Bitmap(_mainView.Width, _mainView.Height);
+            _mainView.Image = new Bitmap(7, 3);
 
             _centralPoint = new Point(
-                (int)_mainView.Width / 2,
-                _mainView.Height / 2);
+                _mainView.Image.Width / 2,
+                _mainView.Image.Height / 2);
 
             ChangeInfo();
 
@@ -44,6 +45,7 @@ namespace WF
 
         private ColorSelect? _colorSelection;
         private PictureResize? _pictureResizing;
+        private PictureRotate? _pictureRotating;
 
         public Point MainViewSize => new Point(_mainView.Image.Width, _mainView.Image.Height);
 
@@ -66,52 +68,82 @@ namespace WF
         {
             var angle = (Math.PI / 180) * (int)sender;
 
-            Point[,] newCoordinates = new Point[_mainView.Image.Width, _mainView.Image.Height];
+            Bitmap oldImage = (Bitmap)_mainView.Image;
 
-            int minX = 0, minY = 0, maxX = _mainView.Image.Width, maxY = _mainView.Image.Height;
+            Point[,] newCoordinates = new Point[oldImage.Height, oldImage.Width];
 
-            int X, Y;
+            (double csin, double ccos) = Math.SinCos(angle);
 
-            (double ccos, double csin) = Math.SinCos(angle);
+            int minX = 0, minY = 0;
+            int maxX = oldImage.Width - 1, maxY = oldImage.Height - 1;
 
-            for (int y = 0; y < _mainView.Image.Height; y++)
+            for (int y = 0; y < oldImage.Height; y++)
             {
-                for (int x = 0; x < _mainView.Image.Width; x++)
+                for (int x = 0; x < oldImage.Width; x++)
                 {
-                    X = (int)Math.Round(
+                    var X = (int)Math.Round(
                         (x - _centralPoint.X) * ccos -
                         (y - _centralPoint.Y) * csin + _centralPoint.X,
                         MidpointRounding.AwayFromZero);
 
-                    Y = (int)Math.Round(
+                    var Y = (int)Math.Round(
                         (x - _centralPoint.X) * csin +
                         (y - _centralPoint.Y) * ccos + _centralPoint.Y,
                         MidpointRounding.AwayFromZero);
 
-                    newCoordinates[x, y] = new Point((int)X, (int)Y);
+                    if (X > maxX) maxX = X;
+                    if (Y > maxY) maxY = Y;
 
                     if (X < minX) minX = X;
-                    if (X > maxX) maxX = X;
-
                     if (Y < minY) minY = Y;
-                    if (Y > maxY) maxY = Y;
+
+                    newCoordinates[y, x] = new Point(X, Y);
                 }
             }
 
-            Bitmap newImage = new Bitmap(maxX - minX, maxY - minY);
+            Point maxSize = newCoordinates[
+                newCoordinates.GetLength(0) - 1,
+                newCoordinates.GetLength(1) - 1];
 
-            _centralPoint = new Point(
-                _centralPoint.X * newImage.Width / _mainView.Image.Width,
-                _centralPoint.Y * newImage.Height / _mainView.Image.Height);
+            Point minSize = newCoordinates[0, 0];
+
+            Point newSize = new Point(
+                Math.Abs(maxSize.X - minSize.X) + 1,
+                Math.Abs(maxSize.Y - minSize.Y) + 1);
 
 
-            for (int x = 0; x < _mainView.Image.Width; x++)
+
+            var nW = newSize.X >= oldImage.Width ? newSize.X : oldImage.Width;
+            var nH = newSize.Y >= oldImage.Height ? newSize.Y : oldImage.Height;
+
+
+            // TODO: Normal resize, if Central Point is not a Image Center
+
+            Bitmap newImage = new Bitmap(nW, nH);
+
+            _centralPoint = new Point(nW / 2, nH / 2);
+
+            var dX = minX < 0 ? -minX : maxX;
+            var dY = minY < 0 ? -minY : maxY;
+
+            for (int y = 0; y < oldImage.Height; y++)
             {
-                for (int y = 0; y < _mainView.Image.Height; y++)
+                for (int x = 0; x < oldImage.Width; x++)
                 {
-
+                    newImage.SetPixel(newCoordinates[y, x].X + dX,
+                        newCoordinates[y, x].Y + dY,
+                        oldImage.GetPixel(x, y));
                 }
             }
+
+            ChangeInfo();
+
+            _mainView.Image = newImage;
+
+            OnMainViewResize?.Invoke(new Point(newImage.Width,
+                newImage.Height), EventArgs.Empty);
+
+            _g = Graphics.FromImage(_mainView.Image);
         }
 
         private void MainView_Resize(Point newSize)
@@ -308,6 +340,17 @@ namespace WF
 
             DrawCentralPoint(this, EventArgs.Empty);
         }
+
+        private void ImageRotate_Click(object sender, EventArgs e)
+        {
+            if (_pictureRotating == null || _pictureRotating.IsDisposed)
+            {
+                _pictureRotating = new PictureRotate();
+            }
+
+            _pictureRotating.Show();
+        }
+
 
         #endregion
     }

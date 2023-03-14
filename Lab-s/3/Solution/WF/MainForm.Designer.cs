@@ -187,7 +187,7 @@
             // 
             image_resize.Name = "image_resize";
             image_resize.ShortcutKeys = Keys.Control | Keys.C;
-            image_resize.Size = new Size(180, 22);
+            image_resize.Size = new Size(149, 22);
             image_resize.Text = "Resize";
             image_resize.Click += ImageResize_Click;
             // 
@@ -195,8 +195,9 @@
             // 
             image_rotate.Name = "image_rotate";
             image_rotate.ShortcutKeys = Keys.Control | Keys.X;
-            image_rotate.Size = new Size(180, 22);
+            image_rotate.Size = new Size(149, 22);
             image_rotate.Text = "Rotate";
+            image_rotate.Click += ImageRotate_Click;
             // 
             // toolStripSeparator1
             // 
@@ -222,6 +223,7 @@
             // _mainView
             // 
             _mainView.BackColor = SystemColors.Window;
+            _mainView.BackgroundImageLayout = ImageLayout.None;
             _mainView.Location = new Point(0, 24);
             _mainView.Name = "_mainView";
             _mainView.Size = new Size(800, 402);

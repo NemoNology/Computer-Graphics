@@ -33,7 +33,7 @@ for y in range(0, mY):
 
     for x in range(0, mX):
 
-        im[y][x] = [x + 1, y + 1]
+        im[y][x] = [x, y]
 
 print(); print('Base Matrix:'); PrintMatrixInt(im); print();
 
@@ -70,8 +70,8 @@ if (False):
 
 else:
 
-    rpx = int(np.round(mX / 2));
-    rpy = int(np.round(mY / 2));
+    rpx = int(mX - 1);
+    rpy = int(mY - 1);
 
 print(f"Rotation Point is ( {rpx}, {rpy} )")
 
@@ -79,9 +79,9 @@ rotatePoint = [rpx, rpy];
 
 # angle = np.radians(int(input("Input Rotation Angle in degrees: ")));
 
-angle = np.radians(180)
+angle = np.radians(90)
 
-minX, minY, maxX, maxY = 1, 1, 1, 1;
+minX, minY, maxX, maxY = 0, 0, mX, mY;
 
 ###############################################################################
 
@@ -124,7 +124,3 @@ imRotated = np.reshape(np.array(imRotated, float), (newSizeY, newSizeX, 2))
 
 print(); print(f"Rotation angle: {np.degrees(angle)} degrees") 
 print(f"Rotated Matrix size: {int(newSizeY)} x {int(newSizeX)}"); PrintMatrixFloat(imRotated)
-
-
-print(); print(f'MinX: {minX:.3f}, MinY: {minY:.3f}')
-print(f'MaxX: {maxX:.3f}, MaxY: {maxY:.3f}')
