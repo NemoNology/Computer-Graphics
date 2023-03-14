@@ -36,8 +36,8 @@
 
             _outputPictureSize.Text = $"{_size.X} x {_size.Y} (px)";
 
-            _inputWidth.Maximum = _size.X * 5;
-            _inputHeight.Maximum = _size.Y * 5;
+            _inputWidth.Maximum = _size.X * 100;
+            _inputHeight.Maximum = _size.Y * 100;
 
             _inputWidth.Value = _size.X;
             _inputHeight.Value = _size.Y;
