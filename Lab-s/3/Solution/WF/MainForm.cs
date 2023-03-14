@@ -1,4 +1,5 @@
 ﻿using System.Drawing.Imaging;
+using System.Numerics;
 
 namespace WF
 {
@@ -25,9 +26,7 @@ namespace WF
 
             _g = Graphics.FromImage(_mainView.Image);
 
-            _pen = new Pen(_color, 3f);
-
-            DrawCentralPoint(this, EventArgs.Empty);
+            _pen = new Pen(_color);
 
             saveFileDialog.Filter = openFileDialog.Filter = "PNG files (*.png)|*.png";
         }
@@ -40,14 +39,15 @@ namespace WF
         private Point _firstLinePoint;
 
         private Point _centralPoint;
+        private Color _centralPointColor;
         private Graphics _g;
 
         private ColorSelect? _colorSelection;
         private PictureResize? _pictureResizing;
         private PictureRotate? _pictureRotating;
 
-        public Point MainViewSize => new Point(_mainView.Image.Width, _mainView.Image.Height);
-
+        private List<Vector4> _lines = new List<Vector4>();
+        private List<Point> _pixels = new List<Point>();
 
         /// <summary>
         /// MainView Mouse_Move EventHandler - Drawing
@@ -56,39 +56,80 @@ namespace WF
         {
             _outputMouseCoordinates.Text = $"{e.X}, {e.Y}";
 
-            if (e.Button != MouseButtons.Left) return;
+            if (e.Button != MouseButtons.Left || _isChosingCP) return;
 
-            _g.DrawRectangle(_pen, e.X, e.Y, 1, 1);
+            _pixels.Add(e.Location);
 
-            _mainView.Image = (Bitmap)_mainView.Image;
+            DrawPixels(true);
         }
 
         private void MainView_Rotate(object sender, EventArgs e)
         {
             var angle = (Math.PI / 180) * (int)sender;
 
-            Bitmap oldImage = (Bitmap)_mainView.Image;
-
-            Point[,] newCoordinates = new Point[oldImage.Height, oldImage.Width];
+            int oW = _mainView.Image.Width;
+            int oH = _mainView.Image.Height;
 
             (double csin, double ccos) = Math.SinCos(angle);
 
             int minX = 0, minY = 0;
-            int maxX = oldImage.Width - 1, maxY = oldImage.Height - 1;
+            int maxX = oW - 1, maxY = oH - 1;
 
-            for (int y = 0; y < oldImage.Height; y++)
+            // TODO: Rotate points and/or newSize
+
+            if (_pixels != null && _pixels.Count != 0)
             {
-                for (int x = 0; x < oldImage.Width; x++)
+                for (int i = 0; i < _pixels.Count; i++)
                 {
                     var X = (int)Math.Round(
-                        (x - _centralPoint.X) * ccos -
-                        (y - _centralPoint.Y) * csin + _centralPoint.X,
+                        (_pixels[i].X - _centralPoint.X) * ccos -
+                        (_pixels[i].Y - _centralPoint.Y) * csin + _centralPoint.X,
                         MidpointRounding.AwayFromZero);
 
                     var Y = (int)Math.Round(
-                        (x - _centralPoint.X) * csin +
-                        (y - _centralPoint.Y) * ccos + _centralPoint.Y,
+                        (_pixels[i].X - _centralPoint.X) * csin +
+                        (_pixels[i].Y - _centralPoint.Y) * ccos + _centralPoint.Y,
                         MidpointRounding.AwayFromZero);
+
+                    _pixels[i] = new Point(X, Y);
+
+                    if (X > maxX) maxX = X;
+                    if (Y > maxY) maxY = Y;
+
+                    if (X < minX) minX = X;
+                    if (Y < minY) minY = Y;
+                }
+            }
+
+            if (_lines != null && _lines.Count != 0)
+            {
+                for (int i = 0; i < _lines.Count; i++)
+                {
+                    var X = (int)Math.Round(
+                        (_lines[i].X - _centralPoint.X) * ccos -
+                        (_lines[i].Y - _centralPoint.Y) * csin + _centralPoint.X,
+                        MidpointRounding.AwayFromZero);
+
+                    var Y = (int)Math.Round(
+                        (_lines[i].X - _centralPoint.X) * csin +
+                        (_lines[i].Y - _centralPoint.Y) * ccos + _centralPoint.Y,
+                        MidpointRounding.AwayFromZero);
+
+                    var Z = (int)Math.Round(
+                        (_lines[i].Z - _centralPoint.X) * ccos -
+                        (_lines[i].W - _centralPoint.Y) * csin + _centralPoint.X,
+                        MidpointRounding.AwayFromZero);
+
+                    var W = (int)Math.Round(
+                        (_lines[i].Z - _centralPoint.X) * csin +
+                        (_lines[i].W - _centralPoint.Y) * ccos + _centralPoint.Y,
+                        MidpointRounding.AwayFromZero);
+
+                    _lines[i] = new Vector4(
+                        _lines[i].X,
+                        _lines[i].Y,
+                        _lines[i].Z,
+                        _lines[i].W);
 
                     if (X > maxX) maxX = X;
                     if (Y > maxY) maxY = Y;
@@ -96,47 +137,56 @@ namespace WF
                     if (X < minX) minX = X;
                     if (Y < minY) minY = Y;
 
-                    newCoordinates[y, x] = new Point(X, Y);
+                    if (Z > maxX) maxX = Z;
+                    if (W > maxY) maxY = W;
+
+                    if (Z < minX) minX = Z;
+                    if (W < minY) minY = W;
                 }
             }
 
-            Point maxSize = newCoordinates[
-                newCoordinates.GetLength(0) - 1,
-                newCoordinates.GetLength(1) - 1];
-
-            Point minSize = newCoordinates[0, 0];
-
             Point newSize = new Point(
-                Math.Abs(maxSize.X - minSize.X) + 1 + (maxX > oldImage.Width ? _centralPoint.X : 0),
-                Math.Abs(maxSize.Y - minSize.Y) + 1 + (maxY > oldImage.Height ? _centralPoint.Y : 0));
-                
-            var nW = newSize.X >= oldImage.Width ? newSize.X : oldImage.Width;
-            var nH = newSize.Y >= oldImage.Height ? newSize.Y : oldImage.Height;
+                Diff(_centralPoint.X, minX) + Diff(_centralPoint.X, maxX) + 1,
+                Diff(_centralPoint.Y, minY) + Diff(_centralPoint.Y, maxY) + 1);
 
-            Bitmap newImage = new Bitmap(nW, nH);
+            int nW = newSize.X >= oW ? newSize.X : oW;
+            int nH = newSize.Y >= oH ? newSize.Y : oH;
 
-            for (int y = 0; y < oldImage.Height; y++)
+            _mainView.Image = new Bitmap(nW, nH);
+
+            int dX = minX <= 0 ? -minX : -maxX;
+            int dY = minY <= 0 ? -minY : -maxY;
+
+            if (_pixels != null && _pixels.Count != 0)
             {
-                for (int x = 0; x < oldImage.Width; x++)
+                for (int i = 0; i < _pixels.Count; i++)
                 {
-                    newImage.SetPixel(newCoordinates[y, x].X - minX,
-                        newCoordinates[y, x].Y - minY,
-                        oldImage.GetPixel(x, y));
+                    _pixels[i] = new Point(
+                        _pixels[i].X + dX,
+                        _pixels[i].Y + dY);
+                }
+            }
+
+            if (_lines != null && _lines.Count != 0)
+            {
+                for (int i = 0; i < _lines.Count; i++)
+                {
+                    _lines[i] = new Vector4(
+                        _lines[i].X + dX,
+                        _lines[i].Y + dY,
+                        _lines[i].Z + dX,
+                        _lines[i].W + dY);
                 }
             }
 
             _centralPoint = new Point(
-                _centralPoint.X * nW / oldImage.Width, 
-                _centralPoint.Y * nH / oldImage.Height);
+                _centralPoint.X * (nW / oW),
+                _centralPoint.Y * (nH / oH));
 
             ChangeInfo();
+            Redraw();
 
-            _mainView.Image = newImage;
-
-            OnMainViewResize?.Invoke(new Point(newImage.Width,
-                newImage.Height), EventArgs.Empty);
-
-            _g = Graphics.FromImage(_mainView.Image);
+            OnMainViewResize?.Invoke(new Point(nW, nH), EventArgs.Empty);
         }
 
         private void MainView_Resize(Point newSize)
@@ -155,31 +205,31 @@ namespace WF
             var kX = (float)newSize.X / _mainView.Width;
             var kY = (float)newSize.Y / _mainView.Height;
 
-            var oldImage = (Bitmap)_mainView.Image;
-
-            var newImage = new Bitmap(newSize.X, newSize.Y);
-
-            var g = Graphics.FromImage(newImage);
-
-            SolidBrush brush = new SolidBrush(Color.Black);
-
-            for (int i = 0; i < oldImage.Width; i++)
+            if (_lines != null && _lines.Count != 0)
             {
-                for (int j = 0; j < oldImage.Height; j++)
+                for (int i = 0; i < _lines.Count; i++)
                 {
-                    brush.Color = oldImage.GetPixel(i, j);
-
-                    g.FillRectangle(brush,
-                        i * kX, j * kY,
-                        kX, kY);
+                    _lines[i] = new Vector4(
+                        _lines[i].X * kX,
+                        _lines[i].Y * kY,
+                        _lines[i].Z * kX,
+                        _lines[i].W * kY);
                 }
             }
 
-            _mainView.Image = newImage;
+            if (_pixels != null && _pixels.Count != 0)
+            {
+                for (int i = 0; i < _pixels.Count; i++)
+                {
+                    _pixels[i] = new Point(
+                        (int)(_pixels[i].X * kX),
+                        (int)(_pixels[i].Y * kY));
+                }
+            }
 
-            _mainView.Image = (Bitmap)_mainView.Image;
+            _mainView.Image = new Bitmap(newSize.X, newSize.Y);
 
-            _g = Graphics.FromImage(_mainView.Image);
+            Redraw();
 
             _centralPoint = new Point(
                 (int)(_centralPoint.X * kX),
@@ -192,13 +242,9 @@ namespace WF
 
         private void MainView_LineDrawStart(object sender, MouseEventArgs e)
         {
-            if (_isChosingCP)
+            if (_isChosingCP && e.Button == MouseButtons.Left)
             {
-                DrawCentralPoint(true, EventArgs.Empty);
-
                 _centralPoint = e.Location;
-
-                DrawCentralPoint(this, EventArgs.Empty);
 
                 ChangeInfo();
 
@@ -215,14 +261,77 @@ namespace WF
         {
             if (e.Button == MouseButtons.Right && !_firstLinePoint.IsEmpty)
             {
-                _g.DrawLine(_pen, _firstLinePoint, e.Location);
+                _lines.Add(new Vector4(
+                    _firstLinePoint.X,
+                    _firstLinePoint.Y,
+                    e.X >= _mainView.Image.Width ? _mainView.Image.Width - 1 : e.X,
+                    e.Y >= _mainView.Image.Height ? _mainView.Image.Height - 1 : e.Y));
 
-                _mainView.Image = (Bitmap)_mainView.Image;
+                DrawLines(true);
             }
         }
 
 
         #region Features
+
+        /// <summary>
+        /// Draw all saved pixels on main view
+        /// </summary>
+        /// <param name="DrawOnlyLastLine"> If true: draw only last line </param>
+        private void DrawLines(bool DrawOnlyLastLine = false)
+        {
+            if (_lines == null || _lines.Count == 0) return;
+
+            Vector4 l = _lines.Last();
+            Point p1, p2;
+
+            if (DrawOnlyLastLine)
+            {
+                p1 = new Point((int)l.X, (int)l.Y);
+                p2 = new Point((int)l.Z, (int)l.W);
+
+                _g.DrawLine(_pen, p1, p2);
+                Redraw(true);
+
+                return;
+            }
+
+            foreach (var line in _lines)
+            {
+                p1 = new Point((int)line.X, (int)line.Y);
+                p2 = new Point((int)line.Z, (int)line.W);
+
+                _g.DrawLine(_pen, p1, p2);
+            }
+        }
+
+        /// <summary>
+        /// Draw all saved pixels on main view
+        /// </summary>
+        /// <param name="DrawOnlyLastPixel"> If true: draw only last pixel </param>
+        private void DrawPixels(bool DrawOnlyLastPixel = false)
+        {
+            if (_pixels == null || _pixels.Count == 0) return;
+
+            Point lp = _pixels.Last();
+
+            if (DrawOnlyLastPixel)
+            {
+                _g.DrawRectangle(_pen,
+                    lp.X, lp.Y,
+                    1, 1);
+                Redraw(true);
+
+                return;
+            }
+
+            foreach (var p in _pixels)
+            {
+                _g.DrawLine(_pen, p.X, p.Y, p.X, p.Y);
+            }
+        }
+
+        private int Diff(int a, int b) => Math.Abs(a - b);
 
         private void ImageResize_Click(object sender, EventArgs e)
         {
@@ -235,13 +344,43 @@ namespace WF
             _pictureResizing?.Show();
         }
 
-        private void DrawCentralPoint(object sender, EventArgs e)
+        private void ShowCentralPoint(object sender, EventArgs e)
         {
-            _g.DrawEllipse(new Pen(sender.GetType() == typeof(bool) ?
-                Color.DarkOliveGreen : Color.DarkMagenta,
-                    5f),
-                    _centralPoint.X, _centralPoint.Y,
-                    5, 5);
+            _centralPointColor = ((Bitmap)_mainView.Image).GetPixel(
+                _centralPoint.X, _centralPoint.Y);
+
+            _g.DrawRectangle(new Pen(Color.FromArgb(
+                ~_centralPointColor.ToArgb())),
+                _centralPoint.X, _centralPoint.Y,
+                1, 1);
+
+            Redraw(true);
+        }
+
+        private void HideCentralPoint(object sender, EventArgs e)
+        {
+            _g.DrawRectangle(new Pen(Color.FromArgb(
+                _centralPointColor.ToArgb())),
+                _centralPoint.X, _centralPoint.Y,
+                1, 1);
+
+            Redraw(true);
+        }
+
+        private void Redraw(bool OnlyUpdateImage = false)
+        {
+            if (OnlyUpdateImage)
+            {
+                _mainView.Image = (Bitmap)_mainView.Image;
+                return;
+            }
+
+            _mainView.Image = new Bitmap(_mainView.Image.Width, _mainView.Image.Height);
+
+            _g = Graphics.FromImage(_mainView.Image);
+
+            DrawLines();
+            DrawPixels();
 
             _mainView.Image = (Bitmap)_mainView.Image;
         }
@@ -327,11 +466,10 @@ namespace WF
 
         private void ImageClear_Click(object sender, EventArgs e)
         {
-            _mainView.Image = new Bitmap(_mainView.Image.Width, _mainView.Image.Height);
+            _pixels.Clear();
+            _lines.Clear();
 
-            _g = Graphics.FromImage(_mainView.Image);
-
-            DrawCentralPoint(this, EventArgs.Empty);
+            Redraw();
         }
 
         private void ImageRotate_Click(object sender, EventArgs e)

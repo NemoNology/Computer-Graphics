@@ -61,9 +61,10 @@
             statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel4, _outputMouseCoordinates, toolStripStatusLabel3, _outputCentralPointCoordinates, toolStripStatusLabel7, b_chooseCP, toolStripStatusLabel8, b_chooseColor, toolStripStatusLabel9, _outputPictureSize });
             statusStrip1.Location = new Point(0, 426);
             statusStrip1.Name = "statusStrip1";
+            statusStrip1.RightToLeft = RightToLeft.No;
             statusStrip1.Size = new Size(800, 24);
             statusStrip1.TabIndex = 4;
-            statusStrip1.Text = "statusStrip1";
+            statusStrip1.Text = "StatusStribBar";
             // 
             // toolStripStatusLabel4
             // 
@@ -90,7 +91,8 @@
             toolStripStatusLabel3.Name = "toolStripStatusLabel3";
             toolStripStatusLabel3.Size = new Size(187, 19);
             toolStripStatusLabel3.Text = "Central Point Coordinates (X, Y):";
-            toolStripStatusLabel3.MouseEnter += DrawCentralPoint;
+            toolStripStatusLabel3.MouseEnter += ShowCentralPoint;
+            toolStripStatusLabel3.MouseLeave += HideCentralPoint;
             // 
             // _outputCentralPointCoordinates
             // 
