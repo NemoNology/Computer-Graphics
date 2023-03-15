@@ -56,8 +56,10 @@ namespace WF
         {
             _outputMouseCoordinates.Text = $"{e.X}, {e.Y}";
 
-            if (e.Button != MouseButtons.Left || _isChosingCP) return;
-
+            if (e.Button != MouseButtons.Left ||
+                _isChosingCP ||  
+                _pixels.Contains(e.Location)) return;
+                
             _pixels.Add(e.Location);
 
             DrawPixels(true);
@@ -259,13 +261,18 @@ namespace WF
 
         private void MainView_LineDrawEnd(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right && !_firstLinePoint.IsEmpty)
+            if (e.Button == MouseButtons.Right 
+                && !_firstLinePoint.IsEmpty)
             {
-                _lines.Add(new Vector4(
+                var buff = new Vector4(
                     _firstLinePoint.X,
                     _firstLinePoint.Y,
                     e.X >= _mainView.Image.Width ? _mainView.Image.Width - 1 : e.X,
-                    e.Y >= _mainView.Image.Height ? _mainView.Image.Height - 1 : e.Y));
+                    e.Y >= _mainView.Image.Height ? _mainView.Image.Height - 1 : e.Y);
+
+                if (_lines.Contains(buff)) return;
+
+                _lines.Add(buff);
 
                 DrawLines(true);
             }
