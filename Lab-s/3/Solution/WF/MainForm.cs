@@ -72,7 +72,8 @@ namespace WF
             int oW = _mainView.Image.Width;
             int oH = _mainView.Image.Height;
 
-            (double csin, double ccos) = Math.SinCos(angle);
+            (double sin, double cos) = Math.SinCos(angle);
+            (float csin, float ccos) = ((float)sin, (float)cos);
 
             float minX = 0, minY = 0;
             float maxX = oW - 1, maxY = oH - 1;
@@ -134,22 +135,22 @@ namespace WF
             }
 
             Point newSize = new Point(
-                Diff(_centralPoint.X, minX) + Diff(_centralPoint.X, maxX) + 1,
-                Diff(_centralPoint.Y, minY) + Diff(_centralPoint.Y, maxY) + 1);
+                Diff(_centralPoint.X, (int)minX) + Diff(_centralPoint.X, (int)maxX) + 1,
+                Diff(_centralPoint.Y, (int)minY) + Diff(_centralPoint.Y, (int)maxY) + 1);
 
             int nW = newSize.X >= oW ? newSize.X : oW;
             int nH = newSize.Y >= oH ? newSize.Y : oH;
 
             _mainView.Image = new Bitmap(nW, nH);
 
-            int dX = minX <= 0 ? -minX : -maxX;
-            int dY = minY <= 0 ? -minY : -maxY;
+            float dX = minX <= 0 ? -minX : -maxX;
+            float dY = minY <= 0 ? -minY : -maxY;
 
             if (_pixels != null && _pixels.Count != 0)
             {
                 for (int i = 0; i < _pixels.Count; i++)
                 {
-                    _pixels[i] = new Point(
+                    _pixels[i] = new Vector2(
                         _pixels[i].X + dX,
                         _pixels[i].Y + dY);
                 }
@@ -317,7 +318,7 @@ namespace WF
         {
             if (_pixels == null || _pixels.Count == 0) return;
 
-            Point lp = _pixels.Last();
+            Vector2 lp = _pixels.Last();
 
             if (DrawOnlyLastPixel)
             {
