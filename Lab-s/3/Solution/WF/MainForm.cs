@@ -77,8 +77,6 @@ namespace WF
             int minX = 0, minY = 0;
             int maxX = oW - 1, maxY = oH - 1;
 
-            // TODO: Rotate points and/or newSize
-
             if (_pixels != null && _pixels.Count != 0)
             {
                 for (int i = 0; i < _pixels.Count; i++)
@@ -182,13 +180,16 @@ namespace WF
             }
 
             _centralPoint = new Point(
-                _centralPoint.X * (nW / oW),
-                _centralPoint.Y * (nH / oH));
+                (int)Math.Round(_centralPoint.X * ((float)nW / oW), MidpointRounding.AwayFromZero),
+                (int)Math.Round(_centralPoint.Y * ((float)nH / oH), MidpointRounding.AwayFromZero));
 
             ChangeInfo();
             Redraw();
 
-            OnMainViewResize?.Invoke(new Point(nW, nH), EventArgs.Empty);
+            if (_pictureResizing != null && !_pictureResizing.IsDisposed)
+            {
+                OnMainViewResize?.Invoke(new Point(nW, nH), EventArgs.Empty);
+            }
         }
 
         private void MainView_Resize(Point newSize)
@@ -244,13 +245,23 @@ namespace WF
 
         private void MainView_LineDrawStart(object sender, MouseEventArgs e)
         {
-            if (_isChosingCP && e.Button == MouseButtons.Left)
+
+
+            if (e.Button == MouseButtons.Left)
             {
-                _centralPoint = e.Location;
+                if (_isChosingCP)
+                {
+                    _centralPoint = e.Location;
+                    ChangeInfo();
+                    _isChosingCP = false;
+                    return;
+                }
 
-                ChangeInfo();
-
-                _isChosingCP = false;
+                if (!_pixels.Contains(e.Location))
+                {
+                    _pixels.Add(e.Location);
+                    DrawPixels(true);
+                }
             }
 
             if (e.Button == MouseButtons.Right)
@@ -334,7 +345,7 @@ namespace WF
 
             foreach (var p in _pixels)
             {
-                _g.DrawLine(_pen, p.X, p.Y, p.X, p.Y);
+                _g.DrawRectangle(_pen, p.X, p.Y, 1, 1);
             }
         }
 
