@@ -17,9 +17,15 @@
             MainForm.OnMainViewResize += UpdateInfo;
         }
 
-        private void ButtonResize_Click(object sender, EventArgs e)
+        private void ButtonResize_Click(object sender, MouseEventArgs e)
         {
             if (!IsValidInput()) return;
+
+            if (e.Button == MouseButtons.Right)
+            {
+                _inputWidth.Value = 350;
+                _inputHeight.Value = 150;
+            }
 
             _size = new Point(
                     (int)_inputWidth.Value,

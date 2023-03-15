@@ -16,9 +16,9 @@ namespace WF
             PictureResize.OnPictureSizeChanged += MainView_Resize;
             PictureRotate.OnImageRotate += MainView_Rotate;
 
-            _mainView.Image = new Bitmap(_mainView.Width, _mainView.Height);
+            _mainView.Image = new Bitmap(350, 150);
 
-            _centralPoint = new Point(
+            _centralPoint = new Vector2(
                 _mainView.Image.Width / 2,
                 _mainView.Image.Height / 2);
 
@@ -36,15 +36,15 @@ namespace WF
         private bool _isChosingCP;
         private Color _color = Color.Black;
         private Pen _pen;
-        private Point _firstLinePoint;
+        private Vector2 _firstLinePoint;
 
-        private Point _centralPoint;
+        private Vector2 _centralPoint;
         private Color _centralPointColor;
         private Graphics _g;
 
-        private ColorSelect? _colorSelection;
-        private PictureResize? _pictureResizing;
-        private PictureRotate? _pictureRotating;
+        private ColorSelect _colorSelection;
+        private PictureResize _pictureResizing;
+        private PictureRotate _pictureRotating;
 
         private List<Vector4> _lines = new List<Vector4>();
         private List<Vector2> _pixels = new List<Vector2>();
@@ -65,9 +65,9 @@ namespace WF
             DrawPixels(true);
         }
 
-        private void MainView_Rotate(object sender)
+        private void MainView_Rotate(int angleDegree)
         {
-            var angle = (Math.PI / 180) * (int)sender;
+            var angle = (Math.PI / 180) * angleDegree;
 
             int oW = _mainView.Image.Width;
             int oH = _mainView.Image.Height;
@@ -115,10 +115,8 @@ namespace WF
                         (_lines[i].W - _centralPoint.Y) * ccos + _centralPoint.Y;
 
                     _lines[i] = new Vector4(
-                        _lines[i].X,
-                        _lines[i].Y,
-                        _lines[i].Z,
-                        _lines[i].W);
+                        X, Y,
+                        Z, W);
 
                     if (X > maxX) maxX = X;
                     if (Y > maxY) maxY = Y;
@@ -135,8 +133,10 @@ namespace WF
             }
 
             Point newSize = new Point(
-                Diff(_centralPoint.X, (int)minX) + Diff(_centralPoint.X, (int)maxX) + 1,
-                Diff(_centralPoint.Y, (int)minY) + Diff(_centralPoint.Y, (int)maxY) + 1);
+                (int)Diff(_centralPoint.X, minX) +
+                (int)Diff(_centralPoint.X, maxX) + 1,
+                (int)Diff(_centralPoint.Y, minY) +
+                (int)Diff(_centralPoint.Y, maxY) + 1);
 
             int nW = newSize.X >= oW ? newSize.X : oW;
             int nH = newSize.Y >= oH ? newSize.Y : oH;
@@ -168,9 +168,10 @@ namespace WF
                 }
             }
 
-            _centralPoint = new Point(
-                (int)Math.Round(_centralPoint.X * ((float)nW / oW), MidpointRounding.AwayFromZero),
-                (int)Math.Round(_centralPoint.Y * ((float)nH / oH), MidpointRounding.AwayFromZero));
+            _centralPoint = new Vector2(
+                _centralPoint.X + dX,
+                _centralPoint.Y + dY
+                );
 
             ChangeInfo();
             Redraw();
@@ -223,7 +224,7 @@ namespace WF
 
             Redraw();
 
-            _centralPoint = new Point(
+            _centralPoint = new Vector2(
                 (int)(_centralPoint.X * kX),
                 (int)(_centralPoint.Y * kY));
 
@@ -238,7 +239,7 @@ namespace WF
             {
                 if (_isChosingCP)
                 {
-                    _centralPoint = e.Location;
+                    _centralPoint = new Vector2(e.X, e.Y);
                     ChangeInfo();
                     _isChosingCP = false;
                     return;
@@ -253,14 +254,13 @@ namespace WF
 
             if (e.Button == MouseButtons.Right)
             {
-                _firstLinePoint = e.Location;
+                _firstLinePoint = new Vector2(e.X, e.Y);
             }
         }
 
         private void MainView_LineDrawEnd(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right
-                && !_firstLinePoint.IsEmpty)
+            if (e.Button == MouseButtons.Right)
             {
                 var buff = new Vector4(
                     _firstLinePoint.X,
@@ -279,6 +279,7 @@ namespace WF
 
         #region Features
 
+
         /// <summary>
         /// Draw all saved pixels on main view
         /// </summary>
@@ -287,11 +288,12 @@ namespace WF
         {
             if (_lines == null || _lines.Count == 0) return;
 
-            Vector4 l = _lines.Last();
             Point p1, p2;
 
             if (DrawOnlyLastLine)
             {
+                Vector4 l = _lines.Last();
+
                 p1 = new Point((int)l.X, (int)l.Y);
                 p2 = new Point((int)l.Z, (int)l.W);
 
@@ -318,12 +320,12 @@ namespace WF
         {
             if (_pixels == null || _pixels.Count == 0) return;
 
-            Vector2 lp = _pixels.Last();
-
             if (DrawOnlyLastPixel)
             {
+                Vector2 p = _pixels.Last();
+
                 _g.DrawRectangle(_pen,
-                    lp.X, lp.Y,
+                    p.X, p.Y,
                     1, 1);
                 Redraw(true);
 
@@ -336,7 +338,7 @@ namespace WF
             }
         }
 
-        private int Diff(int a, int b) => Math.Abs(a - b);
+        private float Diff(float a, float b) => Math.Abs(a - b);
 
         private void ImageResize_Click(object sender, EventArgs e)
         {
@@ -344,9 +346,12 @@ namespace WF
             {
                 _pictureResizing = new PictureResize(new Point(
                     _mainView.Width, _mainView.Height));
+
+                _pictureResizing.Show();
+                return;
             }
 
-            _pictureResizing?.Show();
+            _pictureResizing.Focus();
         }
 
         private void ShowCentralPoint(object sender, EventArgs e)
@@ -357,12 +362,11 @@ namespace WF
 
 
             _centralPointColor = ((Bitmap)_mainView.Image).GetPixel(
-                _centralPoint.X, _centralPoint.Y);
+                (int)_centralPoint.X, (int)_centralPoint.Y);
 
-            _g.DrawRectangle(new Pen(Color.FromArgb(
-                ~_centralPointColor.ToArgb())),
+            _g.DrawRectangle(new Pen(InvertedColor(_centralPointColor)),
                 _centralPoint.X, _centralPoint.Y,
-                1, 1);
+                0.5f, 0.5f);
 
             Redraw(true);
         }
@@ -373,10 +377,10 @@ namespace WF
 
             ((ToolStripStatusLabel)sender).Font = new Font(font, FontStyle.Regular);
 
-            _g.DrawRectangle(new Pen(Color.FromArgb(
-                _centralPointColor.ToArgb())),
+            _g.DrawRectangle(new Pen(
+                _centralPointColor),
                 _centralPoint.X, _centralPoint.Y,
-                1, 1);
+                0.5f, 0.5f);
 
             Redraw(true);
         }
@@ -412,7 +416,7 @@ namespace WF
         private void ChangeInfo()
         {
             _outputPictureSize.Text = $"{_mainView.Image.Width} x {_mainView.Image.Height} (px)";
-            _outputCentralPointCoordinates.Text = $"{_centralPoint.X}, {_centralPoint.Y}";
+            _outputCentralPointCoordinates.Text = $"{(int)_centralPoint.X}, {(int)_centralPoint.Y}";
         }
 
         private void b_chooseCP_MouseEnter(object sender, EventArgs e)
@@ -434,9 +438,11 @@ namespace WF
             if (_colorSelection == null || _colorSelection.IsDisposed)
             {
                 _colorSelection = new ColorSelect(_color);
+                _colorSelection.Show();
+                return;
             }
 
-            _colorSelection?.Show();
+            _colorSelection.Focus();
         }
 
         private void b_chooseCP_MouseDown(object sender, MouseEventArgs e)
@@ -491,16 +497,18 @@ namespace WF
             if (_pictureRotating == null || _pictureRotating.IsDisposed)
             {
                 _pictureRotating = new PictureRotate();
+                _pictureRotating.Show();
+                return;
             }
 
-            _pictureRotating.Show();
+            _pictureRotating.Focus();
         }
 
         private void toolStripStatusLabel3_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
-                _centralPoint = new Point(
+                _centralPoint = new Vector2(
                     _mainView.Image.Width / 2,
                     _mainView.Image.Height / 2
                     );
@@ -509,9 +517,12 @@ namespace WF
             }
         }
 
+        private Color InvertedColor(Color color)
+        {
+            return Color.FromArgb(255, Color.FromArgb(~color.ToArgb()));
+        }
+
 
         #endregion
-
-
     }
 }

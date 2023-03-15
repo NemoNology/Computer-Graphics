@@ -58,7 +58,7 @@
             b_resize.TabIndex = 1;
             b_resize.Text = "Resize";
             b_resize.UseVisualStyleBackColor = true;
-            b_resize.Click += ButtonResize_Click;
+            b_resize.MouseDown += ButtonResize_Click;
             // 
             // _inputKX
             // 
