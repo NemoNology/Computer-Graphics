@@ -47,7 +47,7 @@ namespace WF
         private PictureRotate? _pictureRotating;
 
         private List<Vector4> _lines = new List<Vector4>();
-        private List<Point> _pixels = new List<Point>();
+        private List<Vector2> _pixels = new List<Vector2>();
 
         /// <summary>
         /// MainView Mouse_Move EventHandler - Drawing
@@ -58,9 +58,9 @@ namespace WF
 
             if (e.Button != MouseButtons.Left ||
                 _isChosingCP ||
-                _pixels.Contains(e.Location)) return;
+                _pixels.Contains(new Vector2(e.X, e.Y))) return;
 
-            _pixels.Add(e.Location);
+            _pixels.Add(new Vector2(e.X, e.Y));
 
             DrawPixels(true);
         }
@@ -74,24 +74,20 @@ namespace WF
 
             (double csin, double ccos) = Math.SinCos(angle);
 
-            int minX = 0, minY = 0;
-            int maxX = oW - 1, maxY = oH - 1;
+            float minX = 0, minY = 0;
+            float maxX = oW - 1, maxY = oH - 1;
 
             if (_pixels != null && _pixels.Count != 0)
             {
                 for (int i = 0; i < _pixels.Count; i++)
                 {
-                    var X = (int)Math.Round(
-                        (_pixels[i].X - _centralPoint.X) * ccos -
-                        (_pixels[i].Y - _centralPoint.Y) * csin + _centralPoint.X,
-                        MidpointRounding.AwayFromZero);
+                    var X = (_pixels[i].X - _centralPoint.X) * ccos -
+                        (_pixels[i].Y - _centralPoint.Y) * csin + _centralPoint.X;
 
-                    var Y = (int)Math.Round(
-                        (_pixels[i].X - _centralPoint.X) * csin +
-                        (_pixels[i].Y - _centralPoint.Y) * ccos + _centralPoint.Y,
-                        MidpointRounding.AwayFromZero);
+                    var Y = (_pixels[i].X - _centralPoint.X) * csin +
+                        (_pixels[i].Y - _centralPoint.Y) * ccos + _centralPoint.Y;
 
-                    _pixels[i] = new Point(X, Y);
+                    _pixels[i] = new Vector2(X, Y);
 
                     if (X > maxX) maxX = X;
                     if (Y > maxY) maxY = Y;
@@ -105,25 +101,17 @@ namespace WF
             {
                 for (int i = 0; i < _lines.Count; i++)
                 {
-                    var X = (int)Math.Round(
-                        (_lines[i].X - _centralPoint.X) * ccos -
-                        (_lines[i].Y - _centralPoint.Y) * csin + _centralPoint.X,
-                        MidpointRounding.AwayFromZero);
+                    var X = (_lines[i].X - _centralPoint.X) * ccos -
+                        (_lines[i].Y - _centralPoint.Y) * csin + _centralPoint.X;
 
-                    var Y = (int)Math.Round(
-                        (_lines[i].X - _centralPoint.X) * csin +
-                        (_lines[i].Y - _centralPoint.Y) * ccos + _centralPoint.Y,
-                        MidpointRounding.AwayFromZero);
+                    var Y = (_lines[i].X - _centralPoint.X) * csin +
+                        (_lines[i].Y - _centralPoint.Y) * ccos + _centralPoint.Y;
 
-                    var Z = (int)Math.Round(
-                        (_lines[i].Z - _centralPoint.X) * ccos -
-                        (_lines[i].W - _centralPoint.Y) * csin + _centralPoint.X,
-                        MidpointRounding.AwayFromZero);
+                    var Z = (_lines[i].Z - _centralPoint.X) * ccos -
+                        (_lines[i].W - _centralPoint.Y) * csin + _centralPoint.X;
 
-                    var W = (int)Math.Round(
-                        (_lines[i].Z - _centralPoint.X) * csin +
-                        (_lines[i].W - _centralPoint.Y) * ccos + _centralPoint.Y,
-                        MidpointRounding.AwayFromZero);
+                    var W = (_lines[i].Z - _centralPoint.X) * csin +
+                        (_lines[i].W - _centralPoint.Y) * ccos + _centralPoint.Y;
 
                     _lines[i] = new Vector4(
                         _lines[i].X,
@@ -224,9 +212,9 @@ namespace WF
             {
                 for (int i = 0; i < _pixels.Count; i++)
                 {
-                    _pixels[i] = new Point(
-                        (int)(_pixels[i].X * kX),
-                        (int)(_pixels[i].Y * kY));
+                    _pixels[i] = new Vector2(
+                        _pixels[i].X * kX,
+                        _pixels[i].Y * kY);
                 }
             }
 
@@ -245,8 +233,6 @@ namespace WF
 
         private void MainView_LineDrawStart(object sender, MouseEventArgs e)
         {
-
-
             if (e.Button == MouseButtons.Left)
             {
                 if (_isChosingCP)
@@ -257,9 +243,9 @@ namespace WF
                     return;
                 }
 
-                if (!_pixels.Contains(e.Location))
+                if (!_pixels.Contains(new Vector2(e.X, e.Y)))
                 {
-                    _pixels.Add(e.Location);
+                    _pixels.Add(new Vector2(e.X, e.Y));
                     DrawPixels(true);
                 }
             }
