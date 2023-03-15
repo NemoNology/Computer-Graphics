@@ -57,9 +57,9 @@ namespace WF
             _outputMouseCoordinates.Text = $"{e.X}, {e.Y}";
 
             if (e.Button != MouseButtons.Left ||
-                _isChosingCP ||  
+                _isChosingCP ||
                 _pixels.Contains(e.Location)) return;
-                
+
             _pixels.Add(e.Location);
 
             DrawPixels(true);
@@ -272,7 +272,7 @@ namespace WF
 
         private void MainView_LineDrawEnd(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right 
+            if (e.Button == MouseButtons.Right
                 && !_firstLinePoint.IsEmpty)
             {
                 var buff = new Vector4(
@@ -364,6 +364,11 @@ namespace WF
 
         private void ShowCentralPoint(object sender, EventArgs e)
         {
+            var font = ((ToolStripStatusLabel)sender).Font;
+
+            ((ToolStripStatusLabel)sender).Font = new Font(font, FontStyle.Bold);
+
+
             _centralPointColor = ((Bitmap)_mainView.Image).GetPixel(
                 _centralPoint.X, _centralPoint.Y);
 
@@ -377,6 +382,10 @@ namespace WF
 
         private void HideCentralPoint(object sender, EventArgs e)
         {
+            var font = ((ToolStripStatusLabel)sender).Font;
+
+            ((ToolStripStatusLabel)sender).Font = new Font(font, FontStyle.Regular);
+
             _g.DrawRectangle(new Pen(Color.FromArgb(
                 _centralPointColor.ToArgb())),
                 _centralPoint.X, _centralPoint.Y,
@@ -500,7 +509,22 @@ namespace WF
             _pictureRotating.Show();
         }
 
+        private void toolStripStatusLabel3_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                _centralPoint = new Point(
+                    _mainView.Image.Width / 2,
+                    _mainView.Image.Height / 2
+                    );
+
+                ChangeInfo();
+            }
+        }
+
 
         #endregion
+
+
     }
 }

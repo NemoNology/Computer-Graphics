@@ -91,6 +91,7 @@
             toolStripStatusLabel3.Name = "toolStripStatusLabel3";
             toolStripStatusLabel3.Size = new Size(187, 19);
             toolStripStatusLabel3.Text = "Central Point Coordinates (X, Y):";
+            toolStripStatusLabel3.MouseDown += toolStripStatusLabel3_MouseDown;
             toolStripStatusLabel3.MouseEnter += ShowCentralPoint;
             toolStripStatusLabel3.MouseLeave += HideCentralPoint;
             // 
