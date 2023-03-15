@@ -65,7 +65,7 @@ namespace WF
             DrawPixels(true);
         }
 
-        private void MainView_Rotate(object sender, EventArgs e)
+        private void MainView_Rotate(object sender)
         {
             var angle = (Math.PI / 180) * (int)sender;
 

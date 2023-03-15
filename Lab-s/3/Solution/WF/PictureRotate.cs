@@ -7,7 +7,7 @@
             InitializeComponent();
         }
 
-        public static event EventHandler OnImageRotate;
+        public static event Action<object> OnImageRotate;
 
         private int _angle = 0;
 
@@ -15,14 +15,14 @@
         {
             if (_angle == 0 || Math.Abs(_angle) == 360) return;
 
-            OnImageRotate?.Invoke(_angle, EventArgs.Empty);
+            OnImageRotate?.Invoke(_angle);
         }
 
         private void ButtonRotate100Times_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < 100; i++)
             {
-                OnImageRotate?.Invoke(_angle, EventArgs.Empty);
+                OnImageRotate?.Invoke(_angle);
             }
         }
 
