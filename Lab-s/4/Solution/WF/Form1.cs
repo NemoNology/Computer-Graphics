@@ -76,5 +76,20 @@ namespace WF
         {
             _cube.SideLength = (ushort)inputCubeSize.Value;
         }
+
+        private void CubeCenterX_ValueChanged(object sender, EventArgs e)
+        {
+            _cube.Center = new Vector3((float)inputCx.Value, _cube.Center.Y, _cube.Center.Z);
+        }
+
+        private void CubeCenterY_ValueChanged(object sender, EventArgs e)
+        {
+            _cube.Center = new Vector3(_cube.Center.X, (float)inputCy.Value, _cube.Center.Z);
+        }
+
+        private void CubeCenterZ_ValueChanged(object sender, EventArgs e)
+        {
+            _cube.Center = new Vector3(_cube.Center.X, _cube.Center.Y, (float)inputCz.Value);
+        }
     }
 }

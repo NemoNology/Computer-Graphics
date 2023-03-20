@@ -125,6 +125,7 @@
             inputCz.Name = "inputCz";
             inputCz.Size = new Size(83, 23);
             inputCz.TabIndex = 2;
+            inputCz.ValueChanged += CubeCenterZ_ValueChanged;
             // 
             // label9
             // 
@@ -159,6 +160,7 @@
             inputCy.Name = "inputCy";
             inputCy.Size = new Size(83, 23);
             inputCy.TabIndex = 2;
+            inputCy.ValueChanged += CubeCenterY_ValueChanged;
             // 
             // label3
             // 
@@ -175,6 +177,7 @@
             inputCx.Name = "inputCx";
             inputCx.Size = new Size(83, 23);
             inputCx.TabIndex = 2;
+            inputCx.ValueChanged += CubeCenterX_ValueChanged;
             // 
             // label2
             // 
