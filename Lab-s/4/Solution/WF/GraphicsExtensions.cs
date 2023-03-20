@@ -4,7 +4,9 @@ namespace WF
 {
     internal class GraphicsExtensions
     {
-
+        /// <summary>
+        /// Transform 3d point to 4d point for future manipulations
+        /// </summary>
         public static Vector4 Vector3ToVector4(Vector3 v)
         {
             return new Vector4(v, 1);
@@ -49,6 +51,17 @@ namespace WF
 
                     return new Matrix4x4();
             }
+        }
+
+        /// <summary>
+        /// Transform 4d point to usual 3d point after manipulations
+        /// </summary>
+        public static Vector3 Vector4ToVector3(Vector4 v)
+        {
+            return new Vector3(
+                v.X / v.W, 
+                v.Y / v.W, 
+                v.Z / v.W);
         }
 
     }
