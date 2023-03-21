@@ -31,11 +31,9 @@
             _mainView = new PictureBox();
             splitContainer1 = new SplitContainer();
             buttonDraw = new Button();
-            inputKz = new NumericUpDown();
             inputRDz = new NumericUpDown();
             inputRPz = new NumericUpDown();
             inputCz = new NumericUpDown();
-            label9 = new Label();
             label15 = new Label();
             label11 = new Label();
             label4 = new Label();
@@ -55,14 +53,12 @@
             label5 = new Label();
             label12 = new Label();
             label7 = new Label();
-            label6 = new Label();
             label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)_mainView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)inputKz).BeginInit();
             ((System.ComponentModel.ISupportInitialize)inputRDz).BeginInit();
             ((System.ComponentModel.ISupportInitialize)inputRPz).BeginInit();
             ((System.ComponentModel.ISupportInitialize)inputCz).BeginInit();
@@ -101,11 +97,9 @@
             // 
             splitContainer1.Panel2.BackColor = SystemColors.ActiveBorder;
             splitContainer1.Panel2.Controls.Add(buttonDraw);
-            splitContainer1.Panel2.Controls.Add(inputKz);
             splitContainer1.Panel2.Controls.Add(inputRDz);
             splitContainer1.Panel2.Controls.Add(inputRPz);
             splitContainer1.Panel2.Controls.Add(inputCz);
-            splitContainer1.Panel2.Controls.Add(label9);
             splitContainer1.Panel2.Controls.Add(label15);
             splitContainer1.Panel2.Controls.Add(label11);
             splitContainer1.Panel2.Controls.Add(label4);
@@ -125,7 +119,6 @@
             splitContainer1.Panel2.Controls.Add(label5);
             splitContainer1.Panel2.Controls.Add(label12);
             splitContainer1.Panel2.Controls.Add(label7);
-            splitContainer1.Panel2.Controls.Add(label6);
             splitContainer1.Panel2.Controls.Add(label1);
             splitContainer1.Size = new Size(800, 450);
             splitContainer1.SplitterDistance = 288;
@@ -135,23 +128,13 @@
             // buttonDraw
             // 
             buttonDraw.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            buttonDraw.Location = new Point(683, 26);
+            buttonDraw.Location = new Point(690, 67);
             buttonDraw.Name = "buttonDraw";
             buttonDraw.Size = new Size(83, 40);
             buttonDraw.TabIndex = 3;
             buttonDraw.Text = "Draw";
             buttonDraw.UseVisualStyleBackColor = true;
             buttonDraw.Click += ButtonDraw_Click;
-            // 
-            // inputKz
-            // 
-            inputKz.Location = new Point(683, 122);
-            inputKz.Maximum = new decimal(new int[] { 65536, 0, 0, 0 });
-            inputKz.Name = "inputKz";
-            inputKz.Size = new Size(83, 23);
-            inputKz.TabIndex = 2;
-            inputKz.Value = new decimal(new int[] { 100, 0, 0, 0 });
-            inputKz.ValueChanged += Kz_ValueChanged;
             // 
             // inputRDz
             // 
@@ -176,15 +159,6 @@
             inputCz.TabIndex = 2;
             inputCz.Value = new decimal(new int[] { 20, 0, 0, 0 });
             inputCz.ValueChanged += CubeInputs_ValueChanged;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Location = new Point(660, 124);
-            label9.Name = "label9";
-            label9.Size = new Size(17, 15);
-            label9.TabIndex = 1;
-            label9.Text = "Z:";
             // 
             // label15
             // 
@@ -215,7 +189,7 @@
             // 
             // inputCubeSize
             // 
-            inputCubeSize.Location = new Point(174, 55);
+            inputCubeSize.Location = new Point(173, 72);
             inputCubeSize.Name = "inputCubeSize";
             inputCubeSize.Size = new Size(63, 23);
             inputCubeSize.TabIndex = 2;
@@ -330,7 +304,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label5.Location = new Point(162, 37);
+            label5.Location = new Point(161, 54);
             label5.Name = "label5";
             label5.Size = new Size(87, 15);
             label5.TabIndex = 0;
@@ -356,16 +330,6 @@
             label7.TabIndex = 0;
             label7.Text = "Rotation Point coordinates:";
             // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label6.Location = new Point(683, 104);
-            label6.Name = "label6";
-            label6.Size = new Size(61, 15);
-            label6.TabIndex = 0;
-            label6.Text = "K (0, 0, z):";
-            // 
             // label1
             // 
             label1.AutoSize = true;
@@ -390,7 +354,6 @@
             splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)inputKz).EndInit();
             ((System.ComponentModel.ISupportInitialize)inputRDz).EndInit();
             ((System.ComponentModel.ISupportInitialize)inputRPz).EndInit();
             ((System.ComponentModel.ISupportInitialize)inputCz).EndInit();
@@ -417,9 +380,6 @@
         private Label label2;
         private NumericUpDown inputCubeSize;
         private Label label5;
-        private NumericUpDown inputKz;
-        private Label label9;
-        private Label label6;
         private Button buttonDraw;
         private NumericUpDown inputRPz;
         private Label label11;

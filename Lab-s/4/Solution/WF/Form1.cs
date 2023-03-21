@@ -16,9 +16,6 @@ namespace WF
             inputCx.Minimum = inputCy.Minimum = -1000;
         }
 
-        private uint K = 100;
-        private float r => 1f / K;
-
         private Cube _cube = new Cube(new Vector3(0, 0, 20), 10);
 
         private Graphics _g;
@@ -30,13 +27,8 @@ namespace WF
 
             foreach (var item in _cube.Edges)
             {
-                var buffer = GraphicsExtensions.Vector3ToVector4(item.Item1);
-
-                var p1 = GraphicsExtensions.Vector4ToVector3(Vector4.Transform(buffer, GraphicsExtensions.PerspectiveMatrix(r)));
-
-                buffer = GraphicsExtensions.Vector3ToVector4(item.Item2);
-
-                var p2 = GraphicsExtensions.Vector4ToVector3(Vector4.Transform(buffer, GraphicsExtensions.PerspectiveMatrix(r)));
+                var p1 = item.Item1;
+                var p2 = item.Item1;
 
                 try
                 {
@@ -48,7 +40,7 @@ namespace WF
                 {
 
                 }
-                
+
             }
 
             _mainView.Image = (Bitmap)_mainView.Image;
@@ -75,11 +67,6 @@ namespace WF
         {
             _mainView.Image = new Bitmap(_mainView.Image.Width, _mainView.Image.Height);
             _g = Graphics.FromImage(_mainView.Image);
-        }
-
-        private void Kz_ValueChanged(object sender, EventArgs e)
-        {
-            K = (uint)inputKz.Value;
         }
 
         private void CubeInputs_ValueChanged(object sender, EventArgs e)
