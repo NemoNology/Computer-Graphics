@@ -32,15 +32,29 @@
             splitContainer1 = new SplitContainer();
             buttonDraw = new Button();
             inputKz = new NumericUpDown();
+            inputRDz = new NumericUpDown();
+            inputRPz = new NumericUpDown();
             inputCz = new NumericUpDown();
             label9 = new Label();
+            label15 = new Label();
+            label11 = new Label();
             label4 = new Label();
             inputCubeSize = new NumericUpDown();
+            inputRDy = new NumericUpDown();
+            inputRPy = new NumericUpDown();
             inputCy = new NumericUpDown();
+            label14 = new Label();
+            label10 = new Label();
             label3 = new Label();
+            inputRDx = new NumericUpDown();
+            inputRPx = new NumericUpDown();
+            label13 = new Label();
+            label8 = new Label();
             inputCx = new NumericUpDown();
             label2 = new Label();
             label5 = new Label();
+            label12 = new Label();
+            label7 = new Label();
             label6 = new Label();
             label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)_mainView).BeginInit();
@@ -49,9 +63,15 @@
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)inputKz).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)inputRDz).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)inputRPz).BeginInit();
             ((System.ComponentModel.ISupportInitialize)inputCz).BeginInit();
             ((System.ComponentModel.ISupportInitialize)inputCubeSize).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)inputRDy).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)inputRPy).BeginInit();
             ((System.ComponentModel.ISupportInitialize)inputCy).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)inputRDx).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)inputRPx).BeginInit();
             ((System.ComponentModel.ISupportInitialize)inputCx).BeginInit();
             SuspendLayout();
             // 
@@ -82,15 +102,29 @@
             splitContainer1.Panel2.BackColor = SystemColors.ActiveBorder;
             splitContainer1.Panel2.Controls.Add(buttonDraw);
             splitContainer1.Panel2.Controls.Add(inputKz);
+            splitContainer1.Panel2.Controls.Add(inputRDz);
+            splitContainer1.Panel2.Controls.Add(inputRPz);
             splitContainer1.Panel2.Controls.Add(inputCz);
             splitContainer1.Panel2.Controls.Add(label9);
+            splitContainer1.Panel2.Controls.Add(label15);
+            splitContainer1.Panel2.Controls.Add(label11);
             splitContainer1.Panel2.Controls.Add(label4);
             splitContainer1.Panel2.Controls.Add(inputCubeSize);
+            splitContainer1.Panel2.Controls.Add(inputRDy);
+            splitContainer1.Panel2.Controls.Add(inputRPy);
             splitContainer1.Panel2.Controls.Add(inputCy);
+            splitContainer1.Panel2.Controls.Add(label14);
+            splitContainer1.Panel2.Controls.Add(label10);
             splitContainer1.Panel2.Controls.Add(label3);
+            splitContainer1.Panel2.Controls.Add(inputRDx);
+            splitContainer1.Panel2.Controls.Add(inputRPx);
+            splitContainer1.Panel2.Controls.Add(label13);
+            splitContainer1.Panel2.Controls.Add(label8);
             splitContainer1.Panel2.Controls.Add(inputCx);
             splitContainer1.Panel2.Controls.Add(label2);
             splitContainer1.Panel2.Controls.Add(label5);
+            splitContainer1.Panel2.Controls.Add(label12);
+            splitContainer1.Panel2.Controls.Add(label7);
             splitContainer1.Panel2.Controls.Add(label6);
             splitContainer1.Panel2.Controls.Add(label1);
             splitContainer1.Size = new Size(800, 450);
@@ -101,9 +135,9 @@
             // buttonDraw
             // 
             buttonDraw.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            buttonDraw.Location = new Point(419, 72);
+            buttonDraw.Location = new Point(683, 26);
             buttonDraw.Name = "buttonDraw";
-            buttonDraw.Size = new Size(75, 23);
+            buttonDraw.Size = new Size(83, 40);
             buttonDraw.TabIndex = 3;
             buttonDraw.Text = "Draw";
             buttonDraw.UseVisualStyleBackColor = true;
@@ -119,13 +153,29 @@
             inputKz.Value = new decimal(new int[] { 100, 0, 0, 0 });
             inputKz.ValueChanged += Kz_ValueChanged;
             // 
+            // inputRDz
+            // 
+            inputRDz.Location = new Point(480, 116);
+            inputRDz.Maximum = new decimal(new int[] { 360, 0, 0, 0 });
+            inputRDz.Name = "inputRDz";
+            inputRDz.Size = new Size(49, 23);
+            inputRDz.TabIndex = 2;
+            // 
+            // inputRPz
+            // 
+            inputRPz.Location = new Point(294, 116);
+            inputRPz.Name = "inputRPz";
+            inputRPz.Size = new Size(83, 23);
+            inputRPz.TabIndex = 2;
+            // 
             // inputCz
             // 
             inputCz.Location = new Point(51, 116);
             inputCz.Name = "inputCz";
             inputCz.Size = new Size(83, 23);
             inputCz.TabIndex = 2;
-            inputCz.ValueChanged += CubeCenterZ_ValueChanged;
+            inputCz.Value = new decimal(new int[] { 20, 0, 0, 0 });
+            inputCz.ValueChanged += CubeInputs_ValueChanged;
             // 
             // label9
             // 
@@ -135,6 +185,24 @@
             label9.Size = new Size(17, 15);
             label9.TabIndex = 1;
             label9.Text = "Z:";
+            // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Location = new Point(457, 118);
+            label15.Name = "label15";
+            label15.Size = new Size(17, 15);
+            label15.TabIndex = 1;
+            label15.Text = "Z:";
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(271, 118);
+            label11.Name = "label11";
+            label11.Size = new Size(17, 15);
+            label11.TabIndex = 1;
+            label11.Text = "Z:";
             // 
             // label4
             // 
@@ -147,20 +215,55 @@
             // 
             // inputCubeSize
             // 
-            inputCubeSize.Location = new Point(245, 78);
+            inputCubeSize.Location = new Point(174, 55);
             inputCubeSize.Name = "inputCubeSize";
-            inputCubeSize.Size = new Size(83, 23);
+            inputCubeSize.Size = new Size(63, 23);
             inputCubeSize.TabIndex = 2;
             inputCubeSize.Value = new decimal(new int[] { 10, 0, 0, 0 });
-            inputCubeSize.ValueChanged += CubeSide_ValueChanged;
+            inputCubeSize.ValueChanged += CubeInputs_ValueChanged;
+            // 
+            // inputRDy
+            // 
+            inputRDy.Location = new Point(480, 78);
+            inputRDy.Maximum = new decimal(new int[] { 360, 0, 0, 0 });
+            inputRDy.Name = "inputRDy";
+            inputRDy.Size = new Size(49, 23);
+            inputRDy.TabIndex = 2;
+            // 
+            // inputRPy
+            // 
+            inputRPy.Location = new Point(294, 78);
+            inputRPy.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            inputRPy.Name = "inputRPy";
+            inputRPy.Size = new Size(83, 23);
+            inputRPy.TabIndex = 2;
             // 
             // inputCy
             // 
             inputCy.Location = new Point(51, 78);
+            inputCy.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             inputCy.Name = "inputCy";
             inputCy.Size = new Size(83, 23);
             inputCy.TabIndex = 2;
-            inputCy.ValueChanged += CubeCenterY_ValueChanged;
+            inputCy.ValueChanged += CubeInputs_ValueChanged;
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Location = new Point(457, 80);
+            label14.Name = "label14";
+            label14.Size = new Size(17, 15);
+            label14.TabIndex = 1;
+            label14.Text = "Y:";
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(271, 80);
+            label10.Name = "label10";
+            label10.Size = new Size(17, 15);
+            label10.TabIndex = 1;
+            label10.Text = "Y:";
             // 
             // label3
             // 
@@ -171,13 +274,48 @@
             label3.TabIndex = 1;
             label3.Text = "Y:";
             // 
+            // inputRDx
+            // 
+            inputRDx.Location = new Point(480, 37);
+            inputRDx.Maximum = new decimal(new int[] { 360, 0, 0, 0 });
+            inputRDx.Name = "inputRDx";
+            inputRDx.Size = new Size(49, 23);
+            inputRDx.TabIndex = 2;
+            // 
+            // inputRPx
+            // 
+            inputRPx.Location = new Point(294, 37);
+            inputRPx.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            inputRPx.Name = "inputRPx";
+            inputRPx.Size = new Size(83, 23);
+            inputRPx.TabIndex = 2;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(457, 39);
+            label13.Name = "label13";
+            label13.Size = new Size(17, 15);
+            label13.TabIndex = 1;
+            label13.Text = "X:";
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(271, 39);
+            label8.Name = "label8";
+            label8.Size = new Size(17, 15);
+            label8.TabIndex = 1;
+            label8.Text = "X:";
+            // 
             // inputCx
             // 
             inputCx.Location = new Point(51, 37);
+            inputCx.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             inputCx.Name = "inputCx";
             inputCx.Size = new Size(83, 23);
             inputCx.TabIndex = 2;
-            inputCx.ValueChanged += CubeCenterX_ValueChanged;
+            inputCx.ValueChanged += CubeInputs_ValueChanged;
             // 
             // label2
             // 
@@ -192,11 +330,31 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label5.Location = new Point(152, 80);
+            label5.Location = new Point(162, 37);
             label5.Name = "label5";
             label5.Size = new Size(87, 15);
             label5.TabIndex = 0;
             label5.Text = "Cube side size:";
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label12.Location = new Point(438, 12);
+            label12.Name = "label12";
+            label12.Size = new Size(124, 15);
+            label12.TabIndex = 0;
+            label12.Text = "Rotations in degrees:";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label7.Location = new Point(255, 12);
+            label7.Name = "label7";
+            label7.Size = new Size(158, 15);
+            label7.TabIndex = 0;
+            label7.Text = "Rotation Point coordinates:";
             // 
             // label6
             // 
@@ -233,9 +391,15 @@
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)inputKz).EndInit();
+            ((System.ComponentModel.ISupportInitialize)inputRDz).EndInit();
+            ((System.ComponentModel.ISupportInitialize)inputRPz).EndInit();
             ((System.ComponentModel.ISupportInitialize)inputCz).EndInit();
             ((System.ComponentModel.ISupportInitialize)inputCubeSize).EndInit();
+            ((System.ComponentModel.ISupportInitialize)inputRDy).EndInit();
+            ((System.ComponentModel.ISupportInitialize)inputRPy).EndInit();
             ((System.ComponentModel.ISupportInitialize)inputCy).EndInit();
+            ((System.ComponentModel.ISupportInitialize)inputRDx).EndInit();
+            ((System.ComponentModel.ISupportInitialize)inputRPx).EndInit();
             ((System.ComponentModel.ISupportInitialize)inputCx).EndInit();
             ResumeLayout(false);
         }
@@ -257,5 +421,19 @@
         private Label label9;
         private Label label6;
         private Button buttonDraw;
+        private NumericUpDown inputRPz;
+        private Label label11;
+        private NumericUpDown inputRPy;
+        private Label label10;
+        private NumericUpDown inputRPx;
+        private Label label8;
+        private Label label7;
+        private NumericUpDown inputRDz;
+        private Label label15;
+        private NumericUpDown inputRDy;
+        private Label label14;
+        private NumericUpDown inputRDx;
+        private Label label13;
+        private Label label12;
     }
 }

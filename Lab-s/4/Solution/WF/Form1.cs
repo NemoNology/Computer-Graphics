@@ -12,8 +12,8 @@ namespace WF
 
             _g = Graphics.FromImage(_mainView.Image);
 
-            inputKz.Maximum = uint.MaxValue;
-            inputCubeSize.Maximum = ushort.MaxValue;
+            inputKz.Maximum = inputCubeSize.Maximum = uint.MaxValue;
+            inputCx.Minimum = inputCy.Minimum = -1000;
         }
 
         private uint K = 100;
@@ -38,10 +38,17 @@ namespace WF
 
                 var p2 = GraphicsExtensions.Vector4ToVector3(Vector4.Transform(buffer, GraphicsExtensions.PerspectiveMatrix(r)));
 
-
-                _g.DrawLine(_pen,
+                try
+                {
+                    _g.DrawLine(_pen,
                     ScreenCenterX + p1.X, ScreenCenterY - p1.Y,
                     ScreenCenterX + p2.X, ScreenCenterY - p2.Y);
+                }
+                catch
+                {
+
+                }
+                
             }
 
             _mainView.Image = (Bitmap)_mainView.Image;
@@ -50,20 +57,18 @@ namespace WF
         private float ScreenCenterX => _mainView.Image.Width / 2f;
         private float ScreenCenterY => _mainView.Image.Height / 2f;
 
-        private void MainView_SizeChanged(object sender, EventArgs e)
-        {
-            _mainView.Image = new Bitmap(_mainView.Width, _mainView.Height);
-            _g = Graphics.FromImage(_mainView.Image);
-        }
 
         private void ButtonDraw_Click(object sender, EventArgs e)
         {
             DrawCube();
         }
 
-        private void Kz_ValueChanged(object sender, EventArgs e)
+
+
+        private void MainView_SizeChanged(object sender, EventArgs e)
         {
-            K = (uint)inputKz.Value;
+            _mainView.Image = new Bitmap(_mainView.Width, _mainView.Height);
+            _g = Graphics.FromImage(_mainView.Image);
         }
 
         private void MainViewClear()
@@ -72,24 +77,24 @@ namespace WF
             _g = Graphics.FromImage(_mainView.Image);
         }
 
-        private void CubeSide_ValueChanged(object sender, EventArgs e)
+        private void Kz_ValueChanged(object sender, EventArgs e)
         {
-            _cube.SideLength = (ushort)inputCubeSize.Value;
+            K = (uint)inputKz.Value;
         }
 
-        private void CubeCenterX_ValueChanged(object sender, EventArgs e)
+        private void CubeInputs_ValueChanged(object sender, EventArgs e)
         {
-            _cube.Center = new Vector3((float)inputCx.Value, _cube.Center.Y, _cube.Center.Z);
-        }
+            if (inputCubeSize.Value > ushort.MaxValue)
+            {
+                inputCubeSize.Value = ushort.MaxValue;
+            }
 
-        private void CubeCenterY_ValueChanged(object sender, EventArgs e)
-        {
-            _cube.Center = new Vector3(_cube.Center.X, (float)inputCy.Value, _cube.Center.Z);
-        }
-
-        private void CubeCenterZ_ValueChanged(object sender, EventArgs e)
-        {
-            _cube.Center = new Vector3(_cube.Center.X, _cube.Center.Y, (float)inputCz.Value);
+            _cube = new Cube(new Vector3(
+                (float)inputCx.Value,
+                (float)inputCy.Value,
+                (float)inputCz.Value
+                ),
+                (ushort)inputCubeSize.Value);
         }
     }
 }

@@ -3,133 +3,57 @@ using System.Numerics;
 
 namespace WF
 {
+    
     internal class Cube
     {
+        public Vector3 A1 { get; set; }
+        public Vector3 A2 { get; set; }
+        public Vector3 A3 { get; set; }
+        public Vector3 A4 { get; set; }
+        public Vector3 B1 { get; set; }
+        public Vector3 B2 { get; set; }
+        public Vector3 B3 { get; set; }
+        public Vector3 B4 { get; set; }
+
         /// <summary>
         /// <b>Points structure: </b><br/>
-        /// A2 A3 <br/>
-        /// A1 A4 <br/>
-        /// <br/>
-        /// B2 B3 <br/>
-        /// B1 B4 
+        /// <code>
+        /// ######################
+        /// #######A2--------A3###
+        /// #####//||######//||###
+        /// ###A1--------A4##||###
+        /// ###||##||####||##||###
+        /// ###||##B2----||--B3###
+        /// ###||//######||//#####
+        /// ###B1--------B4#######
+        /// ######################
+        /// </code>
         /// </summary>
-        public Vector3 Center { get; set; }
-        public ushort SideLength { get; set; }
-        
-        /// <summary>
-        /// Rotation that change points on X & Z - axises
-        /// </summary>
-        public ushort RotationByAxisX { get; set; }
-
-        /// <summary>
-        /// Rotation that change points on Y & Z - axises
-        /// </summary>
-        public ushort RotationByAxisY { get; set; }
-
-        /// <summary>
-        /// Rotation that change points on X & Y - axises
-        /// </summary>
-        public ushort RotationByAxisZ { get; set; }
-
-        public Cube()
-        {
-            Center = Vector3.Zero;
-            SideLength = 10;
-        }
+        public const char PointsStructurePicture = '-';
 
         public Cube(Vector3 center, ushort sideLength)
         {
-            Center = center;
-            SideLength = sideLength;
-        }
+            var HalfSideLenght = sideLength / 2f;
 
-        private float HalfSideLenght => SideLength / 2f;
+            A1 = new Vector3(center.X - HalfSideLenght, center.Y + HalfSideLenght, center.Z - HalfSideLenght);
+            A2 = new Vector3(center.X - HalfSideLenght, center.Y + HalfSideLenght, center.Z + HalfSideLenght);
+            A3 = new Vector3(center.X + HalfSideLenght, center.Y + HalfSideLenght, center.Z + HalfSideLenght);
+            A4 = new Vector3(center.X + HalfSideLenght, center.Y + HalfSideLenght, center.Z - HalfSideLenght);
 
-        /// <summary>
-        /// See Center commentary...
-        /// </summary>
-        public Vector3 A1
-        {
-            get
-            {
-                return new Vector3(Center.X - HalfSideLenght, Center.Y + HalfSideLenght, Center.Z - HalfSideLenght);
-            }
+            B1 = new Vector3(center.X - HalfSideLenght, center.Y - HalfSideLenght, center.Z - HalfSideLenght);
+            A2 = new Vector3(center.X - HalfSideLenght, center.Y - HalfSideLenght, center.Z + HalfSideLenght);
+            A3 = new Vector3(center.X + HalfSideLenght, center.Y - HalfSideLenght, center.Z + HalfSideLenght);
+            A4 = new Vector3(center.X + HalfSideLenght, center.Y - HalfSideLenght, center.Z - HalfSideLenght);
         }
 
         /// <summary>
-        /// See Center commentary...
+        /// Not Completed...
         /// </summary>
-        public Vector3 A2
+        public Vector3 CenterPoint
         {
             get
             {
-                return new Vector3(Center.X - HalfSideLenght, Center.Y + HalfSideLenght, Center.Z + HalfSideLenght);
-            }
-        }
-
-        /// <summary>
-        /// See Center commentary...
-        /// </summary>
-        public Vector3 A3
-        {
-            get
-            {
-                return new Vector3(Center.X + HalfSideLenght, Center.Y + HalfSideLenght, Center.Z + HalfSideLenght);
-            }
-        }
-
-        /// <summary>
-        /// See Center commentary...
-        /// </summary>
-        public Vector3 A4
-        {
-            get
-            {
-                return new Vector3(Center.X + HalfSideLenght, Center.Y + HalfSideLenght, Center.Z - HalfSideLenght);
-            }
-        }
-
-        /// <summary>
-        /// See Center commentary...
-        /// </summary>
-        public Vector3 B1
-        {
-            get
-            {
-                return new Vector3(Center.X - HalfSideLenght, Center.Y - HalfSideLenght, Center.Z - HalfSideLenght);
-            }
-        }
-
-        /// <summary>
-        /// See Center commentary...
-        /// </summary>
-        public Vector3 B2
-        {
-            get
-            {
-                return new Vector3(Center.X - HalfSideLenght, Center.Y - HalfSideLenght, Center.Z + HalfSideLenght);
-            }
-        }
-
-        /// <summary>
-        /// See Center commentary...
-        /// </summary>
-        public Vector3 B3
-        {
-            get
-            {
-                return new Vector3(Center.X + HalfSideLenght, Center.Y - HalfSideLenght, Center.Z + HalfSideLenght);
-            }
-        }
-
-        /// <summary>
-        /// See Center commentary...
-        /// </summary>
-        public Vector3 B4
-        {
-            get
-            {
-                return new Vector3(Center.X + HalfSideLenght, Center.Y - HalfSideLenght, Center.Z - HalfSideLenght);
+                return new Vector3((A4.X - A1.X) * 0.5f, (A1.Y - B1.Y) * 0.5f, (A2.Z - A1.Z) * 0.5f);
             }
         }
 
