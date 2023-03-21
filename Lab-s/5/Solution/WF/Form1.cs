@@ -6,5 +6,10 @@ namespace WF
         {
             InitializeComponent();
         }
+
+        private void ChoseColor_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
