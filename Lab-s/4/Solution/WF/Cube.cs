@@ -41,9 +41,9 @@ namespace WF
             A4 = new Vector3(center.X + HalfSideLenght, center.Y + HalfSideLenght, center.Z - HalfSideLenght);
 
             B1 = new Vector3(center.X - HalfSideLenght, center.Y - HalfSideLenght, center.Z - HalfSideLenght);
-            A2 = new Vector3(center.X - HalfSideLenght, center.Y - HalfSideLenght, center.Z + HalfSideLenght);
-            A3 = new Vector3(center.X + HalfSideLenght, center.Y - HalfSideLenght, center.Z + HalfSideLenght);
-            A4 = new Vector3(center.X + HalfSideLenght, center.Y - HalfSideLenght, center.Z - HalfSideLenght);
+            B2 = new Vector3(center.X - HalfSideLenght, center.Y - HalfSideLenght, center.Z + HalfSideLenght);
+            B3 = new Vector3(center.X + HalfSideLenght, center.Y - HalfSideLenght, center.Z + HalfSideLenght);
+            B4 = new Vector3(center.X + HalfSideLenght, center.Y - HalfSideLenght, center.Z - HalfSideLenght);
         }
 
         /// <summary>
