@@ -80,6 +80,8 @@
             _mainView.TabIndex = 0;
             _mainView.TabStop = false;
             _mainView.SizeChanged += MainView_SizeChanged;
+            _mainView.MouseDown += Cube_MouseRotation_Started;
+            _mainView.MouseMove += Cube_MouseRotation;
             // 
             // splitContainer1
             // 
@@ -143,17 +145,21 @@
             inputRDz.Name = "inputRDz";
             inputRDz.Size = new Size(49, 23);
             inputRDz.TabIndex = 2;
+            inputRDz.ValueChanged += CubeInputs_ValueChanged;
             // 
             // inputRPz
             // 
             inputRPz.Location = new Point(294, 116);
+            inputRPz.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             inputRPz.Name = "inputRPz";
             inputRPz.Size = new Size(83, 23);
             inputRPz.TabIndex = 2;
+            inputRPz.ValueChanged += CubeInputs_ValueChanged;
             // 
             // inputCz
             // 
             inputCz.Location = new Point(51, 116);
+            inputCz.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             inputCz.Name = "inputCz";
             inputCz.Size = new Size(83, 23);
             inputCz.TabIndex = 2;
@@ -193,7 +199,7 @@
             inputCubeSize.Name = "inputCubeSize";
             inputCubeSize.Size = new Size(63, 23);
             inputCubeSize.TabIndex = 2;
-            inputCubeSize.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            inputCubeSize.Value = new decimal(new int[] { 100, 0, 0, 0 });
             inputCubeSize.ValueChanged += CubeInputs_ValueChanged;
             // 
             // inputRDy
@@ -203,6 +209,7 @@
             inputRDy.Name = "inputRDy";
             inputRDy.Size = new Size(49, 23);
             inputRDy.TabIndex = 2;
+            inputRDy.ValueChanged += CubeInputs_ValueChanged;
             // 
             // inputRPy
             // 
@@ -211,6 +218,7 @@
             inputRPy.Name = "inputRPy";
             inputRPy.Size = new Size(83, 23);
             inputRPy.TabIndex = 2;
+            inputRPy.ValueChanged += CubeInputs_ValueChanged;
             // 
             // inputCy
             // 
@@ -255,6 +263,7 @@
             inputRDx.Name = "inputRDx";
             inputRDx.Size = new Size(49, 23);
             inputRDx.TabIndex = 2;
+            inputRDx.ValueChanged += CubeInputs_ValueChanged;
             // 
             // inputRPx
             // 
@@ -263,6 +272,7 @@
             inputRPx.Name = "inputRPx";
             inputRPx.Size = new Size(83, 23);
             inputRPx.TabIndex = 2;
+            inputRPx.ValueChanged += CubeInputs_ValueChanged;
             // 
             // label13
             // 

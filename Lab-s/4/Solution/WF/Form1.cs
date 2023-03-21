@@ -12,7 +12,12 @@ namespace WF
 
             _g = Graphics.FromImage(_mainView.Image);
 
-            inputCx.Minimum = inputCy.Minimum = -1000;
+            inputCx.Minimum = inputCy.Minimum = inputCz.Minimum =
+                inputRPx.Minimum = inputRPy.Minimum = inputRPz.Minimum = -1000;
+
+            inputRDx.Minimum = inputRDy.Minimum = inputRDz.Minimum = -360;
+
+            CubeInputs_ValueChanged(this, EventArgs.Empty);
         }
 
         private Cube _cube = new Cube(new Vector3(0, 0, 20), 10);
@@ -20,9 +25,21 @@ namespace WF
         private Graphics _g;
         private Pen _pen = new Pen(Color.Black);
 
+        private float _rDx;
+        private float _rDy;
+        private float _rDz;
+
+        private Point _mousePreviousPosition;
+
         private void DrawCube()
         {
             MainViewClear();
+
+            var rotationPoint = new Vector3((float)inputRPx.Value, (float)inputRPy.Value, (float)inputRPz.Value);
+
+            _cube.RotateAt(rotationPoint, (int)inputRDx.Value, 0);
+            _cube.RotateAt(rotationPoint, (int)inputRDy.Value, 1);
+            _cube.RotateAt(rotationPoint, (int)inputRDz.Value, 2);
 
             foreach (var item in _cube.Edges)
             {
@@ -33,8 +50,6 @@ namespace WF
                     ScreenCenterX + p1.X, ScreenCenterY - p1.Y,
                     ScreenCenterX + p2.X, ScreenCenterY - p2.Y);
             }
-
-            // TODO: test rotation
 
             _mainView.Image = (Bitmap)_mainView.Image;
         }
@@ -52,6 +67,8 @@ namespace WF
         {
             _mainView.Image = new Bitmap(_mainView.Width, _mainView.Height);
             _g = Graphics.FromImage(_mainView.Image);
+
+            DrawCube();
         }
 
         private void MainViewClear()
@@ -73,6 +90,64 @@ namespace WF
                 (float)inputCz.Value
                 ),
                 (ushort)inputCubeSize.Value);
+
+            DrawCube();
+        }
+
+        private void Cube_MouseRotation(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left && e.Button != MouseButtons.Right)
+            {
+                return;
+            }
+
+            if (e.Button == MouseButtons.Left)
+            {
+                _rDx = (_mousePreviousPosition.X - e.X) / 2f;
+                _rDy = (_mousePreviousPosition.Y - e.Y) / 2f;
+
+                if (_rDx > 180)
+                {
+                    _rDx -= 360;
+                }
+                else if (_rDx < -180)
+                {
+                    _rDx += 360;
+                }
+
+                if (_rDy > 180)
+                {
+                    _rDy -= 360;
+                }
+                else if (_rDy < -180)
+                {
+                    _rDy += 360;
+                }
+
+                inputRDx.Value = (int)_rDy;
+                inputRDy.Value = (int)_rDx;
+            }
+
+            if (e.Button == MouseButtons.Right)
+            {
+                _rDz = (_mousePreviousPosition.X - e.X) / 2f;
+
+                if (_rDz > 180)
+                {
+                    _rDz -= 360;
+                }
+                else if (_rDz < -180)
+                {
+                    _rDz += 360;
+                }
+
+                inputRDz.Value = (int)_rDz;
+            }
+        }
+
+        private void Cube_MouseRotation_Started(object sender, MouseEventArgs e)
+        {
+            _mousePreviousPosition = e.Location;
         }
     }
 }
