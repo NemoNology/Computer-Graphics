@@ -29,17 +29,9 @@ namespace WF
                 var p1 = item.Item1;
                 var p2 = item.Item2;
 
-                try
-                {
-                    _g.DrawLine(_pen,
+                _g.DrawLine(_pen,
                     ScreenCenterX + p1.X, ScreenCenterY - p1.Y,
                     ScreenCenterX + p2.X, ScreenCenterY - p2.Y);
-                }
-                catch
-                {
-                    MessageBox.Show($"Image size: {_mainView.Image.Width} x {_mainView.Image.Height}\n" +
-                        $"Drawn points:\n 1: {p1.X}, {p1.Y}\n 2: {p2.X}, {p2.Y}", "Warning");
-                }
 
             }
 
