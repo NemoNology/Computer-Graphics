@@ -12,7 +12,6 @@ namespace WF
 
             _g = Graphics.FromImage(_mainView.Image);
 
-            inputKz.Maximum = inputCubeSize.Maximum = uint.MaxValue;
             inputCx.Minimum = inputCy.Minimum = -1000;
         }
 
@@ -28,7 +27,7 @@ namespace WF
             foreach (var item in _cube.Edges)
             {
                 var p1 = item.Item1;
-                var p2 = item.Item1;
+                var p2 = item.Item2;
 
                 try
                 {
@@ -38,7 +37,8 @@ namespace WF
                 }
                 catch
                 {
-
+                    MessageBox.Show($"Image size: {_mainView.Image.Width} x {_mainView.Image.Height}\n" +
+                        $"Drawn points:\n 1: {p1.X}, {p1.Y}\n 2: {p2.X}, {p2.Y}", "Warning");
                 }
 
             }
