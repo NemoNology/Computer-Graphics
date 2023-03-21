@@ -32,8 +32,9 @@ namespace WF
                 _g.DrawLine(_pen,
                     ScreenCenterX + p1.X, ScreenCenterY - p1.Y,
                     ScreenCenterX + p2.X, ScreenCenterY - p2.Y);
-
             }
+
+            // TODO: test rotation
 
             _mainView.Image = (Bitmap)_mainView.Image;
         }
@@ -46,8 +47,6 @@ namespace WF
         {
             DrawCube();
         }
-
-
 
         private void MainView_SizeChanged(object sender, EventArgs e)
         {

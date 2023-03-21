@@ -128,7 +128,7 @@
             // buttonDraw
             // 
             buttonDraw.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            buttonDraw.Location = new Point(690, 67);
+            buttonDraw.Location = new Point(635, 61);
             buttonDraw.Name = "buttonDraw";
             buttonDraw.Size = new Size(83, 40);
             buttonDraw.TabIndex = 3;
