@@ -30,15 +30,19 @@
         {
             splitContainer1 = new SplitContainer();
             outputMainView = new PictureBox();
-            label1 = new Label();
-            inputFillingType = new ComboBox();
-            inputColor_Dialog = new ColorDialog();
             chooseColor_button = new Button();
+            inputFillingType = new ComboBox();
+            label1 = new Label();
+            menuStrip1 = new MenuStrip();
+            imageToolStripMenuItem = new ToolStripMenuItem();
+            clearToolStripMenuItem = new ToolStripMenuItem();
+            inputColor_Dialog = new ColorDialog();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)outputMainView).BeginInit();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
@@ -58,6 +62,7 @@
             splitContainer1.Panel2.Controls.Add(chooseColor_button);
             splitContainer1.Panel2.Controls.Add(inputFillingType);
             splitContainer1.Panel2.Controls.Add(label1);
+            splitContainer1.Panel2.Controls.Add(menuStrip1);
             splitContainer1.Size = new Size(800, 450);
             splitContainer1.SplitterDistance = 349;
             splitContainer1.SplitterWidth = 10;
@@ -71,24 +76,10 @@
             outputMainView.Size = new Size(800, 349);
             outputMainView.TabIndex = 0;
             outputMainView.TabStop = false;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.Location = new Point(289, 40);
-            label1.Name = "label1";
-            label1.Size = new Size(70, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Filling type:";
-            // 
-            // inputFillingType
-            // 
-            inputFillingType.FormattingEnabled = true;
-            inputFillingType.Location = new Point(365, 37);
-            inputFillingType.Name = "inputFillingType";
-            inputFillingType.Size = new Size(121, 23);
-            inputFillingType.TabIndex = 1;
+            outputMainView.SizeChanged += MainView_SizeChanged;
+            outputMainView.MouseDown += MainView_LineDrawStart;
+            outputMainView.MouseMove += MainView_Draw;
+            outputMainView.MouseUp += MainView_LineDrawEnd;
             // 
             // chooseColor_button
             // 
@@ -102,12 +93,56 @@
             chooseColor_button.UseVisualStyleBackColor = true;
             chooseColor_button.Click += ChoseColor_Click;
             // 
+            // inputFillingType
+            // 
+            inputFillingType.FormattingEnabled = true;
+            inputFillingType.Location = new Point(365, 37);
+            inputFillingType.Name = "inputFillingType";
+            inputFillingType.Size = new Size(121, 23);
+            inputFillingType.TabIndex = 1;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label1.Location = new Point(289, 40);
+            label1.Name = "label1";
+            label1.Size = new Size(70, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Filling type:";
+            // 
+            // menuStrip1
+            // 
+            menuStrip1.Dock = DockStyle.Left;
+            menuStrip1.Items.AddRange(new ToolStripItem[] { imageToolStripMenuItem });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(126, 91);
+            menuStrip1.TabIndex = 3;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // imageToolStripMenuItem
+            // 
+            imageToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { clearToolStripMenuItem });
+            imageToolStripMenuItem.Name = "imageToolStripMenuItem";
+            imageToolStripMenuItem.Size = new Size(113, 19);
+            imageToolStripMenuItem.Text = "Image";
+            // 
+            // clearToolStripMenuItem
+            // 
+            clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            clearToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;
+            clearToolStripMenuItem.Size = new Size(180, 22);
+            clearToolStripMenuItem.Text = "Clear";
+            clearToolStripMenuItem.Click += Image_Clear;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(splitContainer1);
+            MainMenuStrip = menuStrip1;
             Name = "Form1";
             Text = "Color Filling";
             splitContainer1.Panel1.ResumeLayout(false);
@@ -116,6 +151,8 @@
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)outputMainView).EndInit();
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -127,5 +164,8 @@
         private Label label1;
         private Button chooseColor_button;
         private ColorDialog inputColor_Dialog;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem imageToolStripMenuItem;
+        private ToolStripMenuItem clearToolStripMenuItem;
     }
 }
