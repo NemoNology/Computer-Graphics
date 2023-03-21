@@ -104,8 +104,7 @@ namespace WF
         /// <param name="rotationAxis"> 0 - X <br/> 1 - Y <br/> 2 - Z </param>
         public void RotateAt(Vector3 rotationPoint, int angleDegree, byte rotationAxis = 0)
         {
-            if (Math.Abs(angleDegree) == 360 || angleDegree == 0 || 
-                rotationAxis > 2 || rotationAxis < 0)
+            if (rotationAxis > 2 || rotationAxis < 0)
             {
                 return;
             }
