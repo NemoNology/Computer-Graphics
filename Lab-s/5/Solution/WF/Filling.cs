@@ -1,17 +1,17 @@
-﻿using System.ComponentModel;
-
-namespace WF
+﻿namespace WF
 {
     internal class Filling
     {
         public enum FillingTypes
         {
-            Recursive
+            Recursive_Can_Destroy_App,
+            CustomSnail_Can_Destroy_App_Not_Completed
         }
 
         public Filling()
         {
-            _fillingAlgorithms.Add(FillingTypes.Recursive, new FillRecursive());
+            _fillingAlgorithms.Add(FillingTypes.Recursive_Can_Destroy_App, new FillRecursive());
+            _fillingAlgorithms.Add(FillingTypes.CustomSnail_Can_Destroy_App_Not_Completed, new FillCustomSnail());
         }
 
         private Dictionary<FillingTypes, IFillingAlghoritm> _fillingAlgorithms = new Dictionary<FillingTypes, IFillingAlghoritm>();
@@ -25,11 +25,11 @@ namespace WF
         /// <param name="pen"> Pen, that will fill contour </param>
         /// <param name="voidColor"> Color which is empty/background color, that can be filled <br/> That is not a any contour color </param>
         /// <param name="type"> Filling type in <see cref="FillingTypes"/> </param>
-        public void Fill(ref Bitmap bmp, Point fillingStart, Color fillColor, Color voidColor, FillingTypes type)
+        public void Fill(ref Bitmap bmp, Point fillingStart, Color fillColor, FillingTypes type)
         {
             try
             {
-                _fillingAlgorithms[type].Fill(ref bmp, fillingStart, fillColor, voidColor);
+                _fillingAlgorithms[type].Fill(ref bmp, fillingStart, fillColor);
             }
             catch (StackOverflowException)
             {
