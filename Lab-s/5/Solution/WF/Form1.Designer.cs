@@ -96,16 +96,16 @@
             // inputFillingType
             // 
             inputFillingType.FormattingEnabled = true;
-            inputFillingType.Location = new Point(365, 37);
+            inputFillingType.Location = new Point(300, 37);
             inputFillingType.Name = "inputFillingType";
-            inputFillingType.Size = new Size(121, 23);
+            inputFillingType.Size = new Size(259, 23);
             inputFillingType.TabIndex = 1;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.Location = new Point(289, 40);
+            label1.Location = new Point(224, 40);
             label1.Name = "label1";
             label1.Size = new Size(70, 15);
             label1.TabIndex = 0;

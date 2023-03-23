@@ -38,7 +38,8 @@ namespace WF
         {
             if (e.Button == MouseButtons.Left)
             {
-                _g.DrawRectangle(_pen, e.X, e.Y, 0.5f, 0.5f);
+                _g.FillRectangle(_pen.Brush, e.X, e.Y, 4, 4);
+                Redraw();
             }
         }
 
@@ -46,25 +47,22 @@ namespace WF
         {
             if (e.Button == MouseButtons.Middle)
             {
+                if (inputFillingType.SelectedItem == null)
+                {
+                    return;
+                }
+
                 var filling = new Filling();
 
                 var buffer = (Bitmap)outputMainView.Image;
 
-                try
-                {
-                    var emptyColor = new Bitmap(1, 1).GetPixel(0, 0);
+                var emptyColor = ((Bitmap)outputMainView.Image).GetPixel(e.X, e.Y);
 
-                    filling.Fill(ref buffer, e.Location, _pen.Color, emptyColor, (Filling.FillingTypes)inputFillingType.SelectedItem);
-                    Redraw();
-                }
-                catch (StackOverflowException)
-                {
-                    MessageBox.Show("Stack Overflow");
-                }
-                catch (Exception exc)
-                {
-                    MessageBox.Show($"Error: {exc.Message}");
-                }
+                filling.Fill(ref buffer, e.Location, _pen.Color, (Filling.FillingTypes)inputFillingType.SelectedItem);
+                Redraw();
+
+                // For Stack cleaning?
+                GC.Collect();
             }
 
             if (e.Button == MouseButtons.Left)
@@ -83,6 +81,7 @@ namespace WF
             if (e.Button == MouseButtons.Right)
             {
                 _g.DrawLine(_pen, _firstLinePoint, e.Location);
+                Redraw();
             }
         }
 
@@ -101,6 +100,7 @@ namespace WF
         private void Image_Clear(object sender, EventArgs e)
         {
             outputMainView.Image = new Bitmap(outputMainView.Image.Width, outputMainView.Image.Height);
+            _g = Graphics.FromImage(outputMainView.Image);
         }
     }
 }

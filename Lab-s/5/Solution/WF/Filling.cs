@@ -5,13 +5,15 @@
         public enum FillingTypes
         {
             Recursive_Can_Destroy_App,
-            CustomSnail_Can_Destroy_App_Not_Completed
+            CustomSnail_Can_Destroy_App_Not_Completed,
+            FillWithLines
         }
 
         public Filling()
         {
             _fillingAlgorithms.Add(FillingTypes.Recursive_Can_Destroy_App, new FillRecursive());
             _fillingAlgorithms.Add(FillingTypes.CustomSnail_Can_Destroy_App_Not_Completed, new FillCustomSnail());
+            _fillingAlgorithms.Add(FillingTypes.FillWithLines, new FillLine());
         }
 
         private Dictionary<FillingTypes, IFillingAlghoritm> _fillingAlgorithms = new Dictionary<FillingTypes, IFillingAlghoritm>();
@@ -27,18 +29,7 @@
         /// <param name="type"> Filling type in <see cref="FillingTypes"/> </param>
         public void Fill(ref Bitmap bmp, Point fillingStart, Color fillColor, FillingTypes type)
         {
-            try
-            {
-                _fillingAlgorithms[type].Fill(ref bmp, fillingStart, fillColor);
-            }
-            catch (StackOverflowException)
-            {
-                MessageBox.Show("Stack Overflow");
-            }
-            catch (Exception exc)
-            {
-                MessageBox.Show($"Error: {exc.Message}");
-            }
+            _fillingAlgorithms[type].Fill(ref bmp, fillingStart, fillColor);
         }
     }
 }
