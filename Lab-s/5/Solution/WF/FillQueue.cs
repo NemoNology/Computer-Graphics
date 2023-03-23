@@ -21,6 +21,10 @@ namespace WF
                 var upPoint = new Point(p.X, p.Y - 1);
                 var downPoint = new Point(p.X, p.Y + 1);
 
+                if (IsValidPoint(bmp, rightPoint, voidColor))
+                {
+                    _points.Enqueue(rightPoint);
+                }
                 if (IsValidPoint(bmp, upPoint, voidColor))
                 {
                     _points.Enqueue(upPoint);
@@ -33,15 +37,16 @@ namespace WF
                 {
                     _points.Enqueue(downPoint);
                 }
-                if (IsValidPoint(bmp, rightPoint, voidColor))
-                {
-                    _points.Enqueue(upPoint);
-                }
             }
         }
 
         private bool IsValidPoint(Bitmap bmp, Point point, Color voidColor)
         {
+            if (!RuntimeHelpers.TryEnsureSufficientExecutionStack())
+            {
+                return false;
+            }
+
             var x = point.X;
             var y = point.Y;
 
