@@ -10,6 +10,10 @@ namespace WF
 
             var g = Graphics.FromImage(bmp);
 
+            FillVertical(bmp, startFillPoint,
+            fillColor, voidColor,
+            ref g);
+
             FillHorizontal(bmp, startFillPoint,
             fillColor, voidColor,
             ref g);
@@ -35,7 +39,7 @@ namespace WF
             return false;
         }
 
-        private void MoveMainPoint(Bitmap bmp,
+        private void MoveMainPointHorisontal(Bitmap bmp,
         ref MyPoint leftPoint, Color voidColor,
         bool IsRight = false, bool IsDown = false)
         {
@@ -59,7 +63,7 @@ namespace WF
             }
         }
 
-        private void MoveSecondaryPoint(Bitmap bmp,
+        private void MoveSecondaryPointHorisontal(Bitmap bmp,
         ref MyPoint rightPoint, Color voidColor,
         bool IsLeft = false)
         {
@@ -71,6 +75,42 @@ namespace WF
             }
         }
 
+        private void MoveMainPointVertical(Bitmap bmp,
+        ref MyPoint leftPoint, Color voidColor,
+        bool IsDown = false, bool IsRight = false)
+        {
+            var Dy = IsDown ? 1 : -1;
+            var Dx = IsRight ? 1 : -1;
+
+            while (!IsValidPoint(bmp, leftPoint.PointWithMove(Dx), voidColor) &&
+                IsValidPoint(bmp, leftPoint.PointWithMove(0, -Dy), voidColor))
+            {
+                leftPoint.Y += -Dy;
+            }
+
+            if (IsValidPoint(bmp, leftPoint.PointWithMove(Dx), voidColor))
+            {
+                leftPoint.X += Dx;
+            }
+
+            while (IsValidPoint(bmp, leftPoint.PointWithMove(0, Dy), voidColor))
+            {
+                leftPoint.Y += Dy;
+            }
+        }
+
+        private void MoveSecondaryPointVertical(Bitmap bmp,
+        ref MyPoint rightPoint, Color voidColor,
+        bool IsUp = false)
+        {
+            var Dy = IsUp ? -1 : 1;
+
+            while (IsValidPoint(bmp, rightPoint.PointWithMove(0, Dy), voidColor))
+            {
+                rightPoint.Y += Dy;
+            }
+        }
+        
         private void FillHorizon(Bitmap bmp, Point startFillPoint,
         Color fillColor, Color voidColor,
         ref Graphics g,
@@ -102,11 +142,11 @@ namespace WF
                 oldMP = mp.Copy;
                 oldSP = sp.Copy;
 
-                MoveMainPoint(bmp, ref mp, voidColor, IsRight, IsDown);
+                MoveMainPointHorisontal(bmp, ref mp, voidColor, IsRight, IsDown);
 
                 sp = mp.Copy;
 
-                MoveSecondaryPoint(bmp, ref sp, voidColor, IsRight);
+                MoveSecondaryPointHorisontal(bmp, ref sp, voidColor, IsRight);
 
                 g.DrawLine(new Pen(fillColor), bufMP.Point, bufSP.Point);
 
@@ -140,6 +180,74 @@ namespace WF
             ref g, true, true);
         }
 
+        private void FillVertic(Bitmap bmp, Point startFillPoint,
+        Color fillColor, Color voidColor,
+        ref Graphics g,
+        bool IsDown = false, bool IsRight = false)
+        {
+            var mp = new MyPoint(startFillPoint.X, startFillPoint.Y);
+            var sp = mp.Copy;
+
+            var Dy = IsDown ? 1 : -1;
+
+            while (IsValidPoint(bmp, mp.PointWithMove(0, Dy), voidColor))
+            {
+                mp.Y += Dy;
+            }
+
+            while (IsValidPoint(bmp, sp.PointWithMove(0, -Dy), voidColor))
+            {
+                sp.Y += -Dy;
+            }
+
+            var bufMP = mp.Copy;
+            var bufSP = sp.Copy;
+
+            var oldMP = new MyPoint();
+            var oldSP = new MyPoint();
+
+            while (oldMP != mp && oldSP != sp)
+            {
+                oldMP = mp.Copy;
+                oldSP = sp.Copy;
+
+                MoveMainPointVertical(bmp, ref mp, voidColor, IsDown, IsRight);
+
+                sp = mp.Copy;
+
+                MoveSecondaryPointVertical(bmp, ref sp, voidColor, IsDown);
+
+                g.DrawLine(new Pen(fillColor), bufMP.Point, bufSP.Point);
+
+                bufMP = mp.Copy;
+                bufSP = sp.Copy;
+            }
+        }
+
+        private void FillVertical(Bitmap bmp, Point startFillPoint,
+        Color fillColor, Color voidColor,
+        ref Graphics g)
+        {
+            // Up Left
+            FillVertic(bmp, startFillPoint, 
+            fillColor, voidColor,
+            ref g);
+
+            // Down Left
+            FillVertic(bmp, startFillPoint, 
+            fillColor, voidColor,
+            ref g, true);
+
+            // Up Right
+            FillVertic(bmp, startFillPoint, 
+            fillColor, voidColor,
+            ref g, false, true);
+
+            // Down Right
+            FillVertic(bmp, startFillPoint, 
+            fillColor, voidColor,
+            ref g, true, true);
+        }
 
     }
 
