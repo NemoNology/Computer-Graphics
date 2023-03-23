@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace WF
 {
     internal class FillStack : IFillingAlghoritm
