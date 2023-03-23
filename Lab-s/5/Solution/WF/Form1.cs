@@ -102,5 +102,14 @@ namespace WF
             outputMainView.Image = new Bitmap(outputMainView.Image.Width, outputMainView.Image.Height);
             _g = Graphics.FromImage(outputMainView.Image);
         }
+
+        private void RandomColor_Click(object sender, EventArgs e)
+        {
+            var r = new Random().Next(byte.MinValue, byte.MaxValue);
+            var g = new Random().Next(byte.MinValue, byte.MaxValue);
+            var b = new Random().Next(byte.MinValue, byte.MaxValue);
+
+            _pen.Color = Color.FromArgb(byte.MaxValue, r, g, b);
+        }
     }
 }

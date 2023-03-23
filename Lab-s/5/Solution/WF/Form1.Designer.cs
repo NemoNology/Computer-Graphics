@@ -37,6 +37,7 @@
             imageToolStripMenuItem = new ToolStripMenuItem();
             clearToolStripMenuItem = new ToolStripMenuItem();
             inputColor_Dialog = new ColorDialog();
+            randomColorToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -117,24 +118,32 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { imageToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(58, 91);
+            menuStrip1.Size = new Size(126, 91);
             menuStrip1.TabIndex = 3;
             menuStrip1.Text = "menuStrip1";
             // 
             // imageToolStripMenuItem
             // 
-            imageToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { clearToolStripMenuItem });
+            imageToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { clearToolStripMenuItem, randomColorToolStripMenuItem });
             imageToolStripMenuItem.Name = "imageToolStripMenuItem";
-            imageToolStripMenuItem.Size = new Size(45, 19);
+            imageToolStripMenuItem.Size = new Size(113, 19);
             imageToolStripMenuItem.Text = "Image";
             // 
             // clearToolStripMenuItem
             // 
             clearToolStripMenuItem.Name = "clearToolStripMenuItem";
             clearToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;
-            clearToolStripMenuItem.Size = new Size(144, 22);
+            clearToolStripMenuItem.Size = new Size(192, 22);
             clearToolStripMenuItem.Text = "Clear";
             clearToolStripMenuItem.Click += Image_Clear;
+            // 
+            // randomColorToolStripMenuItem
+            // 
+            randomColorToolStripMenuItem.Name = "randomColorToolStripMenuItem";
+            randomColorToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.X;
+            randomColorToolStripMenuItem.Size = new Size(192, 22);
+            randomColorToolStripMenuItem.Text = "Random Color";
+            randomColorToolStripMenuItem.Click += RandomColor_Click;
             // 
             // Form1
             // 
@@ -167,5 +176,6 @@
         private MenuStrip menuStrip1;
         private ToolStripMenuItem imageToolStripMenuItem;
         private ToolStripMenuItem clearToolStripMenuItem;
+        private ToolStripMenuItem randomColorToolStripMenuItem;
     }
 }
