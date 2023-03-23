@@ -4,16 +4,18 @@
     {
         public enum FillingTypes
         {
-            Recursive_Can_Destroy_App,
-            CustomSnail_Can_Destroy_App_Not_Completed,
-            FillWithLines
+            Recursive_Can_eat_almost_all_Stack,
+            FillWithLines,
+            FillQueue,
+            FillStack
         }
 
         public Filling()
         {
-            _fillingAlgorithms.Add(FillingTypes.Recursive_Can_Destroy_App, new FillRecursive());
-            _fillingAlgorithms.Add(FillingTypes.CustomSnail_Can_Destroy_App_Not_Completed, new FillCustomSnail());
+            _fillingAlgorithms.Add(FillingTypes.Recursive_Can_eat_almost_all_Stack, new FillRecursive());
             _fillingAlgorithms.Add(FillingTypes.FillWithLines, new FillLine());
+            _fillingAlgorithms.Add(FillingTypes.FillQueue, new FillQueue());
+            _fillingAlgorithms.Add(FillingTypes.FillStack, new FillStack());
         }
 
         private Dictionary<FillingTypes, IFillingAlghoritm> _fillingAlgorithms = new Dictionary<FillingTypes, IFillingAlghoritm>();

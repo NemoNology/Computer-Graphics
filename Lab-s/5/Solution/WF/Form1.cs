@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace WF
 {
     public partial class Form1 : Form
@@ -80,7 +78,9 @@ namespace WF
         {
             if (e.Button == MouseButtons.Right)
             {
-                _g.DrawLine(_pen, _firstLinePoint, e.Location);
+                _g.DrawLine(_pen,
+                _firstLinePoint, e.Location);
+
                 Redraw();
             }
         }
