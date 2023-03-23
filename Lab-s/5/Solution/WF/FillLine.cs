@@ -46,39 +46,43 @@
 
             rp = lp.Copy;
 
-            uint upC = 0;
-            uint downC = 0;
+            bool upC = false;
+            bool downC = false;
 
             while (IsValidPoint(bmp, rp.PointWithMove(1), voidColor))
             {
                 rp.X++;
 
-                if (upC == 0 && IsValidPoint(bmp, rp.PointWithMove(0, -1), voidColor))
+				var canUp = IsValidPoint(bmp, rp.PointWithMove(0, -1), voidColor);
+
+                if (!upC && canUp)
                 {
                     Branches.Add(rp.PointWithMove(0, -1));
-                    upC++;
+                    upC = true;
                 }
-                else if (IsValidPoint(bmp, rp.PointWithMove(0, -1), voidColor))
+                else if (canUp)
                 {
-                    upC++;
+                    upC = true;
                 }
                 else
                 {
-                    upC = 0;
+                    upC = false;
                 }
 
-                if (downC == 0 && IsValidPoint(bmp, rp.PointWithMove(0, 1), voidColor))
+				var canDown = IsValidPoint(bmp, rp.PointWithMove(0, 1), voidColor);
+
+                if (!downC && canDown)
                 {
                     Branches.Add(rp.PointWithMove(0, 1));
-                    downC++;
+                    downC = true;
                 }
-                else if (IsValidPoint(bmp, rp.PointWithMove(0, 1), voidColor))
+                else if (canDown)
                 {
-                    downC++;
+                    downC = true;
                 }
                 else
                 {
-                    downC = 0;
+                    downC = false;
                 }
             }
 
