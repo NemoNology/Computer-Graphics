@@ -1,31 +1,24 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace WF
+﻿namespace WF
 {
     internal class FillLine : IFillingAlghoritm
     {
+        private List<Point> Branches { get; set; } = new List<Point>();
+
         public void Fill(ref Bitmap bmp, Point startFillPoint, Color fillColor)
         {
             var voidColor = bmp.GetPixel(startFillPoint.X, startFillPoint.Y);
 
-            var g = Graphics.FromImage(bmp);
+            Branches.Add(startFillPoint);
 
-            FillVertical(bmp, startFillPoint,
-            fillColor, voidColor,
-            ref g);
-
-            FillHorizontal(bmp, startFillPoint,
-            fillColor, voidColor,
-            ref g);
+            while (Branches.Count > 0)
+            {
+                FillHorizon(bmp, Branches.First(),
+                fillColor, voidColor);
+            }
         }
 
         private bool IsValidPoint(Bitmap bmp, Point point, Color voidColor)
         {
-            if (!RuntimeHelpers.TryEnsureSufficientExecutionStack())
-            {
-                return false;
-            }
-
             var x = point.X;
             var y = point.Y;
 
@@ -39,216 +32,70 @@ namespace WF
             return false;
         }
 
-        private void MoveMainPointHorisontal(Bitmap bmp,
-        ref MyPoint leftPoint, Color voidColor,
-        bool IsRight = false, bool IsDown = false)
-        {
-            var Dx = IsRight ? 1 : -1;
-            var Dy = IsDown ? 1 : -1;
-
-            while (!IsValidPoint(bmp, leftPoint.PointWithMove(0, Dy), voidColor) &&
-                IsValidPoint(bmp, leftPoint.PointWithMove(-Dx), voidColor))
-            {
-                leftPoint.X += -Dx;
-            }
-
-            if (IsValidPoint(bmp, leftPoint.PointWithMove(0, Dy), voidColor))
-            {
-                leftPoint.Y += Dy;
-            }
-
-            while (IsValidPoint(bmp, leftPoint.PointWithMove(Dx), voidColor))
-            {
-                leftPoint.X += Dx;
-            }
-        }
-
-        private void MoveSecondaryPointHorisontal(Bitmap bmp,
-        ref MyPoint rightPoint, Color voidColor,
-        bool IsLeft = false)
-        {
-            var Dx = IsLeft ? -1 : 1;
-
-            while (IsValidPoint(bmp, rightPoint.PointWithMove(Dx), voidColor))
-            {
-                rightPoint.X += Dx;
-            }
-        }
-
-        private void MoveMainPointVertical(Bitmap bmp,
-        ref MyPoint leftPoint, Color voidColor,
-        bool IsDown = false, bool IsRight = false)
-        {
-            var Dy = IsDown ? 1 : -1;
-            var Dx = IsRight ? 1 : -1;
-
-            while (!IsValidPoint(bmp, leftPoint.PointWithMove(Dx), voidColor) &&
-                IsValidPoint(bmp, leftPoint.PointWithMove(0, -Dy), voidColor))
-            {
-                leftPoint.Y += -Dy;
-            }
-
-            if (IsValidPoint(bmp, leftPoint.PointWithMove(Dx), voidColor))
-            {
-                leftPoint.X += Dx;
-            }
-
-            while (IsValidPoint(bmp, leftPoint.PointWithMove(0, Dy), voidColor))
-            {
-                leftPoint.Y += Dy;
-            }
-        }
-
-        private void MoveSecondaryPointVertical(Bitmap bmp,
-        ref MyPoint rightPoint, Color voidColor,
-        bool IsUp = false)
-        {
-            var Dy = IsUp ? -1 : 1;
-
-            while (IsValidPoint(bmp, rightPoint.PointWithMove(0, Dy), voidColor))
-            {
-                rightPoint.Y += Dy;
-            }
-        }
-        
         private void FillHorizon(Bitmap bmp, Point startFillPoint,
-        Color fillColor, Color voidColor,
-        ref Graphics g,
-        bool IsRight = false, bool IsDown = false)
+        Color fillColor, Color voidColor)
         {
-            var mp = new MyPoint(startFillPoint.X, startFillPoint.Y);
-            var sp = mp.Copy;
+            // Left & Right Points
+            var lp = new MyPoint(startFillPoint.X, startFillPoint.Y);
+            var rp = lp.Copy;
 
-            var Dx = IsRight ? 1 : -1;
-
-            while (IsValidPoint(bmp, mp.PointWithMove(Dx), voidColor))
+            while (IsValidPoint(bmp, lp.PointWithMove(-1), voidColor))
             {
-                mp.X += Dx;
+                lp.X--;
             }
 
-            while (IsValidPoint(bmp, sp.PointWithMove(-Dx), voidColor))
+            rp = lp.Copy;
+
+            uint upC = 0;
+            uint downC = 0;
+
+            while (IsValidPoint(bmp, rp.PointWithMove(1), voidColor))
             {
-                sp.X += -Dx;
+                rp.X++;
+
+                if (upC == 0 && IsValidPoint(bmp, rp.PointWithMove(0, -1), voidColor))
+                {
+                    Branches.Add(rp.PointWithMove(0, -1));
+                    upC++;
+                }
+                else if (IsValidPoint(bmp, rp.PointWithMove(0, -1), voidColor))
+                {
+                    upC++;
+                }
+                else
+                {
+                    upC = 0;
+                }
+
+                if (downC == 0 && IsValidPoint(bmp, rp.PointWithMove(0, 1), voidColor))
+                {
+                    Branches.Add(rp.PointWithMove(0, 1));
+                    downC++;
+                }
+                else if (IsValidPoint(bmp, rp.PointWithMove(0, 1), voidColor))
+                {
+                    downC++;
+                }
+                else
+                {
+                    downC = 0;
+                }
             }
 
-            var bufMP = mp.Copy;
-            var bufSP = sp.Copy;
+            bmp = DrawLine(bmp, lp.X, rp.X, lp.Y, fillColor);
 
-            var oldMP = new MyPoint();
-            var oldSP = new MyPoint();
-
-            while (oldMP != mp && oldSP != sp)
-            {
-                oldMP = mp.Copy;
-                oldSP = sp.Copy;
-
-                MoveMainPointHorisontal(bmp, ref mp, voidColor, IsRight, IsDown);
-
-                sp = mp.Copy;
-
-                MoveSecondaryPointHorisontal(bmp, ref sp, voidColor, IsRight);
-
-                g.DrawLine(new Pen(fillColor), bufMP.Point, bufSP.Point);
-
-                bufMP = mp.Copy;
-                bufSP = sp.Copy;
-            }
+            Branches = Branches.FindAll(x => IsValidPoint(bmp, x, voidColor));
         }
 
-        private void FillHorizontal(Bitmap bmp, Point startFillPoint,
-        Color fillColor, Color voidColor,
-        ref Graphics g)
+        private Bitmap DrawLine(Bitmap bmp, int x1, int x2, int y, Color lineColor)
         {
-            // Left Up
-            FillHorizon(bmp, startFillPoint, 
-            fillColor, voidColor,
-            ref g);
-
-            // Right Up
-            FillHorizon(bmp, startFillPoint, 
-            fillColor, voidColor,
-            ref g, true);
-
-            // Left Down
-            FillHorizon(bmp, startFillPoint, 
-            fillColor, voidColor,
-            ref g, false, true);
-
-            // Right Down
-            FillHorizon(bmp, startFillPoint, 
-            fillColor, voidColor,
-            ref g, true, true);
-        }
-
-        private void FillVertic(Bitmap bmp, Point startFillPoint,
-        Color fillColor, Color voidColor,
-        ref Graphics g,
-        bool IsDown = false, bool IsRight = false)
-        {
-            var mp = new MyPoint(startFillPoint.X, startFillPoint.Y);
-            var sp = mp.Copy;
-
-            var Dy = IsDown ? 1 : -1;
-
-            while (IsValidPoint(bmp, mp.PointWithMove(0, Dy), voidColor))
+            for (var i = x1; i <= x2; i++)
             {
-                mp.Y += Dy;
+                bmp.SetPixel(i, y, lineColor);
             }
-
-            while (IsValidPoint(bmp, sp.PointWithMove(0, -Dy), voidColor))
-            {
-                sp.Y += -Dy;
-            }
-
-            var bufMP = mp.Copy;
-            var bufSP = sp.Copy;
-
-            var oldMP = new MyPoint();
-            var oldSP = new MyPoint();
-
-            while (oldMP != mp && oldSP != sp)
-            {
-                oldMP = mp.Copy;
-                oldSP = sp.Copy;
-
-                MoveMainPointVertical(bmp, ref mp, voidColor, IsDown, IsRight);
-
-                sp = mp.Copy;
-
-                MoveSecondaryPointVertical(bmp, ref sp, voidColor, IsDown);
-
-                g.DrawLine(new Pen(fillColor), bufMP.Point, bufSP.Point);
-
-                bufMP = mp.Copy;
-                bufSP = sp.Copy;
-            }
+            
+            return bmp;
         }
-
-        private void FillVertical(Bitmap bmp, Point startFillPoint,
-        Color fillColor, Color voidColor,
-        ref Graphics g)
-        {
-            // Up Left
-            FillVertic(bmp, startFillPoint, 
-            fillColor, voidColor,
-            ref g);
-
-            // Down Left
-            FillVertic(bmp, startFillPoint, 
-            fillColor, voidColor,
-            ref g, true);
-
-            // Up Right
-            FillVertic(bmp, startFillPoint, 
-            fillColor, voidColor,
-            ref g, false, true);
-
-            // Down Right
-            FillVertic(bmp, startFillPoint, 
-            fillColor, voidColor,
-            ref g, true, true);
-        }
-
     }
 
     public struct MyPoint
