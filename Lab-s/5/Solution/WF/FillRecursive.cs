@@ -50,7 +50,7 @@ namespace WF
 
             if ((point.X > 0 && point.X < bmp.Width) &&
                 (point.Y > 0 && point.Y < bmp.Height) &&
-                bmp.GetPixel(point.X, point.Y).ToArgb() == voidColor.ToArgb())
+                bmp.GetPixel(point.X, point.Y) == voidColor)
             {
                 return true;
             }
