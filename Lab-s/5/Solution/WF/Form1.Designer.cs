@@ -41,6 +41,7 @@
             statusStrip1 = new StatusStrip();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
             outputFillingTime = new ToolStripStatusLabel();
+            toolStripStatusLabel2 = new ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -156,7 +157,7 @@
             // statusStrip1
             // 
             statusStrip1.BackColor = Color.DimGray;
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, outputFillingTime });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, outputFillingTime, toolStripStatusLabel2 });
             statusStrip1.Location = new Point(60, 67);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(740, 24);
@@ -174,11 +175,20 @@
             // 
             // outputFillingTime
             // 
-            outputFillingTime.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
+            outputFillingTime.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
             outputFillingTime.ForeColor = SystemColors.Control;
             outputFillingTime.Name = "outputFillingTime";
             outputFillingTime.Size = new Size(20, 19);
             outputFillingTime.Text = "...";
+            // 
+            // toolStripStatusLabel2
+            // 
+            toolStripStatusLabel2.BorderSides = ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
+            toolStripStatusLabel2.Font = new Font("Segoe UI", 9F, GraphicsUnit.Point);
+            toolStripStatusLabel2.ForeColor = SystemColors.Control;
+            toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            toolStripStatusLabel2.Size = new Size(77, 19);
+            toolStripStatusLabel2.Text = "ms";
             // 
             // Form1
             // 
@@ -217,5 +227,6 @@
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripStatusLabel1;
         private ToolStripStatusLabel outputFillingTime;
+        private ToolStripStatusLabel toolStripStatusLabel2;
     }
 }

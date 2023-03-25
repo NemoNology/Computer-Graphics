@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace WF
 {
     public partial class Form1 : Form
@@ -54,9 +56,16 @@ namespace WF
 
                 var buffer = (Bitmap)outputMainView.Image;
 
-                var emptyColor = ((Bitmap)outputMainView.Image).GetPixel(e.X, e.Y);
+                Stopwatch timer = new Stopwatch(); 
+
+                timer.Start();
 
                 filling.Fill(ref buffer, e.Location, _pen.Color, (Filling.FillingTypes)inputFillingType.SelectedItem);
+
+                timer.Stop();
+
+                outputFillingTime.Text = $"{timer.ElapsedMilliseconds}";
+
                 Redraw();
 
                 // For Stack cleaning?
