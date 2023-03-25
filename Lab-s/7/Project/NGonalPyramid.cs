@@ -58,7 +58,7 @@ namespace Project
         /// Rotate Pyramid
         /// </summary>
         /// <param name="rotationAxis"> 0 - X <br/> 1 - Y <br/> 2 - Z </param>
-        public void RotateAt(Vector3 rotationPoint, int angleDegree, byte rotationAxis = 0)
+        public void RotateAt(Vector3 rotationPoint, float angleDegree, byte rotationAxis = 0)
         {
             if (rotationAxis > 2)
             {
