@@ -36,14 +36,18 @@
             menuStrip1 = new MenuStrip();
             imageToolStripMenuItem = new ToolStripMenuItem();
             clearToolStripMenuItem = new ToolStripMenuItem();
-            inputColor_Dialog = new ColorDialog();
             randomColorToolStripMenuItem = new ToolStripMenuItem();
+            inputColor_Dialog = new ColorDialog();
+            statusStrip1 = new StatusStrip();
+            toolStripStatusLabel1 = new ToolStripStatusLabel();
+            outputFillingTime = new ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)outputMainView).BeginInit();
             menuStrip1.SuspendLayout();
+            statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
@@ -60,6 +64,7 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.BackColor = Color.Silver;
+            splitContainer1.Panel2.Controls.Add(statusStrip1);
             splitContainer1.Panel2.Controls.Add(chooseColor_button);
             splitContainer1.Panel2.Controls.Add(inputFillingType);
             splitContainer1.Panel2.Controls.Add(label1);
@@ -86,7 +91,7 @@
             // 
             chooseColor_button.AutoSize = true;
             chooseColor_button.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            chooseColor_button.Location = new Point(620, 32);
+            chooseColor_button.Location = new Point(620, 23);
             chooseColor_button.Name = "chooseColor_button";
             chooseColor_button.Size = new Size(96, 31);
             chooseColor_button.TabIndex = 2;
@@ -97,7 +102,7 @@
             // inputFillingType
             // 
             inputFillingType.FormattingEnabled = true;
-            inputFillingType.Location = new Point(300, 37);
+            inputFillingType.Location = new Point(300, 28);
             inputFillingType.Name = "inputFillingType";
             inputFillingType.Size = new Size(259, 23);
             inputFillingType.TabIndex = 1;
@@ -106,7 +111,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.Location = new Point(224, 40);
+            label1.Location = new Point(224, 31);
             label1.Name = "label1";
             label1.Size = new Size(70, 15);
             label1.TabIndex = 0;
@@ -114,26 +119,29 @@
             // 
             // menuStrip1
             // 
+            menuStrip1.BackColor = Color.DimGray;
             menuStrip1.Dock = DockStyle.Left;
             menuStrip1.Items.AddRange(new ToolStripItem[] { imageToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(126, 91);
+            menuStrip1.Size = new Size(60, 91);
             menuStrip1.TabIndex = 3;
             menuStrip1.Text = "menuStrip1";
             // 
             // imageToolStripMenuItem
             // 
             imageToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { clearToolStripMenuItem, randomColorToolStripMenuItem });
+            imageToolStripMenuItem.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            imageToolStripMenuItem.ForeColor = SystemColors.Control;
             imageToolStripMenuItem.Name = "imageToolStripMenuItem";
-            imageToolStripMenuItem.Size = new Size(113, 19);
+            imageToolStripMenuItem.Size = new Size(47, 19);
             imageToolStripMenuItem.Text = "Image";
             // 
             // clearToolStripMenuItem
             // 
             clearToolStripMenuItem.Name = "clearToolStripMenuItem";
             clearToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;
-            clearToolStripMenuItem.Size = new Size(192, 22);
+            clearToolStripMenuItem.Size = new Size(195, 22);
             clearToolStripMenuItem.Text = "Clear";
             clearToolStripMenuItem.Click += Image_Clear;
             // 
@@ -141,9 +149,36 @@
             // 
             randomColorToolStripMenuItem.Name = "randomColorToolStripMenuItem";
             randomColorToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.X;
-            randomColorToolStripMenuItem.Size = new Size(192, 22);
+            randomColorToolStripMenuItem.Size = new Size(195, 22);
             randomColorToolStripMenuItem.Text = "Random Color";
             randomColorToolStripMenuItem.Click += RandomColor_Click;
+            // 
+            // statusStrip1
+            // 
+            statusStrip1.BackColor = Color.DimGray;
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, outputFillingTime });
+            statusStrip1.Location = new Point(60, 67);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Size = new Size(740, 24);
+            statusStrip1.TabIndex = 4;
+            statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            toolStripStatusLabel1.BorderSides = ToolStripStatusLabelBorderSides.Left | ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Bottom;
+            toolStripStatusLabel1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            toolStripStatusLabel1.ForeColor = SystemColors.Control;
+            toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            toolStripStatusLabel1.Size = new Size(77, 19);
+            toolStripStatusLabel1.Text = "Filling Time:";
+            // 
+            // outputFillingTime
+            // 
+            outputFillingTime.BorderSides = ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
+            outputFillingTime.ForeColor = SystemColors.Control;
+            outputFillingTime.Name = "outputFillingTime";
+            outputFillingTime.Size = new Size(20, 19);
+            outputFillingTime.Text = "...";
             // 
             // Form1
             // 
@@ -162,6 +197,8 @@
             ((System.ComponentModel.ISupportInitialize)outputMainView).EndInit();
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -177,5 +214,8 @@
         private ToolStripMenuItem imageToolStripMenuItem;
         private ToolStripMenuItem clearToolStripMenuItem;
         private ToolStripMenuItem randomColorToolStripMenuItem;
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel toolStripStatusLabel1;
+        private ToolStripStatusLabel outputFillingTime;
     }
 }
