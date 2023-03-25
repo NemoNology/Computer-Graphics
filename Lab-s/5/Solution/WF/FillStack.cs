@@ -23,43 +23,27 @@ namespace WF
                 var upPoint = new Point(p.X, p.Y - 1);
                 var downPoint = new Point(p.X, p.Y + 1);
 
-                if (IsValidPoint(bmp, rightPoint, voidColor))
+                if (rightPoint.X < bmp.Width &&
+                bmp.GetPixel(rightPoint.X, rightPoint.Y) == voidColor)
                 {
                     _points.Push(rightPoint);
                 }
-                if (IsValidPoint(bmp, upPoint, voidColor))
+                if (upPoint.Y >= 0 &&
+                bmp.GetPixel(upPoint.X, upPoint.Y) == voidColor)
                 {
                     _points.Push(upPoint);
                 }
-                if (IsValidPoint(bmp, leftPoint, voidColor))
+                if (leftPoint.X >= 0 &&
+                bmp.GetPixel(leftPoint.X, leftPoint.Y) == voidColor)
                 {
                     _points.Push(leftPoint);
                 }
-                if (IsValidPoint(bmp, downPoint, voidColor))
+                if (downPoint.Y < bmp.Height &&
+                bmp.GetPixel(downPoint.X, downPoint.Y) == voidColor)
                 {
                     _points.Push(downPoint);
                 }
             }
-        }
-
-        private bool IsValidPoint(Bitmap bmp, Point point, Color voidColor)
-        {
-            if (!RuntimeHelpers.TryEnsureSufficientExecutionStack())
-            {
-                return false;
-            }
-
-            var x = point.X;
-            var y = point.Y;
-
-            if ((x >= 0 && x < bmp.Width) &&
-                (y >= 0 && y < bmp.Height) &&
-                bmp.GetPixel(x, y) == voidColor)
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

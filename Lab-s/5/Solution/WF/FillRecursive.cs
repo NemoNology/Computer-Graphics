@@ -4,58 +4,43 @@ namespace WF
 {
     internal class FillRecursive : IFillingAlghoritm
     {
-        public void Fill(ref Bitmap bmp, Point startFillPoint, Color fillColor)
+        public void Fill(ref Bitmap bmp, Point point, Color fillColor)
         {
-            var voidColor = bmp.GetPixel(startFillPoint.X, startFillPoint.Y);
+            var voidColor = bmp.GetPixel(point.X, point.Y);
 
-            if (IsValidPoint(bmp, startFillPoint, voidColor))
-            {
-                bmp.SetPixel(startFillPoint.X, startFillPoint.Y, fillColor);
-            }
-            else
+            if (!RuntimeHelpers.TryEnsureSufficientExecutionStack() ||
+            bmp.GetPixel(point.X, point.Y) != voidColor)
             {
                 return;
             }
 
-            var leftPoint = new Point(startFillPoint.X - 1, startFillPoint.Y);
-            var rightPoint = new Point(startFillPoint.X + 1, startFillPoint.Y);
-            var upPoint = new Point(startFillPoint.X, startFillPoint.Y - 1);
-            var downPoint = new Point(startFillPoint.X, startFillPoint.Y + 1);
+            bmp.SetPixel(point.X, point.Y, fillColor);
 
-            if (IsValidPoint(bmp, upPoint, voidColor))
+            var upPoint = new Point(point.X, point.Y - 1);
+            var downPoint = new Point(point.X, point.Y + 1);
+            var leftPoint = new Point(point.X - 1, point.Y);
+            var rightPoint = new Point(point.X + 1, point.Y);
+
+            if (upPoint.Y >= 0 &&
+            bmp.GetPixel(upPoint.X, upPoint.Y) == voidColor)
             {
                 Fill(ref bmp, upPoint, fillColor);
             }
-            if (IsValidPoint(bmp, downPoint, voidColor))
+            if (downPoint.Y < bmp.Height &&
+            bmp.GetPixel(downPoint.X, downPoint.Y) == voidColor)
             {
                 Fill(ref bmp, downPoint, fillColor);
             }
-            if (IsValidPoint(bmp, leftPoint, voidColor))
+            if (leftPoint.X >= 0 &&
+            bmp.GetPixel(leftPoint.X, leftPoint.Y) == voidColor)
             {
                 Fill(ref bmp, leftPoint, fillColor);
             }
-            if (IsValidPoint(bmp, rightPoint, voidColor))
+            if (rightPoint.X < bmp.Width &&
+            bmp.GetPixel(rightPoint.X, rightPoint.Y) == voidColor)
             {
                 Fill(ref bmp, rightPoint, fillColor);
             }
-            
-        }
-
-        private bool IsValidPoint(Bitmap bmp, Point point, Color voidColor)
-        {
-            if (!RuntimeHelpers.TryEnsureSufficientExecutionStack())
-            {
-                return false;
-            }
-
-            if ((point.X > 0 && point.X < bmp.Width) &&
-                (point.Y > 0 && point.Y < bmp.Height) &&
-                bmp.GetPixel(point.X, point.Y) == voidColor)
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }
