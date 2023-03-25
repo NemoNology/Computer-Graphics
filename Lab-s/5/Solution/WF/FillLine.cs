@@ -37,27 +37,6 @@
                 lp.X--;
             }
 
-            // If Line lenght is 1 pixel, then...
-            if (bmp.GetPixel(lp.X + 1, lp.Y) != voidColor || lp.X + 1 >= bmp.Width)
-            {
-                // Fill Firts Pixel
-                bmp.SetPixel(lp.X, lp.Y, fillColor);
-
-                // Save Up Point
-                if (lp.Y - 1 >= 0 && bmp.GetPixel(lp.X, lp.Y - 1) == voidColor)
-                {
-                    Branches.Push(lp.PointWithMove(0, -1));
-                }
-
-                // Save Down Point
-                if (lp.Y + 1 < bmp.Height && bmp.GetPixel(lp.X, lp.Y + 1) == voidColor)
-                {
-                    Branches.Push(lp.PointWithMove(0, 1));
-                }
-
-                return;
-            }
-
             var rp = lp.Copy;
 
             bool IsOnTheSameHeightUp = false;
