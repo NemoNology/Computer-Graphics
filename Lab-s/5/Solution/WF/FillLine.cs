@@ -13,20 +13,12 @@
             while (Branches.Count > 0)
             {
                 FillHorizon(bmp, Branches.Pop(),
-                fillColor, voidColor, false);
-            }
-
-            Branches.Push(startFillPoint);
-
-            while (Branches.Count > 0)
-            {
-                FillHorizon(bmp, Branches.Pop(),
-                fillColor, voidColor, true);
+                fillColor, voidColor);
             }
         }
 
         private void FillHorizon(Bitmap bmp, Point startFillPoint,
-        Color fillColor, Color voidColor, bool IsDown)
+        Color fillColor, Color voidColor)
         {
             // Left & Right Points
             var lp = new MyPoint(startFillPoint.X, startFillPoint.Y);
