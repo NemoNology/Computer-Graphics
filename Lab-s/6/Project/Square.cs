@@ -42,12 +42,20 @@ namespace Project
             for (int i = 0; i < Points.Count; i++)
             {
                 var X = (Points[i].X - rotationPoint.X) * cos -
-                    (Points[i].Y - rotationPoint.Y) * sin - rotationPoint.X;
+                    (Points[i].Y - rotationPoint.Y) * sin + rotationPoint.X;
 
                 var Y = (Points[i].X - rotationPoint.X) * sin +
-                    (Points[i].Y - rotationPoint.Y) * cos - rotationPoint.Y;
+                    (Points[i].Y - rotationPoint.Y) * cos + rotationPoint.Y;
 
                 Points[i] = new Vector2(X, Y);
+            }
+        }
+
+        public void Translate(float x, float y)
+        {
+            for (int i = 0; i < Points.Count; i++)
+            {
+                Points[i] = new Vector2(Points[i].X + x, Points[i].Y + y);
             }
         }
 

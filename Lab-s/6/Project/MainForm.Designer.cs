@@ -43,8 +43,8 @@ partial class MainForm
         outputMainView.MouseDown += MainView_MouseDown;
         outputMainView.MouseMove += MainView_MouseMove;
         outputMainView.MouseUp += MainView_MouseUp;
-        outputMainView.Resize += MainView_Resized;
         outputMainView.PreviewKeyDown += MainView_PreviewKeyDown;
+        outputMainView.MouseWheel += MainView_MouseWheel;
         // 
         // MainForm
         // 
@@ -57,6 +57,7 @@ partial class MainForm
         ((System.ComponentModel.ISupportInitialize)outputMainView).EndInit();
         ResumeLayout(false);
         PreviewKeyDown += MainView_PreviewKeyDown;
+        Resize += MainView_Resized;
     }
 
     #endregion

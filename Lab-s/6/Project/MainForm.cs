@@ -18,13 +18,13 @@ public partial class MainForm : Form
 
         _square = new Square(_squareCenter, _squareSideLength);
 
-        DrawSquare();
-
         _lines = new List<Vector4>();
+
+        DrawSquare();
     }
 
     private Point _squareCenter;
-    private float _squareSideLength = 100;
+    private int _squareSideLength = 100;
     private Point _firstLinePoint;
     private Square _square;
     private Graphics _g;
@@ -57,20 +57,38 @@ public partial class MainForm : Form
     {
         if (e.Button == MouseButtons.Left)
         {
+            var newPlace = e.Location;
+
+            _square.Translate(newPlace.X - _squareCenter.X,
+            newPlace.Y - _squareCenter.Y);
+
             _squareCenter = e.Location;
-            _square = new Square(_squareCenter, _squareSideLength);
-            _square.RotateAt(_squareCenter, e.Delta);
             DrawSquare();
         }
+    }
+
+    private void MainView_MouseWheel(object sender, MouseEventArgs e)
+    {
+        if (e.Delta > 0)
+        {
+            _squareSideLength += 5;
+            _square = new Square(_squareCenter, _squareSideLength);
+        }
+        else
+        {
+            if (_squareSideLength - 5 >= 0)
+            {
+                _squareSideLength -= 5;
+                _square = new Square(_squareCenter, _squareSideLength);
+            }
+        }
+
+        DrawSquare();
     }
 
     private void MainView_Resized(object sender, EventArgs e)
     {
         outputMainView.Image = new Bitmap(outputMainView.Width, outputMainView.Height);
-
-        _squareCenter = new Point(
-            outputMainView.Image.Width / 2,
-            outputMainView.Image.Height / 2);
 
         _g = Graphics.FromImage(outputMainView.Image);
 
@@ -81,7 +99,16 @@ public partial class MainForm : Form
 
     private void MainView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
     {
-
+        if (e.KeyCode == Keys.Q)
+        {
+            _square.RotateAt(_squareCenter, -5);
+            DrawSquare();
+        }
+        else if (e.KeyCode == Keys.E)
+        {
+            _square.RotateAt(_squareCenter, 5);
+            DrawSquare();
+        }
     }
 
     /// <summary>
@@ -128,10 +155,25 @@ public partial class MainForm : Form
         outputMainView.Image = new Bitmap(outputMainView.Image.Width, outputMainView.Image.Height);
         _g = Graphics.FromImage(outputMainView.Image);
 
+        int w = outputMainView.Image.Width - 1;
+        int h = outputMainView.Image.Height - 1;
+
         foreach (var line in _square.Edges)
         {
-            var p1 = line.Item1;
-            var p2 = line.Item2;
+            Vector2 p1 = line.Item1;
+            Vector2 p2 = line.Item2;
+
+            if (p1.X < 0) p1.X = 0;
+            else if (p1.X >= w) p1.X = w;
+
+            if (p1.Y < 0) p1.Y = 0;
+            else if (p1.Y >= h) p1.Y = h;
+
+            if (p2.X < 0) p2.X = 0;
+            else if (p2.X >= w) p2.X = w;
+
+            if (p2.Y < 0) p2.Y = 0;
+            else if (p2.Y >= h) p2.Y = h;
 
             _g.DrawLine(new Pen(Color.Black),
             p1.X, p1.Y,
@@ -155,7 +197,6 @@ public partial class MainForm : Form
 
         _g = Graphics.FromImage(outputMainView.Image);
 
-        DrawLines();
         DrawSquare();
 
         outputMainView.Image = (Bitmap)outputMainView.Image;
@@ -177,15 +218,15 @@ public partial class MainForm : Form
 
         Color voidColor = bmp.GetPixel(p.X, p.Y);
 
-        var w = outputMainView.Image.Width;
-        var h = outputMainView.Image.Height;
+        var w = outputMainView.Image.Width - 1;
+        var h = outputMainView.Image.Height - 1;
 
         if (direction == 0)
         {
             int Dy = p.Y;
             int x = p.X;
 
-            while (Dy >= 0)
+            while (Dy > 0)
             {
                 Dy--;
 
@@ -202,7 +243,7 @@ public partial class MainForm : Form
             int Dx = p.X;
             int y = p.Y;
 
-            while (Dx >= 0)
+            while (Dx > 0)
             {
                 Dx--;
 
