@@ -114,15 +114,16 @@ namespace WF
             var sin = (float)Math.Sin(angle);
             var cos = (float)Math.Cos(angle);
 
+            var x = rotationPoint.X;
+            var y = rotationPoint.Y;
+            var z = rotationPoint.Z;
+
             if (rotationAxis == 0) // X
             {
                 for (int i = 0; i < Points.Count; i++)
                 {
-                    var Z = (Points[i].Z - rotationPoint.Z) * cos -
-                        (Points[i].Y - rotationPoint.Y) * sin - rotationPoint.Z;
-
-                    var Y = (Points[i].Z - rotationPoint.Z) * sin +
-                        (Points[i].Y - rotationPoint.Y) * cos - rotationPoint.Y;
+                    var Z = (Points[i].Z - z) * cos -(Points[i].Y - y) * sin + z;
+                    var Y = (Points[i].Z - z) * sin + (Points[i].Y - y) * cos + y;
 
                     Points[i] = new Vector3(Points[i].X, Y, Z);
                 }
@@ -131,11 +132,8 @@ namespace WF
             {
                 for (int i = 0; i < Points.Count; i++)
                 {
-                    var Z = (Points[i].Z - rotationPoint.Z) * cos -
-                        (Points[i].X - rotationPoint.X) * sin - rotationPoint.Z;
-
-                    var X = (Points[i].Z - rotationPoint.Z) * sin +
-                        (Points[i].X - rotationPoint.X) * cos - rotationPoint.X;
+                    var Z = (Points[i].Z - z) * cos - (Points[i].X - x) * sin + z;
+                    var X = (Points[i].Z - z) * sin + (Points[i].X - x) * cos + x;
 
                     Points[i] = new Vector3(X, Points[i].Y, Z);
                 }
@@ -144,11 +142,8 @@ namespace WF
             {
                 for (int i = 0; i < Points.Count; i++)
                 {
-                    var X = (Points[i].X - rotationPoint.X) * cos -
-                        (Points[i].Y - rotationPoint.Y) * sin - rotationPoint.X;
-
-                    var Y = (Points[i].X - rotationPoint.X) * sin +
-                        (Points[i].Y - rotationPoint.Y) * cos - rotationPoint.Y;
+                    var X = (Points[i].X - x) * cos - (Points[i].Y - y) * sin + x;
+                    var Y = (Points[i].X - x) * sin + (Points[i].Y - y) * cos + y;
 
                     Points[i] = new Vector3(X, Y, Points[i].Z);
                 }
