@@ -163,7 +163,6 @@
             inputCz.Name = "inputCz";
             inputCz.Size = new Size(83, 23);
             inputCz.TabIndex = 2;
-            inputCz.Value = new decimal(new int[] { 20, 0, 0, 0 });
             inputCz.ValueChanged += CubeInputs_ValueChanged;
             // 
             // label15
