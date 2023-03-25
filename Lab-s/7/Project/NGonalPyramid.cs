@@ -27,7 +27,7 @@ namespace Project
 
             Points.Add(new Vector3(x, y + height, z - radius));
 
-            for (var i = 1; i < anglesAmount; i++)
+            for (var i = 0; i < anglesAmount; i++)
             {
                 Points.Add(new Vector3(x, y, z));
             }
@@ -47,8 +47,8 @@ namespace Project
                 var sin = (float)Math.Sin(forBoth * i);
                 var cos = (float)Math.Cos(forBoth * i);
 
-                var Z = (Points[i].Z - z) * cos - (Points[i].X - x) * sin - z;
-                var X = (Points[i].Z - z) * sin + (Points[i].X - x) * cos - x;
+                var Z = (Points[i].Z - z) * cos - (Points[i].X - x) * sin + z;
+                var X = (Points[i].Z - z) * sin + (Points[i].X - x) * cos + x;
 
                 Points[i] = new Vector3(X, Points[i].Y, Z);
             }
@@ -58,7 +58,7 @@ namespace Project
         /// Rotate Pyramid
         /// </summary>
         /// <param name="rotationAxis"> 0 - X <br/> 1 - Y <br/> 2 - Z </param>
-        public void RotateAt(Vector3 rotationPoint, float angleDegree, byte rotationAxis = 0)
+        public void RotateAt(Vector3 rotationPoint, float angleDegree, byte rotationAxis)
         {
             if (rotationAxis > 2)
             {
@@ -78,8 +78,8 @@ namespace Project
             {
                 for (int i = 0; i < Points.Count; i++)
                 {
-                    var Z = (Points[i].Z - z) * cos - (Points[i].Y - y) * sin - z;
-                    var Y = (Points[i].Z - z) * sin + (Points[i].Y - y) * cos - y;
+                    var Z = (Points[i].Z - z) * cos - (Points[i].Y - y) * sin + z;
+                    var Y = (Points[i].Z - z) * sin + (Points[i].Y - y) * cos + y;
 
                     Points[i] = new Vector3(Points[i].X, Y, Z);
                 }
@@ -88,8 +88,8 @@ namespace Project
             {
                 for (int i = 0; i < Points.Count; i++)
                 {
-                    var Z = (Points[i].Z - z) * cos - (Points[i].Y - y) * sin - z;
-                    var X = (Points[i].Z - z) * sin + (Points[i].X - x) * cos - x;
+                    var Z = (Points[i].Z - z) * cos - (Points[i].Y - y) * sin + z;
+                    var X = (Points[i].Z - z) * sin + (Points[i].X - x) * cos + x;
 
                     Points[i] = new Vector3(X, Points[i].Y, Z);
                 }
@@ -98,8 +98,8 @@ namespace Project
             {
                 for (int i = 0; i < Points.Count; i++)
                 {
-                    var X = (Points[i].Z - z) * sin + (Points[i].X - x) * cos - x;
-                    var Y = (Points[i].Z - z) * sin + (Points[i].Y - y) * cos - y;
+                    var X = (Points[i].Z - z) * sin + (Points[i].X - x) * cos + x;
+                    var Y = (Points[i].Z - z) * sin + (Points[i].Y - y) * cos + y;
 
                     Points[i] = new Vector3(X, Y, Points[i].Z);
                 }
