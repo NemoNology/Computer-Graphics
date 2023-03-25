@@ -1,9 +1,29 @@
 namespace Project;
 
-public partial class Form1 : Form
+public partial class MainForm : Form
 {
-    public Form1()
+    public MainForm()
     {
         InitializeComponent();
+    }
+
+    private void MainView_MouseDown(object sender, MouseEventArgs e)
+    {
+
+    }
+
+    private void MainView_MouseUp(object sender, MouseEventArgs e)
+    {
+
+    }
+
+    private void MainView_MouseMove(object sender, MouseEventArgs e)
+    {
+
+    }
+
+    private void MainView_Resized(object sender, EventArgs e)
+    {
+        
     }
 }

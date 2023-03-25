@@ -1,6 +1,6 @@
 ﻿namespace Project;
 
-partial class Form1
+partial class MainForm
 {
     /// <summary>
     ///  Required designer variable.
@@ -28,11 +28,36 @@ partial class Form1
     /// </summary>
     private void InitializeComponent()
     {
-        this.components = new System.ComponentModel.Container();
-        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(800, 450);
-        this.Text = "Form1";
+        outputMaimView = new PictureBox();
+        ((System.ComponentModel.ISupportInitialize)outputMaimView).BeginInit();
+        SuspendLayout();
+        // 
+        // outputMaimView
+        // 
+        outputMaimView.Dock = DockStyle.Fill;
+        outputMaimView.Location = new Point(0, 0);
+        outputMaimView.Name = "outputMaimView";
+        outputMaimView.Size = new Size(800, 450);
+        outputMaimView.TabIndex = 0;
+        outputMaimView.TabStop = false;
+        outputMaimView.MouseDown += MainView_MouseDown;
+        outputMaimView.MouseMove += MainView_MouseMove;
+        outputMaimView.MouseUp += MainView_MouseUp;
+        outputMaimView.Resize += MainView_Resized;
+        // 
+        // MainForm
+        // 
+        AutoScaleDimensions = new SizeF(7F, 15F);
+        AutoScaleMode = AutoScaleMode.Font;
+        ClientSize = new Size(800, 450);
+        Controls.Add(outputMaimView);
+        Name = "MainForm";
+        Text = "Shape Clipping";
+        ((System.ComponentModel.ISupportInitialize)outputMaimView).EndInit();
+        ResumeLayout(false);
     }
 
     #endregion
+
+    private PictureBox outputMaimView;
 }
