@@ -6,6 +6,8 @@ namespace Project
     {
         public List<Vector3> Points { get; } = new List<Vector3>();
 
+        public Vector3 PyramidBaseCenterPoint { get; private set; }
+
         public NGonalPyramid()
         {
             Points.Add(new Vector3(0, 3, 0));
@@ -20,6 +22,8 @@ namespace Project
             var x = pyramidBaseCenter.X;
             var y = pyramidBaseCenter.Y;
             var z = pyramidBaseCenter.Z + radius;
+
+            PyramidBaseCenterPoint = pyramidBaseCenter;
 
             Points.Add(new Vector3(x, y + height, z - radius));
 
@@ -113,5 +117,33 @@ namespace Project
                     );
             }
         }
+
+        public List<Tuple<Vector3, Vector3>> Edges
+        {
+            get
+            {
+                var up = new List<Tuple<Vector3, Vector3>>();
+
+                for (var i = 1; i < Points.Count; i++)
+                {
+                    up.Add(new Tuple<Vector3, Vector3>(Points[i], Points[0]));
+                }
+
+                var down = new List<Tuple<Vector3, Vector3>>();
+
+                for (var i = 1; i < Points.Count - 1; i++)
+                {
+                    down.Add(new Tuple<Vector3, Vector3>(Points[i], Points[i + 1]));
+                }
+
+                down.Add(new Tuple<Vector3, Vector3>(Points.Last(), Points[1]));
+
+                down.AddRange(up);
+
+                return down;
+            }
+        }
+
+        public int AmountOfEdges => Points.Count - 1;
     }
 }
