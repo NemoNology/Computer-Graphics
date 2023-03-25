@@ -28,11 +28,27 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
+        outputMainView = new PictureBox();
+        ((System.ComponentModel.ISupportInitialize)outputMainView).BeginInit();
+        SuspendLayout();
+        // 
+        // outputMainView
+        // 
+        outputMainView.Dock = DockStyle.Fill;
+        outputMainView.Location = new Point(0, 0);
+        outputMainView.Name = "outputMainView";
+        outputMainView.Size = new Size(800, 450);
+        outputMainView.TabIndex = 0;
+        outputMainView.TabStop = false;
+
         this.components = new System.ComponentModel.Container();
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(800, 450);
-        this.Text = "Form1";
+        this.Text = "Hidden Edge Removal";
     }
 
     #endregion
+
+    private PictureBox outputMainView;
+
 }
