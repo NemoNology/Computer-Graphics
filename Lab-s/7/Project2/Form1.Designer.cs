@@ -1,6 +1,6 @@
-﻿namespace Project;
+﻿namespace Project2;
 
-partial class MainForm
+partial class Form1
 {
     /// <summary>
     ///  Required designer variable.
@@ -40,15 +40,24 @@ partial class MainForm
         outputMainView.Size = new Size(800, 450);
         outputMainView.TabIndex = 0;
         outputMainView.TabStop = false;
-
-        this.components = new System.ComponentModel.Container();
-        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(800, 450);
-        this.Text = "Hidden Edge Removal";
+        outputMainView.MouseDown += OutputMainView_MouseDown;
+        outputMainView.PreviewKeyDown += OutputMainView_PreviewKeyDown;
+        // 
+        // Form1
+        // 
+        AutoScaleDimensions = new SizeF(7F, 15F);
+        AutoScaleMode = AutoScaleMode.Font;
+        ClientSize = new Size(800, 450);
+        Controls.Add(outputMainView);
+        Name = "Form1";
+        Text = "Hidden Edge Removal";
+        PreviewKeyDown += OutputMainView_PreviewKeyDown;
+        Resize += Form1_Resize;
+        ((System.ComponentModel.ISupportInitialize)outputMainView).EndInit();
+        ResumeLayout(false);
     }
 
     #endregion
 
     private PictureBox outputMainView;
-
 }

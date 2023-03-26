@@ -1,8 +1,8 @@
-using System.Numerics;
+﻿using System.Numerics;
 
-namespace Project
+namespace Project2
 {
-    public class NGonalPyramid
+    internal class NGonalPyramid
     {
         public List<Vector3> Points { get; } = new List<Vector3>();
 
@@ -25,7 +25,7 @@ namespace Project
 
             PyramidBaseCenterPoint = pyramidBaseCenter;
 
-            Points.Add(new Vector3(x, y + height, z - radius));
+            Points.Add(new Vector3(x, y - height, z - radius));
 
             for (var i = 0; i < anglesAmount; i++)
             {
@@ -58,7 +58,7 @@ namespace Project
         /// Rotate Pyramid
         /// </summary>
         /// <param name="rotationAxis"> 0 - X <br/> 1 - Y <br/> 2 - Z </param>
-        public void RotateAt(Vector3 rotationPoint, float angleDegree, byte rotationAxis)
+        public void RotateAt(int angleDegree, byte rotationAxis)
         {
             if (rotationAxis > 2)
             {
@@ -70,9 +70,9 @@ namespace Project
             var sin = (float)Math.Sin(angle);
             var cos = (float)Math.Cos(angle);
 
-            var x = rotationPoint.X;
-            var y = rotationPoint.Y;
-            var z = rotationPoint.Z;
+            var x = PyramidBaseCenterPoint.X;
+            var y = PyramidBaseCenterPoint.Y;
+            var z = PyramidBaseCenterPoint.Z;
 
             if (rotationAxis == 0) // X
             {
@@ -88,7 +88,7 @@ namespace Project
             {
                 for (int i = 0; i < Points.Count; i++)
                 {
-                    var Z = (Points[i].Z - z) * cos - (Points[i].Y - y) * sin + z;
+                    var Z = (Points[i].Z - z) * cos - (Points[i].X - x) * sin + z;
                     var X = (Points[i].Z - z) * sin + (Points[i].X - x) * cos + x;
 
                     Points[i] = new Vector3(X, Points[i].Y, Z);
@@ -98,8 +98,8 @@ namespace Project
             {
                 for (int i = 0; i < Points.Count; i++)
                 {
-                    var X = (Points[i].Z - z) * sin + (Points[i].X - x) * cos + x;
-                    var Y = (Points[i].Z - z) * sin + (Points[i].Y - y) * cos + y;
+                    var X = (Points[i].X - x) * cos - (Points[i].Y - y) * sin + x;
+                    var Y = (Points[i].X - x) * sin + (Points[i].Y - y) * cos + y;
 
                     Points[i] = new Vector3(X, Y, Points[i].Z);
                 }
@@ -145,5 +145,38 @@ namespace Project
         }
 
         public int AmountOfEdges => Points.Count - 1;
+
+        /// <param name="axis"> 0 - X <br/> 1 - Y <br/> 2 - Z </param>
+        public bool IsPointIsInsideByAxis(Vector3 point, byte axis)
+        {
+            if (axis > 2)
+            {
+                return false;
+            }
+
+            float max, min;
+
+            if (axis == 0) // X
+            {
+                max = Points.MaxBy(p => p.X).X;
+                min = Points.MinBy(p => p.X).X;
+
+                return point.X >= min && point.X <= max;
+            }
+            else if (axis == 1) // Y
+            {
+                max = Points.MaxBy(p => p.Y).Y;
+                min = Points.MinBy(p => p.Y).Y;
+
+                return point.Y >= min && point.Y <= max;
+            }
+            else // Axis 2 - Z
+            {
+                max = Points.MaxBy(p => p.Z).Z;
+                min = Points.MinBy(p => p.Z).Z;
+
+                return point.Z >= min && point.Z <= max;
+            }
+        }
     }
 }
