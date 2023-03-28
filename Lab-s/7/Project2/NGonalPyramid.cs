@@ -81,12 +81,14 @@ namespace Project2
             var y = PyramidBaseCenterPoint.Y;
             var z = PyramidBaseCenterPoint.Z;
 
+            float X, Y, Z; 
+
             if (rotationAxis == 0) // X
             {
                 for (int i = 0; i < Points.Count; i++)
                 {
-                    var Z = (Points[i].Z - z) * cos - (Points[i].Y - y) * sin + z;
-                    var Y = (Points[i].Z - z) * sin + (Points[i].Y - y) * cos + y;
+                    Z = (Points[i].Z - z) * cos - (Points[i].Y - y) * sin + z;
+                    Y = (Points[i].Z - z) * sin + (Points[i].Y - y) * cos + y;
 
                     Points[i] = new Vector3(Points[i].X, Y, Z);
                 }
@@ -95,8 +97,8 @@ namespace Project2
             {
                 for (int i = 0; i < Points.Count; i++)
                 {
-                    var Z = (Points[i].Z - z) * cos - (Points[i].X - x) * sin + z;
-                    var X = (Points[i].Z - z) * sin + (Points[i].X - x) * cos + x;
+                    Z = (Points[i].Z - z) * cos - (Points[i].X - x) * sin + z;
+                    X = (Points[i].Z - z) * sin + (Points[i].X - x) * cos + x;
 
                     Points[i] = new Vector3(X, Points[i].Y, Z);
                 }
@@ -105,8 +107,8 @@ namespace Project2
             {
                 for (int i = 0; i < Points.Count; i++)
                 {
-                    var X = (Points[i].X - x) * cos - (Points[i].Y - y) * sin + x;
-                    var Y = (Points[i].X - x) * sin + (Points[i].Y - y) * cos + y;
+                    X = (Points[i].X - x) * cos - (Points[i].Y - y) * sin + x;
+                    Y = (Points[i].X - x) * sin + (Points[i].Y - y) * cos + y;
 
                     Points[i] = new Vector3(X, Y, Points[i].Z);
                 }
@@ -123,6 +125,13 @@ namespace Project2
                     Points[i].Z + Dz
                     );
             }
+
+            PyramidBaseCenterPoint = new Vector3
+            (
+                PyramidBaseCenterPoint.X + Dx,
+                PyramidBaseCenterPoint.Y + Dy,
+                PyramidBaseCenterPoint.Z + Dz
+            );
         }
 
         /// <value>
@@ -151,7 +160,7 @@ namespace Project2
             {
                 List<Tuple<Vector3, Vector3, Vector3>> res = new List<Tuple<Vector3, Vector3, Vector3>>();
 
-                for (int i = 1; i < Points.Count - 2; i++)
+                for (int i = 1; i < Points.Count - 1; i++)
                 {
                     res.Add(new Tuple<Vector3, Vector3, Vector3>
                     (
