@@ -8,6 +8,11 @@ namespace Project2
 
         public Vector3 PyramidBaseCenterPoint { get; private set; }
 
+        /// <summary>
+        /// This is usual constructor without parameters <br/>
+        /// Initialize new NGonalPyramid with height = 3, <br/>
+        /// radius = 1, base point coordinates = 0, 0, 0
+        /// </summary>
         public NGonalPyramid()
         {
             Points.Add(new Vector3(0, 3, 0));
@@ -15,6 +20,8 @@ namespace Project2
             Points.Add(new Vector3(1, 0, 0));
             Points.Add(new Vector3(0, 0, -1));
             Points.Add(new Vector3(-1, 0, 0));
+
+            PyramidBaseCenterPoint = new Vector3(0, 0, 0);
         }
 
         public NGonalPyramid(Vector3 pyramidBaseCenter, float height, float radius, int anglesAmount)
@@ -118,6 +125,9 @@ namespace Project2
             }
         }
 
+        /// <value>
+        /// Every edge in n-gonal pyramid
+        /// </value>
         public List<Tuple<Vector3, Vector3>> Edges
         {
             get
@@ -146,7 +156,12 @@ namespace Project2
 
         public int AmountOfEdges => Points.Count - 1;
 
+        /// <summary>
+        /// Check if inputted point is inside the ngonal pyramid by inputted axis
+        /// </summary>
+        /// <param name="point"> Inputted point </param>
         /// <param name="axis"> 0 - X <br/> 1 - Y <br/> 2 - Z </param>
+        /// <returns> True - if point is inside <br/> False - otherwise </returns>
         public bool IsPointIsInsideByAxis(Vector3 point, byte axis)
         {
             if (axis > 2)
