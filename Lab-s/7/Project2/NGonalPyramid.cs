@@ -128,70 +128,55 @@ namespace Project2
         /// <value>
         /// Every edge in n-gonal pyramid
         /// </value>
-        public List<Tuple<Vector3, Vector3>> Edges
+        public List<Tuple<Vector3, Vector3>> BaseEdges
         {
             get
             {
-                var up = new List<Tuple<Vector3, Vector3>>();
-
-                for (var i = 1; i < Points.Count; i++)
-                {
-                    up.Add(new Tuple<Vector3, Vector3>(Points[i], Points[0]));
-                }
-
-                var down = new List<Tuple<Vector3, Vector3>>();
+                var res = new List<Tuple<Vector3, Vector3>>();
 
                 for (var i = 1; i < Points.Count - 1; i++)
                 {
-                    down.Add(new Tuple<Vector3, Vector3>(Points[i], Points[i + 1]));
+                    res.Add(new Tuple<Vector3, Vector3>(Points[i], Points[i + 1]));
                 }
 
-                down.Add(new Tuple<Vector3, Vector3>(Points.Last(), Points[1]));
+                res.Add(new Tuple<Vector3, Vector3>(Points.Last(), Points[1]));
 
-                down.AddRange(up);
-
-                return down;
+                return res;
             }
         }
 
-        public int AmountOfEdges => Points.Count - 1;
-
-        /// <summary>
-        /// Check if inputted point is inside the ngonal pyramid by inputted axis
-        /// </summary>
-        /// <param name="point"> Inputted point </param>
-        /// <param name="axis"> 0 - X <br/> 1 - Y <br/> 2 - Z </param>
-        /// <returns> True - if point is inside <br/> False - otherwise </returns>
-        public bool IsPointIsInsideByAxis(Vector3 point, byte axis)
+        public List<Tuple<Vector3, Vector3, Vector3>> Faces
         {
-            if (axis > 2)
+            get
             {
-                return false;
-            }
+                List<Tuple<Vector3, Vector3, Vector3>> res = new List<Tuple<Vector3, Vector3, Vector3>>();
 
-            float max, min;
+                for (int i = 1; i < Points.Count - 2; i++)
+                {
+                    res.Add(new Tuple<Vector3, Vector3, Vector3>
+                    (
+                        Points[0], Points[i], Points[i + 1]
+                    )
+                    );
+                }
 
-            if (axis == 0) // X
-            {
-                max = Points.MaxBy(p => p.X).X;
-                min = Points.MinBy(p => p.X).X;
-
-                return point.X >= min && point.X <= max;
-            }
-            else if (axis == 1) // Y
-            {
-                max = Points.MaxBy(p => p.Y).Y;
-                min = Points.MinBy(p => p.Y).Y;
-
-                return point.Y >= min && point.Y <= max;
-            }
-            else // Axis 2 - Z
-            {
-                max = Points.MaxBy(p => p.Z).Z;
-                min = Points.MinBy(p => p.Z).Z;
-
-                return point.Z >= min && point.Z <= max;
+                return res;
             }
         }
+        
+        public Vector3 PyramidCenter
+        {
+            get
+            {
+                return new Vector3
+                (
+                    (Points[0].X + PyramidBaseCenterPoint.X) / 2,
+                    (Points[0].Y + PyramidBaseCenterPoint.Y) / 2,
+                    (Points[0].Z + PyramidBaseCenterPoint.Z) / 2
+                );
+            }
+        }
+    
+
     }
 }
