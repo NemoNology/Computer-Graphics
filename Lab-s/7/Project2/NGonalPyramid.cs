@@ -160,14 +160,25 @@ namespace Project2
             {
                 List<Tuple<Vector3, Vector3, Vector3>> res = new List<Tuple<Vector3, Vector3, Vector3>>();
 
-                for (int i = 1; i < Points.Count - 1; i++)
+                int i = 1;
+                int end = Points.Count - 1;
+
+                while (i < end)
                 {
                     res.Add(new Tuple<Vector3, Vector3, Vector3>
                     (
                         Points[0], Points[i], Points[i + 1]
                     )
                     );
+
+                    i++;
                 }
+
+                res.Add(new Tuple<Vector3, Vector3, Vector3>
+                (
+                    Points[0], Points.Last(), Points[1]
+                )
+                );
 
                 return res;
             }
