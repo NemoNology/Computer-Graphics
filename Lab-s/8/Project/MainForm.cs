@@ -9,9 +9,9 @@ public partial class MainForm : Form
         InitializeComponent();
     }
 
-    private byte[] _r = new byte[byte.MaxValue];
-    private byte[] _g = new byte[byte.MaxValue];
-    private byte[] _b = new byte[byte.MaxValue];
+    private uint[] _r = new uint[byte.MaxValue];
+    private uint[] _g = new uint[byte.MaxValue];
+    private uint[] _b = new uint[byte.MaxValue];
 
     private Graphics _gr;
 
@@ -30,7 +30,7 @@ public partial class MainForm : Form
         outputHistB.Image = new Bitmap(258, (int)maxB);
 
         DrawHistsAxis();
-        
+
         
     }
 
@@ -54,9 +54,9 @@ public partial class MainForm : Form
     {
         var bmp = (Bitmap)outputMainView.Image;
 
-        _r = new byte[byte.MaxValue];
-        _g = new byte[byte.MaxValue];
-        _b = new byte[byte.MaxValue];
+        _r = new uint[byte.MaxValue];
+        _g = new uint[byte.MaxValue];
+        _b = new uint[byte.MaxValue];
 
         for (int i = 0; i < bmp.Height; i++)
         {
