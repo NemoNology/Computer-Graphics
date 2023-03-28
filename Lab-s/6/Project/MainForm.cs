@@ -97,20 +97,6 @@ public partial class MainForm : Form
         DrawSquare();
     }
 
-    private void MainView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-    {
-        if (e.KeyCode == Keys.Q)
-        {
-            _square.RotateAt(_squareCenter, -5);
-            DrawSquare();
-        }
-        else if (e.KeyCode == Keys.E)
-        {
-            _square.RotateAt(_squareCenter, 5);
-            DrawSquare();
-        }
-    }
-
     /// <summary>
     /// Draw all saved pixels on main view
     /// </summary>
@@ -128,11 +114,11 @@ public partial class MainForm : Form
             p1 = new Point((int)l.X, (int)l.Y);
             p2 = new Point((int)l.Z, (int)l.W);
 
-            if (IsPointInsideSquare(p1) && IsPointInsideSquare(p2))
-            {
-                _g.DrawLine(new Pen(Color.Blue), p1, p2);
-                Redraw(true);
-            }
+            _g.DrawLine(
+                new Pen(Color.Blue), 
+                p1, p2);
+
+            Redraw(true);
 
             return;
         }
@@ -142,11 +128,11 @@ public partial class MainForm : Form
             p1 = new Point((int)line.X, (int)line.Y);
             p2 = new Point((int)line.Z, (int)line.W);
 
-            if (IsPointInsideSquare(p1) && IsPointInsideSquare(p2))
-            {
-                _g.DrawLine(new Pen(Color.Blue), p1, p2);
-                Redraw(true);
-            }
+            _g.DrawLine(
+                new Pen(Color.Blue), 
+                p1, p2);
+
+            Redraw(true);
         }
     }
 
@@ -202,96 +188,5 @@ public partial class MainForm : Form
         outputMainView.Image = (Bitmap)outputMainView.Image;
     }
 
-    private bool IsPointInsideSquare(Point p)
-    {
-        return CheckContour(p, 0) &&
-        CheckContour(p, 1) &&
-        CheckContour(p, 2) &&
-        CheckContour(p, 3);
-    }
-
-    /// <param name="direction"> 0 - Up <br/> 1 - Left <br/> 2 - Down <br/> 3 - Right <br/> </param>
-    /// <returns> False, if can freely walk to the border of picture in chosen direction <br/> True - otherwise </returns>
-    private bool CheckContour(Point p, int direction)
-    {
-        var bmp = (Bitmap)outputMainView.Image;
-
-        Color voidColor = bmp.GetPixel(p.X, p.Y);
-
-        var w = outputMainView.Image.Width - 1;
-        var h = outputMainView.Image.Height - 1;
-
-        if (direction == 0)
-        {
-            int Dy = p.Y;
-            int x = p.X;
-
-            while (Dy > 0)
-            {
-                Dy--;
-
-                if (bmp.GetPixel(x, Dy) != voidColor)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-        else if (direction == 1)
-        {
-            int Dx = p.X;
-            int y = p.Y;
-
-            while (Dx > 0)
-            {
-                Dx--;
-
-                if (bmp.GetPixel(Dx, y) != voidColor)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-        else if (direction == 2)
-        {
-            int Dy = p.Y;
-            int x = p.X;
-
-            while (Dy < h)
-            {
-                Dy++;
-
-                if (bmp.GetPixel(x, Dy) != voidColor)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-        else if (direction == 3)
-        {
-            int Dx = 0;
-            int y = p.Y;
-
-            while (Dx < w)
-            {
-                Dx++;
-
-                if (bmp.GetPixel(Dx, y) != voidColor)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-        else
-        {
-            return false;
-        }
-    }
+    
 }

@@ -43,7 +43,6 @@ partial class MainForm
         outputMainView.MouseDown += MainView_MouseDown;
         outputMainView.MouseMove += MainView_MouseMove;
         outputMainView.MouseUp += MainView_MouseUp;
-        outputMainView.PreviewKeyDown += MainView_PreviewKeyDown;
         outputMainView.MouseWheel += MainView_MouseWheel;
         // 
         // MainForm
@@ -56,7 +55,6 @@ partial class MainForm
         Text = "Shape Clipping";
         ((System.ComponentModel.ISupportInitialize)outputMainView).EndInit();
         ResumeLayout(false);
-        PreviewKeyDown += MainView_PreviewKeyDown;
         Resize += MainView_Resized;
     }
 

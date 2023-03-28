@@ -32,25 +32,6 @@ namespace Project
             Points.Add(new Vector2(x - halfSideLength, y + halfSideLength));
         }
 
-        public void RotateAt(Point rotationPoint, int angleDegree)
-        {
-            var angle = (Math.PI / 180) * angleDegree;
-
-            var sin = (float)Math.Sin(angle);
-            var cos = (float)Math.Cos(angle);
-
-            for (int i = 0; i < Points.Count; i++)
-            {
-                var X = (Points[i].X - rotationPoint.X) * cos -
-                    (Points[i].Y - rotationPoint.Y) * sin + rotationPoint.X;
-
-                var Y = (Points[i].X - rotationPoint.X) * sin +
-                    (Points[i].Y - rotationPoint.Y) * cos + rotationPoint.Y;
-
-                Points[i] = new Vector2(X, Y);
-            }
-        }
-
         public void Translate(float x, float y)
         {
             for (int i = 0; i < Points.Count; i++)
@@ -71,5 +52,7 @@ namespace Project
                 };
             }
         }
+    
+    
     }
 }
