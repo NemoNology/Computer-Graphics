@@ -14,9 +14,9 @@ public partial class MainForm : Form
         FillPatterns();
     }
 
-    private uint[] _r = new uint[byte.MaxValue + 1];
-    private uint[] _g = new uint[byte.MaxValue + 1];
-    private uint[] _b = new uint[byte.MaxValue + 1];
+    private byte[,] _r;
+    private byte[,] _g;
+    private byte[,] _b;
 
     private Image _baseImage;
     private Image _modifiedImage;
@@ -241,6 +241,54 @@ public partial class MainForm : Form
         if (!IsValidInput)
         {
             return;
+        }
+
+        bool zero = inputFillEmptyPixelsWithZero.Checked;
+        bool ndm = inputGetPixelsFromBaseImage.Checked;
+        int hn = _n / 2;
+
+        if (inputCalculateR.Checked)
+        {
+            _r = new byte[_n, _n];
+            byte r;
+
+            // Inside picture
+            for (int i = 0; i < _baseImage.Height; i += _n)
+            {
+                for (int j = 0; j < _baseImage.Width; j += _n)
+                {
+                    // Inside matrix from picture
+                    for (int l = i; l < i + _n; l++)
+                    {
+                        for (int t = j; t < j + _n; t++)
+                        {
+                            if (l < 0 || l >= _baseImage.Height ||
+                                t < 0 || t >= _baseImage.Width)
+                            {
+                                r = (byte)(zero ? 0 : 255);
+                            }
+                            else
+                            {
+                                r = _baseImage.GetPixel(t, l).R;
+                            }
+
+                            _r[l, t] = r;
+                        }
+                    }
+
+                    // After getting submatrix
+                    byte[,] X = _r;
+
+                    if (ndm)
+                    {
+                        // TODO: matmul for static and for dynamic 
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
         }
     }
 

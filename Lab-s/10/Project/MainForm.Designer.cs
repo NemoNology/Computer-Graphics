@@ -28,14 +28,14 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
-        DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+        DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
         splitContainer1 = new SplitContainer();
         splitContainer2 = new SplitContainer();
         outputBaseImage = new PictureBox();
         outputModifiedImage = new PictureBox();
         button1 = new Button();
         inputCalculateB = new CheckBox();
-        checkBox1 = new CheckBox();
+        inputFillEmptyPixelsWithZero = new CheckBox();
         inputGetPixelsFromBaseImage = new CheckBox();
         inputCalculateG = new CheckBox();
         inputCalculateR = new CheckBox();
@@ -93,7 +93,7 @@ partial class MainForm
         splitContainer1.Panel2.BackColor = SystemColors.ButtonShadow;
         splitContainer1.Panel2.Controls.Add(button1);
         splitContainer1.Panel2.Controls.Add(inputCalculateB);
-        splitContainer1.Panel2.Controls.Add(checkBox1);
+        splitContainer1.Panel2.Controls.Add(inputFillEmptyPixelsWithZero);
         splitContainer1.Panel2.Controls.Add(inputGetPixelsFromBaseImage);
         splitContainer1.Panel2.Controls.Add(inputCalculateG);
         splitContainer1.Panel2.Controls.Add(inputCalculateR);
@@ -177,16 +177,16 @@ partial class MainForm
         inputCalculateB.TabIndex = 6;
         inputCalculateB.UseVisualStyleBackColor = true;
         // 
-        // checkBox1
+        // inputFillEmptyPixelsWithZero
         // 
-        checkBox1.AutoSize = true;
-        checkBox1.Checked = true;
-        checkBox1.CheckState = CheckState.Checked;
-        checkBox1.Location = new Point(244, 167);
-        checkBox1.Name = "checkBox1";
-        checkBox1.Size = new Size(15, 14);
-        checkBox1.TabIndex = 6;
-        checkBox1.UseVisualStyleBackColor = true;
+        inputFillEmptyPixelsWithZero.AutoSize = true;
+        inputFillEmptyPixelsWithZero.Checked = true;
+        inputFillEmptyPixelsWithZero.CheckState = CheckState.Checked;
+        inputFillEmptyPixelsWithZero.Location = new Point(244, 167);
+        inputFillEmptyPixelsWithZero.Name = "inputFillEmptyPixelsWithZero";
+        inputFillEmptyPixelsWithZero.Size = new Size(15, 14);
+        inputFillEmptyPixelsWithZero.TabIndex = 6;
+        inputFillEmptyPixelsWithZero.UseVisualStyleBackColor = true;
         // 
         // inputGetPixelsFromBaseImage
         // 
@@ -226,14 +226,14 @@ partial class MainForm
         inputMatrix.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         inputMatrix.Location = new Point(303, 32);
         inputMatrix.Name = "inputMatrix";
-        dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        dataGridViewCellStyle1.BackColor = SystemColors.Control;
-        dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-        dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-        dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-        dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-        dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-        inputMatrix.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
+        dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        dataGridViewCellStyle2.BackColor = SystemColors.Control;
+        dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+        dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
+        dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+        dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+        dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+        inputMatrix.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
         inputMatrix.RowTemplate.Height = 25;
         inputMatrix.Size = new Size(247, 169);
         inputMatrix.TabIndex = 5;
@@ -500,7 +500,7 @@ partial class MainForm
     private Label label6;
     private CheckBox inputGetPixelsFromBaseImage;
     private Label label9;
-    private CheckBox checkBox1;
+    private CheckBox inputFillEmptyPixelsWithZero;
     private Label label10;
     private Button button1;
     private ComboBox inputFilterPattern;
