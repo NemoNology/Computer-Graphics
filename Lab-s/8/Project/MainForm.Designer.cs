@@ -49,6 +49,12 @@ partial class MainForm
         outputHistG = new PictureBox();
         outputHistR = new PictureBox();
         inputOpenFileDialog = new OpenFileDialog();
+        label10 = new Label();
+        outputMaxR = new Label();
+        label11 = new Label();
+        outputMaxG = new Label();
+        label13 = new Label();
+        outputMaxB = new Label();
         ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
         splitContainer1.Panel1.SuspendLayout();
         splitContainer1.Panel2.SuspendLayout();
@@ -89,6 +95,12 @@ partial class MainForm
         splitContainer1.Panel2.Controls.Add(label3);
         splitContainer1.Panel2.Controls.Add(label7);
         splitContainer1.Panel2.Controls.Add(label4);
+        splitContainer1.Panel2.Controls.Add(outputMaxB);
+        splitContainer1.Panel2.Controls.Add(outputMaxG);
+        splitContainer1.Panel2.Controls.Add(outputMaxR);
+        splitContainer1.Panel2.Controls.Add(label13);
+        splitContainer1.Panel2.Controls.Add(label11);
+        splitContainer1.Panel2.Controls.Add(label10);
         splitContainer1.Panel2.Controls.Add(label1);
         splitContainer1.Panel2.Controls.Add(outputHistB);
         splitContainer1.Panel2.Controls.Add(outputHistG);
@@ -142,6 +154,7 @@ partial class MainForm
         inputHistBScale.Size = new Size(81, 23);
         inputHistBScale.TabIndex = 2;
         inputHistBScale.Value = new decimal(new int[] { 100, 0, 0, 0 });
+        inputHistBScale.ValueChanged += Scale_Changed;
         // 
         // inputHistGScale
         // 
@@ -152,6 +165,7 @@ partial class MainForm
         inputHistGScale.Size = new Size(81, 23);
         inputHistGScale.TabIndex = 2;
         inputHistGScale.Value = new decimal(new int[] { 100, 0, 0, 0 });
+        inputHistGScale.ValueChanged += Scale_Changed;
         // 
         // inputHistRScale
         // 
@@ -162,6 +176,7 @@ partial class MainForm
         inputHistRScale.Size = new Size(81, 23);
         inputHistRScale.TabIndex = 2;
         inputHistRScale.Value = new decimal(new int[] { 100, 0, 0, 0 });
+        inputHistRScale.ValueChanged += Scale_Changed;
         // 
         // label9
         // 
@@ -284,6 +299,66 @@ partial class MainForm
         // 
         inputOpenFileDialog.FileName = "openFileDialog1";
         // 
+        // label10
+        // 
+        label10.AutoSize = true;
+        label10.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+        label10.Location = new Point(102, 22);
+        label10.Name = "label10";
+        label10.Size = new Size(33, 15);
+        label10.TabIndex = 1;
+        label10.Text = "Max:";
+        // 
+        // outputMaxR
+        // 
+        outputMaxR.AutoSize = true;
+        outputMaxR.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+        outputMaxR.Location = new Point(141, 22);
+        outputMaxR.Name = "outputMaxR";
+        outputMaxR.Size = new Size(16, 15);
+        outputMaxR.TabIndex = 1;
+        outputMaxR.Text = "...";
+        // 
+        // label11
+        // 
+        label11.AutoSize = true;
+        label11.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+        label11.Location = new Point(426, 22);
+        label11.Name = "label11";
+        label11.Size = new Size(33, 15);
+        label11.TabIndex = 1;
+        label11.Text = "Max:";
+        // 
+        // outputMaxG
+        // 
+        outputMaxG.AutoSize = true;
+        outputMaxG.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+        outputMaxG.Location = new Point(465, 22);
+        outputMaxG.Name = "outputMaxG";
+        outputMaxG.Size = new Size(16, 15);
+        outputMaxG.TabIndex = 1;
+        outputMaxG.Text = "...";
+        // 
+        // label13
+        // 
+        label13.AutoSize = true;
+        label13.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+        label13.Location = new Point(724, 22);
+        label13.Name = "label13";
+        label13.Size = new Size(33, 15);
+        label13.TabIndex = 1;
+        label13.Text = "Max:";
+        // 
+        // outputMaxB
+        // 
+        outputMaxB.AutoSize = true;
+        outputMaxB.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+        outputMaxB.Location = new Point(763, 22);
+        outputMaxB.Name = "outputMaxB";
+        outputMaxB.Size = new Size(16, 15);
+        outputMaxB.TabIndex = 1;
+        outputMaxB.Text = "...";
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -292,6 +367,7 @@ partial class MainForm
         Controls.Add(splitContainer1);
         MainMenuStrip = menuStrip1;
         Name = "MainForm";
+        StartPosition = FormStartPosition.CenterScreen;
         Text = "Form1";
         splitContainer1.Panel1.ResumeLayout(false);
         splitContainer1.Panel1.PerformLayout();
@@ -335,4 +411,10 @@ partial class MainForm
     private PictureBox outputHistG;
     private PictureBox outputHistR;
     private PictureBox outputHistB;
+    private Label outputMaxB;
+    private Label outputMaxG;
+    private Label outputMaxR;
+    private Label label13;
+    private Label label11;
+    private Label label10;
 }
