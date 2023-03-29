@@ -7,6 +7,8 @@ public partial class MainForm : Form
         InitializeComponent();
 
         inputColorMode.SelectedIndex = 0;
+
+        _m = new float[_n, _n];
     }
 
     private uint[] _r = new uint[byte.MaxValue + 1];
@@ -16,7 +18,9 @@ public partial class MainForm : Form
     private Image _baseImage;
     private Image _modifiedImage;
 
-    private Graphics _gr;
+    private int _n;
+    private float _k = 1;
+    private float[,] _m;
 
 
     private void ImageLoad_Click(object sender, EventArgs e)
@@ -72,7 +76,7 @@ public partial class MainForm : Form
         if (inputColorMode.SelectedIndex == 1)
         {
             // base
-            Thread thB = new Thread(() => 
+            Thread thB = new Thread(() =>
             {
                 for (int i = 0; i < bmpB.Height; i++)
                 {
@@ -202,5 +206,68 @@ public partial class MainForm : Form
     private void InputColorModeSelectIndex_Changed(object sender, EventArgs e)
     {
         UpdateImages();
+    }
+
+    private void MatrixToGrid()
+    {
+        inputMatrix.RowCount = _n;
+        inputMatrix.ColumnCount = _n;
+
+        for (int i = 0; i < _n; i++)
+        {
+            for (int j = 0; j < _n; j++)
+            {
+                inputMatrix.Rows[i].Cells[j].Value = _m[i, j];
+            }
+        }
+    }
+
+    private void InputNValue_Changed(object sender, EventArgs e)
+    {
+        _m = new float[_n, _n];
+        MatrixToGrid();
+    }
+
+    private void ApplyFilter_Click(object sender, EventArgs e)
+    {
+        if (!IsValidInput)
+        {
+            return;
+        }
+    }
+
+    private void ReplaceBaseImageByModified_Click(object sender, EventArgs e)
+    {
+        _baseImage = _modifiedImage;
+        outputBaseImage.Image = _baseImage;
+        outputModifiedImage.Image = _baseImage;
+
+        UpdateImages();
+    }
+
+    private bool IsValidInput
+    {
+        get
+        {
+            if (!float.TryParse(inputK.Text, out _k))
+            {
+                MessageBox.Show("Invalid K value");
+                return false;
+            }
+
+            for (int i = 0; i < _n; i++)
+            {
+                for (int j = 0; j < _n; j++)
+                {
+                    if (!float.TryParse(inputMatrix.Rows[i].Cells[j].Value as string, out _))
+                    {
+                        MessageBox.Show($"Invalid Matrix input at row {i}, column {j}");
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
     }
 }
