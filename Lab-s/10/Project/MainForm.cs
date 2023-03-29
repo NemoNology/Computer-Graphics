@@ -9,6 +9,7 @@ public partial class MainForm : Form
         inputColorMode.SelectedIndex = 0;
 
         _m = new float[_n, _n];
+        MatrixToGrid();
     }
 
     private uint[] _r = new uint[byte.MaxValue + 1];
@@ -18,7 +19,7 @@ public partial class MainForm : Form
     private Image _baseImage;
     private Image _modifiedImage;
 
-    private int _n;
+    private int _n = 1;
     private float _k = 1;
     private float[,] _m;
 
@@ -224,6 +225,7 @@ public partial class MainForm : Form
 
     private void InputNValue_Changed(object sender, EventArgs e)
     {
+        _n = (int)inputN.Value;
         _m = new float[_n, _n];
         MatrixToGrid();
     }
@@ -259,6 +261,13 @@ public partial class MainForm : Form
             {
                 for (int j = 0; j < _n; j++)
                 {
+                    var value = inputMatrix.Rows[i].Cells[j].Value;
+
+                    if (value is float)
+                    {
+                        continue;
+                    }
+
                     if (!float.TryParse(inputMatrix.Rows[i].Cells[j].Value as string, out _))
                     {
                         MessageBox.Show($"Invalid Matrix input at row {i}, column {j}");

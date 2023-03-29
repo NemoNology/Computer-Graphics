@@ -28,6 +28,7 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
+        DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
         splitContainer1 = new SplitContainer();
         splitContainer2 = new SplitContainer();
         outputBaseImage = new PictureBox();
@@ -46,8 +47,10 @@ partial class MainForm
         label9 = new Label();
         label3 = new Label();
         label7 = new Label();
+        inputFilterPattern = new ComboBox();
         inputColorMode = new ComboBox();
         label5 = new Label();
+        label11 = new Label();
         label6 = new Label();
         label4 = new Label();
         label2 = new Label();
@@ -56,11 +59,9 @@ partial class MainForm
         imageToolStripMenuItem = new ToolStripMenuItem();
         loadToolStripMenuItem = new ToolStripMenuItem();
         saveToolStripMenuItem = new ToolStripMenuItem();
+        saveModifiedPictureAsBaseToolStripMenuItem = new ToolStripMenuItem();
         openFileDialog = new OpenFileDialog();
         saveFileDialog = new SaveFileDialog();
-        label11 = new Label();
-        inputFilterPattern = new ComboBox();
-        saveModifiedPictureAsBaseToolStripMenuItem = new ToolStripMenuItem();
         ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
         splitContainer1.Panel1.SuspendLayout();
         splitContainer1.Panel2.SuspendLayout();
@@ -220,9 +221,19 @@ partial class MainForm
         // 
         // inputMatrix
         // 
+        inputMatrix.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader;
+        inputMatrix.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders;
         inputMatrix.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         inputMatrix.Location = new Point(303, 32);
         inputMatrix.Name = "inputMatrix";
+        dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        dataGridViewCellStyle1.BackColor = SystemColors.Control;
+        dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+        dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+        dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+        dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+        dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+        inputMatrix.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
         inputMatrix.RowTemplate.Height = 25;
         inputMatrix.Size = new Size(247, 169);
         inputMatrix.TabIndex = 5;
@@ -243,6 +254,7 @@ partial class MainForm
         inputN.Size = new Size(77, 23);
         inputN.TabIndex = 3;
         inputN.Value = new decimal(new int[] { 1, 0, 0, 0 });
+        inputN.ValueChanged += InputNValue_Changed;
         // 
         // label8
         // 
@@ -298,6 +310,16 @@ partial class MainForm
         label7.Text = "G:";
         label7.TextAlign = ContentAlignment.TopCenter;
         // 
+        // inputFilterPattern
+        // 
+        inputFilterPattern.FormattingEnabled = true;
+        inputFilterPattern.Items.AddRange(new object[] { "Usual", "R", "G", "B" });
+        inputFilterPattern.Location = new Point(580, 154);
+        inputFilterPattern.Name = "inputFilterPattern";
+        inputFilterPattern.Size = new Size(145, 23);
+        inputFilterPattern.TabIndex = 2;
+        inputFilterPattern.SelectedIndexChanged += InputColorModeSelectIndex_Changed;
+        // 
         // inputColorMode
         // 
         inputColorMode.FormattingEnabled = true;
@@ -318,6 +340,17 @@ partial class MainForm
         label5.TabIndex = 1;
         label5.Text = "R:";
         label5.TextAlign = ContentAlignment.TopCenter;
+        // 
+        // label11
+        // 
+        label11.AutoSize = true;
+        label11.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+        label11.Location = new Point(608, 123);
+        label11.Name = "label11";
+        label11.Size = new Size(89, 15);
+        label11.TabIndex = 1;
+        label11.Text = "Filter patterns:";
+        label11.TextAlign = ContentAlignment.TopCenter;
         // 
         // label6
         // 
@@ -368,7 +401,7 @@ partial class MainForm
         menuStrip1.Items.AddRange(new ToolStripItem[] { imageToolStripMenuItem });
         menuStrip1.Location = new Point(0, 0);
         menuStrip1.Name = "menuStrip1";
-        menuStrip1.Size = new Size(126, 213);
+        menuStrip1.Size = new Size(58, 213);
         menuStrip1.TabIndex = 0;
         menuStrip1.Text = "menuStrip1";
         // 
@@ -376,14 +409,14 @@ partial class MainForm
         // 
         imageToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { loadToolStripMenuItem, saveToolStripMenuItem, saveModifiedPictureAsBaseToolStripMenuItem });
         imageToolStripMenuItem.Name = "imageToolStripMenuItem";
-        imageToolStripMenuItem.Size = new Size(113, 19);
+        imageToolStripMenuItem.Size = new Size(45, 19);
         imageToolStripMenuItem.Text = "Image";
         // 
         // loadToolStripMenuItem
         // 
         loadToolStripMenuItem.Name = "loadToolStripMenuItem";
         loadToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.O;
-        loadToolStripMenuItem.Size = new Size(143, 22);
+        loadToolStripMenuItem.Size = new Size(323, 22);
         loadToolStripMenuItem.Text = "Load";
         loadToolStripMenuItem.Click += ImageLoad_Click;
         // 
@@ -391,38 +424,9 @@ partial class MainForm
         // 
         saveToolStripMenuItem.Name = "saveToolStripMenuItem";
         saveToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
-        saveToolStripMenuItem.Size = new Size(143, 22);
+        saveToolStripMenuItem.Size = new Size(323, 22);
         saveToolStripMenuItem.Text = "Save";
         saveToolStripMenuItem.Click += ImageSave_Click;
-        // 
-        // openFileDialog
-        // 
-        openFileDialog.FileName = "openFileDialog1";
-        // 
-        // saveFileDialog
-        // 
-        saveFileDialog.Filter = "png files|*.png";
-        // 
-        // label11
-        // 
-        label11.AutoSize = true;
-        label11.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-        label11.Location = new Point(608, 123);
-        label11.Name = "label11";
-        label11.Size = new Size(89, 15);
-        label11.TabIndex = 1;
-        label11.Text = "Filter patterns:";
-        label11.TextAlign = ContentAlignment.TopCenter;
-        // 
-        // inputFilterPattern
-        // 
-        inputFilterPattern.FormattingEnabled = true;
-        inputFilterPattern.Items.AddRange(new object[] { "Usual", "R", "G", "B" });
-        inputFilterPattern.Location = new Point(580, 154);
-        inputFilterPattern.Name = "inputFilterPattern";
-        inputFilterPattern.Size = new Size(145, 23);
-        inputFilterPattern.TabIndex = 2;
-        inputFilterPattern.SelectedIndexChanged += InputColorModeSelectIndex_Changed;
         // 
         // saveModifiedPictureAsBaseToolStripMenuItem
         // 
@@ -431,6 +435,14 @@ partial class MainForm
         saveModifiedPictureAsBaseToolStripMenuItem.Size = new Size(323, 22);
         saveModifiedPictureAsBaseToolStripMenuItem.Text = "Replace base image by modified";
         saveModifiedPictureAsBaseToolStripMenuItem.Click += ReplaceBaseImageByModified_Click;
+        // 
+        // openFileDialog
+        // 
+        openFileDialog.FileName = "openFileDialog1";
+        // 
+        // saveFileDialog
+        // 
+        saveFileDialog.Filter = "png files|*.png";
         // 
         // MainForm
         // 
