@@ -10,6 +10,8 @@ public partial class MainForm : Form
 
         _m = new float[_n, _n];
         MatrixToGrid();
+
+        FillPatterns();
     }
 
     private uint[] _r = new uint[byte.MaxValue + 1];
@@ -22,6 +24,8 @@ public partial class MainForm : Form
     private int _n = 1;
     private float _k = 1;
     private float[,] _m;
+
+    private Dictionary<string, Action> _filtersPatterns = new Dictionary<string, Action>();
 
 
     private void ImageLoad_Click(object sender, EventArgs e)
@@ -228,6 +232,8 @@ public partial class MainForm : Form
         _n = (int)inputN.Value;
         _m = new float[_n, _n];
         MatrixToGrid();
+
+        inputFilterPattern.SelectedIndex = inputFilterPattern.Items.Count - 1;
     }
 
     private void ApplyFilter_Click(object sender, EventArgs e)
@@ -277,6 +283,197 @@ public partial class MainForm : Form
             }
 
             return true;
+        }
+    }
+
+    private void FillPatternsChoose()
+    {
+        foreach (var pattern in _filtersPatterns)
+        {
+            inputFilterPattern.Items.Add(pattern.Key);
+        }
+
+        inputFilterPattern.SelectedIndex = inputFilterPattern.Items.Count - 1;
+    }
+
+    private void Pattern_Identity()
+    {
+        inputN.Value = 3;
+        inputK.Text = "1";
+
+        _m = new float[3, 3]
+        {
+            { 0, 0, 0 },
+            { 0, 1, 0 },
+            { 0, 0, 0 }
+        };
+    }
+
+    private void Pattern_Ridge()
+    {
+        inputN.Value = 3;
+        inputK.Text = "1";
+
+        _m = new float[3, 3]
+        {
+            { 0, -1, 0 },
+            { -1, 4, -1 },
+            { 0, -1, 0 }
+        };
+    }
+
+    private void Pattern_EdgeDetection()
+    {
+        inputN.Value = 3;
+        inputK.Text = "1";
+
+        _m = new float[3, 3]
+        {
+            { -1, -1, -1 },
+            { -1, 8, -1 },
+            { -1, -1, -1 }
+        };
+    }
+
+    private void Pattern_Sharpen()
+    {
+        inputN.Value = 3;
+        inputK.Text = "1";
+
+        _m = new float[3, 3]
+        {
+            { 0, -1, 0 },
+            { -1, 5, -1 },
+            { 0, -1, 0 }
+        };
+    }
+
+    private void Pattern_BoxBlur()
+    {
+        inputN.Value = 3;
+        inputK.Text = $"{1f / 9}";
+
+        _m = new float[3, 3]
+        {
+            { 1, 1, 1 },
+            { 1, 1, 1 },
+            { 1, 1, 1 }
+        };
+    }
+
+    private void Pattern_GaussianBlur_3x3()
+    {
+        inputN.Value = 3;
+        inputK.Text = $"{1f / 16}";
+
+        _m = new float[3, 3]
+        {
+            { 1, 2, 1 },
+            { 2, 4, 2 },
+            { 1, 2, 1 }
+        };
+    }
+
+    private void Pattern_GaussianBlur_5x5()
+    {
+        inputN.Value = 5;
+        inputK.Text = $"{1f / 256}";
+
+        _m = new float[5, 5]
+        {
+            { 1, 4, 6, 4, 1 },
+            { 4, 16, 24, 16, 4 },
+            { 6, 24, 36, 24, 6 },
+            { 4, 16, 24, 16, 4 },
+            { 1, 4, 6, 4, 1 }
+        };
+    }
+
+    private void Pattern_SecondGaussianBlur_5x5()
+    {
+        inputN.Value = 5;
+        inputK.Text = "1";
+
+        _m = new float[5, 5]
+        {
+            { 789 / 1e6f, 6581 / 1e6f, 13347 / 1e6f, 6581 / 1e6f, 789 / 1e6f },
+            { 6581 / 1e6f, 54901 / 1e6f, 111356 / 1e6f, 54901 / 1e6f, 6581 / 1e6f },
+            { 13347 / 1e6f, 111356 / 1e6f, 225821 / 1e6f, 111356 / 1e6f, 13347 / 1e6f },
+            { 6581 / 1e6f, 54901 / 1e6f, 111356 / 1e6f, 54901 / 1e6f, 6581 / 1e6f },
+            { 789 / 1e6f, 6581 / 1e6f, 13347 / 1e6f, 6581 / 1e6f, 789 / 1e6f }
+        };
+    }
+
+    private void Pattern_Convolution()
+    {
+        inputN.Value = 3;
+        inputK.Text = $"{1f / 6}";
+
+        _m = new float[3, 3]
+        {
+            { 0.5f, 0.75f, 0.5f },
+            { 0.75f, 1, 0.75f },
+            { 0.5f, 0.75f, 0.5f }
+        };
+    }
+
+    private void Pattern_DefinitionIncrease()
+    {
+        inputN.Value = 3;
+        inputK.Text = "1";
+
+        _m = new float[3, 3]
+        {
+            { -1, -1, -1 },
+            { -1, 9, -1 },
+            { -1, -1, -1 }
+        };
+    }
+
+    private void Pattern_Neighborhood()
+    {
+        inputN.Value = 5;
+        inputK.Text = "1";
+
+        _m = new float[5, 5]
+        {
+            { 0, 0, 1, 0, 0 },
+            { 0, 1, 1, 1, 0 },
+            { 1, 1, 1, 1, 1 },
+            { 0, 1, 1, 1, 0 },
+            { 0, 0, 1, 0, 0 }
+        };
+    }
+
+    private void FillPatterns()
+    {
+        _filtersPatterns.Add("Идентичность", Pattern_Identity);
+        _filtersPatterns.Add("Хребет", Pattern_Ridge);
+        _filtersPatterns.Add("Обнаружение границ", Pattern_EdgeDetection);
+        _filtersPatterns.Add("Увеличение резкости", Pattern_Sharpen);
+        _filtersPatterns.Add("Размытие поля", Pattern_BoxBlur);
+        _filtersPatterns.Add("Размытие по Гауссу 3х3", Pattern_GaussianBlur_3x3);
+        _filtersPatterns.Add("Размытие по Гауссу 5х5", Pattern_GaussianBlur_5x5);
+        _filtersPatterns.Add("Второе размытие по Гауссу 5х5", Pattern_SecondGaussianBlur_5x5);
+        _filtersPatterns.Add("Свёртка", Pattern_Convolution);
+        _filtersPatterns.Add("Улучшение чёткости", Pattern_DefinitionIncrease);
+        _filtersPatterns.Add("Окрестность", Pattern_Neighborhood);
+
+        _filtersPatterns.Add("Свой", () => { });
+
+        FillPatternsChoose();
+    }
+
+    private void InputFilterPatternSelectedIndex_Changed(object sender, EventArgs e)
+    {
+        try
+        {
+            _filtersPatterns[inputFilterPattern.Text].Invoke();
+            MatrixToGrid();
+        }
+        catch (Exception exc)
+        {
+            MessageBox.Show($"{exc.Message}");
         }
     }
 }

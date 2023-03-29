@@ -313,12 +313,11 @@ partial class MainForm
         // inputFilterPattern
         // 
         inputFilterPattern.FormattingEnabled = true;
-        inputFilterPattern.Items.AddRange(new object[] { "Usual", "R", "G", "B" });
         inputFilterPattern.Location = new Point(580, 154);
         inputFilterPattern.Name = "inputFilterPattern";
         inputFilterPattern.Size = new Size(145, 23);
         inputFilterPattern.TabIndex = 2;
-        inputFilterPattern.SelectedIndexChanged += InputColorModeSelectIndex_Changed;
+        inputFilterPattern.SelectedIndexChanged += InputFilterPatternSelectedIndex_Changed;
         // 
         // inputColorMode
         // 
@@ -452,7 +451,8 @@ partial class MainForm
         Controls.Add(splitContainer1);
         MainMenuStrip = menuStrip1;
         Name = "MainForm";
-        Text = "Фильтры";
+        StartPosition = FormStartPosition.CenterScreen;
+        Text = "Матричные фильтры обработки изображений";
         splitContainer1.Panel1.ResumeLayout(false);
         splitContainer1.Panel2.ResumeLayout(false);
         splitContainer1.Panel2.PerformLayout();
