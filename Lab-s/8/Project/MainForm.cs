@@ -77,10 +77,9 @@ public partial class MainForm : Form
                 outputMainView.Image = new Bitmap(inputOpenFileDialog.FileName);
                 FillARG();
             }
-            catch (Exception exc)
+            catch
             {
-                //MessageBox.Show("Incorrect file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                MessageBox.Show($"{exc.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Incorrect file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
@@ -114,13 +113,15 @@ public partial class MainForm : Form
 
     private void DrawHistsAxis()
     {
+		var pen = new Pen(Color.Black);
+		
         // R
         _gr = Graphics.FromImage(outputHistR.Image);
-        _gr.DrawLine(new Pen(Color.Black),
+        _gr.DrawLine(pen,
             new Point(1, 1),
             new Point(1, outputHistR.Image.Height - 2)
             );
-        _gr.DrawLine(new Pen(Color.Black),
+        _gr.DrawLine(pen,
             new Point(1, outputHistR.Image.Height - 1),
             new Point(outputHistR.Image.Width - 1,
             outputHistR.Image.Height - 1)
@@ -128,11 +129,11 @@ public partial class MainForm : Form
 
         // G
         _gr = Graphics.FromImage(outputHistG.Image);
-        _gr.DrawLine(new Pen(Color.White),
+        _gr.DrawLine(pen,
             new Point(1, 1),
             new Point(1, outputHistG.Image.Height - 2)
             );
-        _gr.DrawLine(new Pen(Color.White),
+        _gr.DrawLine(pen,
             new Point(1, outputHistG.Image.Height - 1),
             new Point(outputHistG.Image.Width - 1,
             outputHistG.Image.Height - 1)
@@ -140,11 +141,11 @@ public partial class MainForm : Form
 
         // B
         _gr = Graphics.FromImage(outputHistB.Image);
-        _gr.DrawLine(new Pen(Color.White),
+        _gr.DrawLine(pen,
             new Point(1, 1),
             new Point(1, outputHistB.Image.Height - 2)
             );
-        _gr.DrawLine(new Pen(Color.White),
+        _gr.DrawLine(pen,
             new Point(1, outputHistB.Image.Height - 1),
             new Point(outputHistB.Image.Width - 1,
             outputHistB.Image.Height - 1)
