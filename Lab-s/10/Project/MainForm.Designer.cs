@@ -32,6 +32,8 @@ partial class MainForm
         splitContainer2 = new SplitContainer();
         outputBaseImage = new PictureBox();
         outputModifiedImage = new PictureBox();
+        inputColorMode = new ComboBox();
+        label1 = new Label();
         menuStrip1 = new MenuStrip();
         imageToolStripMenuItem = new ToolStripMenuItem();
         loadToolStripMenuItem = new ToolStripMenuItem();
@@ -65,6 +67,8 @@ partial class MainForm
         // splitContainer1.Panel2
         // 
         splitContainer1.Panel2.BackColor = SystemColors.ButtonShadow;
+        splitContainer1.Panel2.Controls.Add(inputColorMode);
+        splitContainer1.Panel2.Controls.Add(label1);
         splitContainer1.Panel2.Controls.Add(menuStrip1);
         splitContainer1.Size = new Size(927, 658);
         splitContainer1.SplitterDistance = 435;
@@ -108,6 +112,25 @@ partial class MainForm
         outputModifiedImage.SizeMode = PictureBoxSizeMode.StretchImage;
         outputModifiedImage.TabIndex = 0;
         outputModifiedImage.TabStop = false;
+        // 
+        // inputColorMode
+        // 
+        inputColorMode.FormattingEnabled = true;
+        inputColorMode.Items.AddRange(new object[] { "Usual", "R", "G", "B" });
+        inputColorMode.Location = new Point(756, 52);
+        inputColorMode.Name = "inputColorMode";
+        inputColorMode.Size = new Size(121, 23);
+        inputColorMode.TabIndex = 2;
+        inputColorMode.SelectedIndexChanged += InputColorModeSelectIndex_Changed;
+        // 
+        // label1
+        // 
+        label1.Location = new Point(756, 34);
+        label1.Name = "label1";
+        label1.Size = new Size(121, 23);
+        label1.TabIndex = 1;
+        label1.Text = "Режим отрисовки";
+        label1.TextAlign = ContentAlignment.TopCenter;
         // 
         // menuStrip1
         // 
@@ -187,4 +210,6 @@ partial class MainForm
     private ToolStripMenuItem saveToolStripMenuItem;
     private OpenFileDialog openFileDialog;
     private SaveFileDialog saveFileDialog;
+    private ComboBox inputColorMode;
+    private Label label1;
 }
