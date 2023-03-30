@@ -28,7 +28,7 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
-        DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+        DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
         splitContainer1 = new SplitContainer();
         splitContainer2 = new SplitContainer();
         outputBaseImage = new PictureBox();
@@ -221,19 +221,21 @@ partial class MainForm
         // 
         // inputMatrix
         // 
+        inputMatrix.AllowUserToAddRows = false;
+        inputMatrix.AllowUserToDeleteRows = false;
         inputMatrix.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader;
         inputMatrix.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders;
         inputMatrix.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         inputMatrix.Location = new Point(303, 32);
         inputMatrix.Name = "inputMatrix";
-        dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        dataGridViewCellStyle2.BackColor = SystemColors.Control;
-        dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-        dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
-        dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-        dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-        dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-        inputMatrix.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+        dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        dataGridViewCellStyle1.BackColor = SystemColors.Control;
+        dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+        dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+        dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+        dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+        dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+        inputMatrix.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
         inputMatrix.RowTemplate.Height = 25;
         inputMatrix.Size = new Size(247, 169);
         inputMatrix.TabIndex = 5;

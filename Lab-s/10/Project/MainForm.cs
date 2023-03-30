@@ -232,8 +232,6 @@ public partial class MainForm : Form
         _n = (int)inputN.Value;
         _m = new float[_n, _n];
         MatrixToGrid();
-
-        inputFilterPattern.SelectedIndex = inputFilterPattern.Items.Count - 1;
     }
 
     private void ApplyFilter_Click(object sender, EventArgs e)
@@ -245,8 +243,11 @@ public partial class MainForm : Form
 
         bool zero = inputFillEmptyPixelsWithZero.Checked;
         bool ndm = inputGetPixelsFromBaseImage.Checked;
-        int hn = _n / 2;
 
+        Bitmap bi = (Bitmap)_baseImage.Clone();
+        Bitmap mi = (Bitmap)_baseImage.Clone();
+
+        // R
         if (inputCalculateR.Checked)
         {
             _r = new byte[_n, _n];
@@ -257,39 +258,331 @@ public partial class MainForm : Form
             {
                 for (int j = 0; j < _baseImage.Width; j += _n)
                 {
-                    // Inside matrix from picture
-                    for (int l = i; l < i + _n; l++)
+                    // Getting submatrix from picture
+                    for (int l = 0; l < _n; l++)
                     {
-                        for (int t = j; t < j + _n; t++)
+                        for (int t = 0; t < _n; t++)
                         {
-                            if (l < 0 || l >= _baseImage.Height ||
-                                t < 0 || t >= _baseImage.Width)
+                            if (l + _n < 0 || l + _n >= _baseImage.Height ||
+                                t + _n < 0 || t + _n >= _baseImage.Width)
                             {
                                 r = (byte)(zero ? 0 : 255);
                             }
                             else
                             {
-                                r = _baseImage.GetPixel(t, l).R;
+                                r = bi.GetPixel(t, l).R;
                             }
 
                             _r[l, t] = r;
                         }
                     }
 
-                    // After getting submatrix
-                    byte[,] X = _r;
+                    // After getting submatrix => Let's multiply matrixes
+                    float[,] X = new float[_n, _n];
 
                     if (ndm)
                     {
-                        // TODO: matmul for static and for dynamic 
+                        for (int l = 0; l < _n; l++)
+                        {
+                            for (int t = 0; t < _n; t++)
+                            {
+                                for (int k = 0; k < _n; k++)
+                                {
+                                    X[l, t] += _r[l, k] * _m[k, l];
+                                }
+
+                                X[l, t] *= _k;
+
+                                if (X[l, t] < 0)
+                                {
+                                    X[l, t] = 0;
+                                }
+                                else if (X[l, t] > 255)
+                                {
+                                    X[l, t] = 255;
+                                }
+                            }
+                        }
                     }
                     else
                     {
+                        for (int l = 0; l < _n; l++)
+                        {
+                            for (int t = 0; t < _n; t++)
+                            {
+                                X[l, t] = _r[l, t];
+                            }
+                        }
 
+                        for (int l = 0; l < _n; l++)
+                        {
+                            for (int t = 0; t < _n; t++)
+                            {
+                                for (int k = 0; k < _n; k++)
+                                {
+                                    X[l, t] += X[l, k] * _m[k, l];
+                                }
+
+                                X[l, t] *= _k;
+
+                                if (X[l, t] < 0)
+                                {
+                                    X[l, t] = 0;
+                                }
+                                else if (X[l, t] > 255)
+                                {
+                                    X[l, t] = 255;
+                                }
+                            }
+                        }
+                    }
+
+                    // Rewrite modified image
+                    for (int l = 0; l < _n; l++)
+                    {
+                        for (int t = 0; t < _n; t++)
+                        {
+                            if (j + t < mi.Width && i + l < mi.Height)
+                            {
+                                var c = mi.GetPixel(j + t, i + l);
+
+                                mi.SetPixel(j + t, i + l, Color.FromArgb((byte)X[l, t], c.G, c.B));
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
                     }
                 }
             }
         }
+
+        // G
+        if (inputCalculateG.Checked)
+        {
+            _g = new byte[_n, _n];
+            byte g;
+
+            // Inside picture
+            for (int i = 0; i < _baseImage.Height; i += _n)
+            {
+                for (int j = 0; j < _baseImage.Width; j += _n)
+                {
+                    // Getting submatrix from picture
+                    for (int l = 0; l < _n; l++)
+                    {
+                        for (int t = 0; t < _n; t++)
+                        {
+                            if (l + _n < 0 || l + _n >= _baseImage.Height ||
+                                t + _n < 0 || t + _n >= _baseImage.Width)
+                            {
+                                g = (byte)(zero ? 0 : 255);
+                            }
+                            else
+                            {
+                                g = bi.GetPixel(t, l).G;
+                            }
+
+                            _g[l, t] = g;
+                        }
+                    }
+
+                    // After getting submatrix => Let's multiply matrixes
+                    float[,] X = new float[_n, _n];
+
+                    if (ndm)
+                    {
+                        for (int l = 0; l < _n; l++)
+                        {
+                            for (int t = 0; t < _n; t++)
+                            {
+                                for (int k = 0; k < _n; k++)
+                                {
+                                    X[l, t] += _g[l, k] * _m[k, l];
+                                }
+
+                                X[l, t] *= _k;
+
+                                if (X[l, t] < 0)
+                                {
+                                    X[l, t] = 0;
+                                }
+                                else if (X[l, t] > 255)
+                                {
+                                    X[l, t] = 255;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int l = 0; l < _n; l++)
+                        {
+                            for (int t = 0; t < _n; t++)
+                            {
+                                X[l, t] = _g[l, t];
+                            }
+                        }
+
+                        for (int l = 0; l < _n; l++)
+                        {
+                            for (int t = 0; t < _n; t++)
+                            {
+                                for (int k = 0; k < _n; k++)
+                                {
+                                    X[l, t] += X[l, k] * _m[k, l];
+                                }
+
+                                X[l, t] *= _k;
+
+                                if (X[l, t] < 0)
+                                {
+                                    X[l, t] = 0;
+                                }
+                                else if (X[l, t] > 255)
+                                {
+                                    X[l, t] = 255;
+                                }
+                            }
+                        }
+                    }
+
+                    // Rewrite modified image
+                    for (int l = 0; l < _n; l++)
+                    {
+                        for (int t = 0; t < _n; t++)
+                        {
+                            if (j + t < mi.Width && i + l < mi.Height)
+                            {
+                                var c = mi.GetPixel(j + t, i + l);
+
+                                mi.SetPixel(j + t, i + l, Color.FromArgb(c.R, (byte)X[l, t], c.B));
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // B
+        if (inputCalculateR.Checked)
+        {
+            _b = new byte[_n, _n];
+            byte b;
+
+            // Inside picture
+            for (int i = 0; i < _baseImage.Height; i += _n)
+            {
+                for (int j = 0; j < _baseImage.Width; j += _n)
+                {
+                    // Getting submatrix from picture
+                    for (int l = 0; l < _n; l++)
+                    {
+                        for (int t = 0; t < _n; t++)
+                        {
+                            if (l + _n < 0 || l + _n >= _baseImage.Height ||
+                                t + _n < 0 || t + _n >= _baseImage.Width)
+                            {
+                                b = (byte)(zero ? 0 : 255);
+                            }
+                            else
+                            {
+                                b = bi.GetPixel(t, l).B;
+                            }
+
+                            _b[l, t] = b;
+                        }
+                    }
+
+                    // After getting submatrix => Let's multiply matrixes
+                    float[,] X = new float[_n, _n];
+
+                    if (ndm)
+                    {
+                        for (int l = 0; l < _n; l++)
+                        {
+                            for (int t = 0; t < _n; t++)
+                            {
+                                for (int k = 0; k < _n; k++)
+                                {
+                                    X[l, t] += _b[l, k] * _m[k, l];
+                                }
+
+                                X[l, t] *= _k;
+
+                                if (X[l, t] < 0)
+                                {
+                                    X[l, t] = 0;
+                                }
+                                else if (X[l, t] > 255)
+                                {
+                                    X[l, t] = 255;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int l = 0; l < _n; l++)
+                        {
+                            for (int t = 0; t < _n; t++)
+                            {
+                                X[l, t] = _b[l, t];
+                            }
+                        }
+
+                        for (int l = 0; l < _n; l++)
+                        {
+                            for (int t = 0; t < _n; t++)
+                            {
+                                for (int k = 0; k < _n; k++)
+                                {
+                                    X[l, t] += X[l, k] * _m[k, l];
+                                }
+
+                                X[l, t] *= _k;
+
+                                if (X[l, t] < 0)
+                                {
+                                    X[l, t] = 0;
+                                }
+                                else if (X[l, t] > 255)
+                                {
+                                    X[l, t] = 255;
+                                }
+                            }
+                        }
+                    }
+
+                    // Rewrite modified image
+                    for (int l = 0; l < _n; l++)
+                    {
+                        for (int t = 0; t < _n; t++)
+                        {
+                            if (j + t < mi.Width && i + l < mi.Height)
+                            {
+                                var c = mi.GetPixel(j + t, i + l);
+
+                                mi.SetPixel(j + t, i + l, Color.FromArgb(c.R, c.G, (byte)X[l, t]));
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        _modifiedImage = mi;
+
+        UpdateImages();
     }
 
     private void ReplaceBaseImageByModified_Click(object sender, EventArgs e)
@@ -524,4 +817,6 @@ public partial class MainForm : Form
             MessageBox.Show($"{exc.Message}");
         }
     }
+
+
 }
