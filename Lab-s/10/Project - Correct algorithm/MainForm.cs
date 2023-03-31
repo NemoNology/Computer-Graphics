@@ -1,7 +1,3 @@
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Windows.Forms;
-
 namespace Project;
 
 public partial class MainForm : Form
@@ -686,19 +682,19 @@ public partial class MainForm : Form
 
     private void FillPatterns()
     {
-        _filtersPatterns.Add("Идентичность", Pattern_Identity);
-        _filtersPatterns.Add("Хребет", Pattern_Ridge);
-        _filtersPatterns.Add("Обнаружение границ", Pattern_EdgeDetection);
-        _filtersPatterns.Add("Увеличение резкости", Pattern_Sharpen);
-        _filtersPatterns.Add("Размытие поля", Pattern_BoxBlur);
-        _filtersPatterns.Add("Размытие по Гауссу 3х3", Pattern_GaussianBlur_3x3);
-        _filtersPatterns.Add("Размытие по Гауссу 5х5", Pattern_GaussianBlur_5x5);
-        _filtersPatterns.Add("Второе размытие по Гауссу 5х5", Pattern_SecondGaussianBlur_5x5);
-        _filtersPatterns.Add("Пример", Pattern_Example);
-        _filtersPatterns.Add("Улучшение чёткости", Pattern_DefinitionIncrease);
-        _filtersPatterns.Add("Окрестность", Pattern_Neighborhood);
+        _filtersPatterns.Add("Identity", Pattern_Identity);
+        _filtersPatterns.Add("Ridge", Pattern_Ridge);
+        _filtersPatterns.Add("Edge Detection", Pattern_EdgeDetection);
+        _filtersPatterns.Add("Sharpen", Pattern_Sharpen);
+        _filtersPatterns.Add("Box Blur", Pattern_BoxBlur);
+        _filtersPatterns.Add("Gaussian Blur 3x3", Pattern_GaussianBlur_3x3);
+        _filtersPatterns.Add("Gaussian Blur 5x5", Pattern_GaussianBlur_5x5);
+        _filtersPatterns.Add("Another Gaussian Blur 5x5", Pattern_SecondGaussianBlur_5x5);
+        _filtersPatterns.Add("Example", Pattern_Example);
+        _filtersPatterns.Add("Definition Increase", Pattern_DefinitionIncrease);
+        _filtersPatterns.Add("Neighborhood", Pattern_Neighborhood);
 
-        _filtersPatterns.Add("Свой", () => { });
+        _filtersPatterns.Add("Custom", () => { });
 
         FillPatternsChoose();
     }
