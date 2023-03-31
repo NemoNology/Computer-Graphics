@@ -1,3 +1,5 @@
+using System.Drawing.Imaging;
+
 namespace Project;
 
 public partial class MainForm : Form
@@ -23,7 +25,6 @@ public partial class MainForm : Form
 
     private Dictionary<string, Action> _filtersPatterns = new Dictionary<string, Action>();
 
-
     private void ImageLoad_Click(object sender, EventArgs e)
     {
         if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -31,7 +32,7 @@ public partial class MainForm : Form
             try
             {
                 outputBaseImage.Image = new Bitmap(openFileDialog.FileName);
-                outputModifiedImage.Image = outputBaseImage.Image;
+                outputModifiedImage.Image = (Image)outputBaseImage.Image.Clone();
 
                 // saving
                 _baseImage = outputBaseImage.Image;
@@ -41,7 +42,12 @@ public partial class MainForm : Form
             }
             catch
             {
-                MessageBox.Show("Incorrect file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Incorrect file",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
     }
@@ -56,13 +62,23 @@ public partial class MainForm : Form
             }
             catch
             {
-                MessageBox.Show("Invalid input", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Invalid input",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
     }
 
     private void UpdateImages()
     {
+        if (_baseImage == null)
+        {
+            return;
+        }
+
         if (inputColorMode.SelectedIndex == 0)
         {
             outputBaseImage.Image = _baseImage;
@@ -86,8 +102,7 @@ public partial class MainForm : Form
                         var c = bmpB.GetPixel(j, i);
                         var cr = 255 - c.R;
 
-                        bmpB.SetPixel(j, i,
-                            Color.FromArgb(cr, cr, cr));
+                        bmpB.SetPixel(j, i, Color.FromArgb(cr, cr, cr));
                     }
                 }
             });
@@ -104,8 +119,7 @@ public partial class MainForm : Form
                         var c = bmpM.GetPixel(j, i);
                         var cr = 255 - c.R;
 
-                        bmpM.SetPixel(j, i,
-                            Color.FromArgb(cr, cr, cr));
+                        bmpM.SetPixel(j, i, Color.FromArgb(cr, cr, cr));
                     }
                 }
             });
@@ -128,8 +142,7 @@ public partial class MainForm : Form
                         var c = bmpB.GetPixel(j, i);
                         var cg = 255 - c.G;
 
-                        bmpB.SetPixel(j, i,
-                            Color.FromArgb(cg, cg, cg));
+                        bmpB.SetPixel(j, i, Color.FromArgb(cg, cg, cg));
                     }
                 }
             });
@@ -146,8 +159,7 @@ public partial class MainForm : Form
                         var c = bmpM.GetPixel(j, i);
                         var cg = 255 - c.G;
 
-                        bmpM.SetPixel(j, i,
-                            Color.FromArgb(cg, cg, cg));
+                        bmpM.SetPixel(j, i, Color.FromArgb(cg, cg, cg));
                     }
                 }
             });
@@ -170,8 +182,7 @@ public partial class MainForm : Form
                         var c = bmpB.GetPixel(j, i);
                         var cb = 255 - c.B;
 
-                        bmpB.SetPixel(j, i,
-                            Color.FromArgb(cb, cb, cb));
+                        bmpB.SetPixel(j, i, Color.FromArgb(cb, cb, cb));
                     }
                 }
             });
@@ -188,8 +199,7 @@ public partial class MainForm : Form
                         var c = bmpM.GetPixel(j, i);
                         var cb = 255 - c.B;
 
-                        bmpM.SetPixel(j, i,
-                            Color.FromArgb(cb, cb, cb));
+                        bmpM.SetPixel(j, i, Color.FromArgb(cb, cb, cb));
                     }
                 }
             });
@@ -232,251 +242,189 @@ public partial class MainForm : Form
 
     private void ApplyFilter_Click(object sender, EventArgs e)
     {
-        if (!IsValidInput || _baseImage == null)
+        if (
+            !IsValidInput
+            || _baseImage == null
+            || (!inputCalculateR.Checked && !inputCalculateG.Checked && !inputCalculateB.Checked)
+        )
         {
             return;
         }
 
         bool zero = inputFillEmptyPixelsWithZero.Checked;
+        bool ndm = inputGetPixelsFromBaseImage.Checked;
 
         Bitmap bi = (Bitmap)_baseImage.Clone();
-        Bitmap mi = (Bitmap)_baseImage.Clone();
         int hn = _n / 2;
         int endN = _n % 2 == 0 ? hn : hn + 1;
-        int cell;
+        int cell = 0;
 
-        var _submatrix = new List<byte>(_n * _n);
+        bool isR = inputCalculateR.Checked;
+        bool isG = inputCalculateG.Checked;
+        bool isB = inputCalculateB.Checked;
 
-        byte colorPart;
+        var submatrixR = new List<byte>(_n * _n);
+        var submatrixG = new List<byte>(_n * _n);
+        var submatrixB = new List<byte>(_n * _n);
 
-        // R
-        if (inputCalculateR.Checked)
+        Color bufferColor = new Color();
+
+        Bitmap bufferBMP = (Bitmap)bi.Clone();
+
+        Color[,] baseImage = new Color[bi.Height, bi.Width];
+        Color[,] modImage = new Color[bi.Height, bi.Width];
+
+        // Get filtered picture
+        for (int x = 0; x < bi.Width; x++)
         {
-            float[,] newValues = new float[bi.Height, bi.Width];
-
-            // Inside picture
-            for (int i = 0; i < bi.Height; i++)
+            for (int y = 0; y < bi.Height; y++)
             {
-                for (int j = 0; j < bi.Width; j++)
+                // Getting submatrix from picture
+                for (int X = x - hn; X < x + endN; X++)
                 {
-                    _submatrix.Clear();
-
-                    // Getting submatrix from picture
-                    for (int l = i - hn; l < i + endN; l++)
+                    for (int Y = y - hn; Y < y + endN; Y++)
                     {
-                        for (int t = j - hn; t < j + endN; t++)
+                        if (X < 0 || X >= bi.Width || Y < 0 || Y >= bi.Height)
                         {
-                            if (l < 0 || l >= bi.Height ||
-                                t < 0 || t >= bi.Width)
-                            {
-                                colorPart = (byte)(zero ? 0 : 255);
-                            }
-                            else
-                            {
-                                colorPart = bi.GetPixel(t, l).R;
-                            }
+                            bufferColor = zero ? Color.Black : Color.White;
+                        }
+                        else
+                        {
+                            bufferColor = ndm ? bi.GetPixel(X, Y) : bufferBMP.GetPixel(X, Y);
+                        }
 
-                            _submatrix.Add(colorPart);
+                        if (isR)
+                        {
+                            submatrixR.Add(bufferColor.R);
+                        }
+
+                        if (isG)
+                        {
+                            submatrixG.Add(bufferColor.G);
+                        }
+
+                        if (isB)
+                        {
+                            submatrixB.Add(bufferColor.B);
                         }
                     }
-
-                    // After getting submatrix => Let's get new pixel color
-                    float newColorValue = 0;
-
-                    cell = 0;
-
-                    // 1) Calculate new color value
-                    for (int l = 0; l < _n; l++)
-                    {
-                        for (int t = 0; t < _n; t++)
-                        {
-                            newColorValue += _submatrix[cell] * _m[l, t];
-                            cell++;
-                        }
-                    }
-
-                    // 2) Apply coefficient
-                    newColorValue *= _k;
-
-                    // 3) Correct new color value
-                    if (newColorValue < 0)
-                    {
-                        newColorValue = 0;
-                    }
-                    else if (newColorValue > 255)
-                    {
-                        newColorValue = 255;
-                    }
-
-                    // 4) Save new color value
-                    newValues[i, j] = newColorValue;
                 }
-            }
 
-            // Rewrite modified image
-            for (int i = 0; i < bi.Height; i++)
-            {
-                for (int j = 0; j < bi.Width; j++)
+                // After getting submatrix => Let's get new pixel color
+                float newColorValueR = 0;
+                float newColorValueG = 0;
+                float newColorValueB = 0;
+
+                // 1.1) Calculate new color value
+                for (int Y = 0; Y < _n; Y++)
                 {
-                    var c = mi.GetPixel(j, i);
-                    mi.SetPixel(j, i, Color.FromArgb((byte)newValues[i, j], c.G, c.B));
+                    for (int X = 0; X < _n; X++)
+                    {
+                        if (isR)
+                        {
+                            newColorValueR += submatrixR[cell] * _m[Y, X];
+                        }
+
+                        if (isG)
+                        {
+                            newColorValueG += submatrixG[cell] * _m[Y, X];
+                        }
+
+                        if (isB)
+                        {
+                            newColorValueB += submatrixB[cell] * _m[Y, X];
+                        }
+
+                        cell++;
+                    }
                 }
+
+                // 1.2) Clean sub matrixes & counter 'cell' after use
+                if (isR)
+                {
+                    submatrixR.Clear();
+                }
+
+                if (isG)
+                {
+                    submatrixG.Clear();
+                }
+
+                if (isB)
+                {
+                    submatrixB.Clear();
+                }
+
+                cell = 0;
+
+                // 2) Apply coefficient & 3) Correct new value
+                if (isR)
+                {
+                    newColorValueR *= _k;
+
+                    if (newColorValueR < 0)
+                    {
+                        newColorValueR = 0;
+                    }
+                    else if (newColorValueR > 255)
+                    {
+                        newColorValueR = 255;
+                    }
+                }
+
+                if (isG)
+                {
+                    newColorValueG *= _k;
+
+                    if (newColorValueG < 0)
+                    {
+                        newColorValueG = 0;
+                    }
+                    else if (newColorValueG > 255)
+                    {
+                        newColorValueG = 255;
+                    }
+                }
+
+                if (isB)
+                {
+                    newColorValueB *= _k;
+
+                    if (newColorValueB < 0)
+                    {
+                        newColorValueB = 0;
+                    }
+                    else if (newColorValueB > 255)
+                    {
+                        newColorValueB = 255;
+                    }
+                }
+
+                // 4.1) Get pixel color from base image
+                var c = ndm ? bi.GetPixel(x, y) : bufferBMP.GetPixel(x, y);
+
+                // 4.2) Save value to buffer map
+                bufferBMP.SetPixel(
+                    x, y,
+                    Color.FromArgb(
+                        isR ? (byte)newColorValueR : c.R,
+                        isG ? (byte)newColorValueG : c.G,
+                        isB ? (byte)newColorValueB : c.B
+                    )
+                );
+
+                baseImage[y, x] = bi.GetPixel(x, y);
+                modImage[y, x] = bufferBMP.GetPixel(x, y);
             }
         }
 
-        // G
-        if (inputCalculateG.Checked)
-        {
-            float[,] newValues = new float[bi.Height, bi.Width];
+        // 5) Rewrite modified image
+        _modifiedImage = bufferBMP;
 
-            // Inside picture
-            for (int i = 0; i < _baseImage.Height; i++)
-            {
-                for (int j = 0; j < _baseImage.Width; j++)
-                {
-                    _submatrix.Clear();
+        var t1 = baseImage;
+        var t2 = modImage;
 
-                    // Getting submatrix from picture
-                    for (int l = i - hn; l < i + endN; l++)
-                    {
-                        for (int t = j - hn; t < j + endN; t++)
-                        {
-                            if (l < 0 || l >= _baseImage.Height ||
-                                t < 0 || t >= _baseImage.Width)
-                            {
-                                colorPart = (byte)(zero ? 0 : 255);
-                            }
-                            else
-                            {
-                                colorPart = bi.GetPixel(t, l).G;
-                            }
-
-                            _submatrix.Add(colorPart);
-                        }
-                    }
-
-                    // After getting submatrix => Let's get new pixel color
-                    float newColorValue = 0;
-
-                    cell = 0;
-
-                    // 1) Calculate new color value
-                    for (int l = 0; l < _n; l++)
-                    {
-                        for (int t = 0; t < _n; t++)
-                        {
-                            newColorValue += _submatrix[cell] * _m[l, t];
-                            cell++;
-                        }
-                    }
-
-                    // 2) Apply coefficient
-                    newColorValue *= _k;
-
-                    // 3) Correct new color value
-                    if (newColorValue < 0)
-                    {
-                        newColorValue = 0;
-                    }
-                    else if (newColorValue > 255)
-                    {
-                        newColorValue = 255;
-                    }
-
-                    // 4) Save new color value
-                    newValues[i, j] = newColorValue;
-                }
-            }
-
-            // Rewrite modified image
-            for (int i = 0; i < bi.Height; i++)
-            {
-                for (int j = 0; j < bi.Width; j++)
-                {
-                    var c = mi.GetPixel(j, i);
-                    mi.SetPixel(j, i, Color.FromArgb(c.R, (byte)newValues[i, j], c.B));
-                }
-            }
-        }
-
-        // B
-        if (inputCalculateB.Checked)
-        {
-            float[,] newValues = new float[bi.Height, bi.Width];
-
-            // Inside picture
-            for (int i = 0; i < _baseImage.Height; i++)
-            {
-                for (int j = 0; j < _baseImage.Width; j++)
-                {
-                    _submatrix.Clear();
-
-                    // Getting submatrix from picture
-                    for (int l = i - hn; l < i + endN; l++)
-                    {
-                        for (int t = j - hn; t < j + endN; t++)
-                        {
-                            if (l < 0 || l >= _baseImage.Height ||
-                                t < 0 || t >= _baseImage.Width)
-                            {
-                                colorPart = (byte)(zero ? 0 : 255);
-                            }
-                            else
-                            {
-                                colorPart = bi.GetPixel(t, l).B;
-                            }
-
-                            _submatrix.Add(colorPart);
-                        }
-                    }
-
-                    // After getting submatrix => Let's get new pixel color
-                    float newColorValue = 0;
-
-                    cell = 0;
-
-                    // 1) Calculate new color value
-                    for (int l = 0; l < _n; l++)
-                    {
-                        for (int t = 0; t < _n; t++)
-                        {
-                            newColorValue += _submatrix[cell] * _m[l, t];
-                            cell++;
-                        }
-                    }
-
-                    // 2) Apply coefficient
-                    newColorValue *= _k;
-
-                    // 3) Correct new color value
-                    if (newColorValue < 0)
-                    {
-                        newColorValue = 0;
-                    }
-                    else if (newColorValue > 255)
-                    {
-                        newColorValue = 255;
-                    }
-
-                    // 4) Save new color value
-                    newValues[i, j] = newColorValue;
-                }
-            }
-
-            // Rewrite modified image
-            for (int i = 0; i < bi.Height; i++)
-            {
-                for (int j = 0; j < bi.Width; j++)
-                {
-                    var c = mi.GetPixel(j, i);
-                    mi.SetPixel(j, i, Color.FromArgb(c.R, c.G, (byte)newValues[i, j]));
-                }
-            }
-        }
-
-        _modifiedImage = mi;
-
-        UpdateImages();
+        UpdateImages();    
     }
 
     private void ReplaceBaseImageByModified_Click(object sender, EventArgs e)
@@ -711,5 +659,4 @@ public partial class MainForm : Form
             MessageBox.Show($"{exc.Message}");
         }
     }
-
 }
