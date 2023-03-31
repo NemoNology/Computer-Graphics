@@ -67,6 +67,11 @@ public partial class MainForm : Form
 
     private void UpdateImages()
     {
+        if (_baseImage == null)
+        {
+            return;
+        }
+
         if (inputColorMode.SelectedIndex == 0)
         {
             outputBaseImage.Image = _baseImage;
@@ -236,7 +241,7 @@ public partial class MainForm : Form
 
     private void ApplyFilter_Click(object sender, EventArgs e)
     {
-        if (!IsValidInput)
+        if (!IsValidInput || _baseImage == null)
         {
             return;
         }
@@ -788,19 +793,19 @@ public partial class MainForm : Form
 
     private void FillPatterns()
     {
-        _filtersPatterns.Add("Идентичность", Pattern_Identity);
-        _filtersPatterns.Add("Хребет", Pattern_Ridge);
-        _filtersPatterns.Add("Обнаружение границ", Pattern_EdgeDetection);
-        _filtersPatterns.Add("Увеличение резкости", Pattern_Sharpen);
-        _filtersPatterns.Add("Размытие поля", Pattern_BoxBlur);
-        _filtersPatterns.Add("Размытие по Гауссу 3х3", Pattern_GaussianBlur_3x3);
-        _filtersPatterns.Add("Размытие по Гауссу 5х5", Pattern_GaussianBlur_5x5);
-        _filtersPatterns.Add("Второе размытие по Гауссу 5х5", Pattern_SecondGaussianBlur_5x5);
-        _filtersPatterns.Add("Свёртка", Pattern_Convolution);
-        _filtersPatterns.Add("Улучшение чёткости", Pattern_DefinitionIncrease);
-        _filtersPatterns.Add("Окрестность", Pattern_Neighborhood);
+        _filtersPatterns.Add("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", Pattern_Identity);
+        _filtersPatterns.Add("пїЅпїЅпїЅпїЅпїЅпїЅ", Pattern_Ridge);
+        _filtersPatterns.Add("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ", Pattern_EdgeDetection);
+        _filtersPatterns.Add("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", Pattern_Sharpen);
+        _filtersPatterns.Add("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ", Pattern_BoxBlur);
+        _filtersPatterns.Add("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 3пїЅ3", Pattern_GaussianBlur_3x3);
+        _filtersPatterns.Add("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 5пїЅ5", Pattern_GaussianBlur_5x5);
+        _filtersPatterns.Add("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 5пїЅ5", Pattern_SecondGaussianBlur_5x5);
+        _filtersPatterns.Add("пїЅпїЅпїЅпїЅпїЅпїЅ", Pattern_Convolution);
+        _filtersPatterns.Add("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", Pattern_DefinitionIncrease);
+        _filtersPatterns.Add("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", Pattern_Neighborhood);
 
-        _filtersPatterns.Add("Свой", () => { });
+        _filtersPatterns.Add("пїЅпїЅпїЅпїЅ", () => { });
 
         FillPatternsChoose();
     }
