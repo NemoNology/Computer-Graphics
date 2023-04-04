@@ -32,6 +32,8 @@ partial class MainForm
         splitContainer2 = new SplitContainer();
         outputBaseImage = new PictureBox();
         outputModifiedImage = new PictureBox();
+        label3 = new Label();
+        label2 = new Label();
         outputModifiedHist = new PictureBox();
         outputBaseHist = new PictureBox();
         inputIsB = new RadioButton();
@@ -74,6 +76,8 @@ partial class MainForm
         // splitContainer1.Panel2
         // 
         splitContainer1.Panel2.BackColor = SystemColors.ScrollBar;
+        splitContainer1.Panel2.Controls.Add(label3);
+        splitContainer1.Panel2.Controls.Add(label2);
         splitContainer1.Panel2.Controls.Add(outputModifiedHist);
         splitContainer1.Panel2.Controls.Add(outputBaseHist);
         splitContainer1.Panel2.Controls.Add(inputIsB);
@@ -124,9 +128,29 @@ partial class MainForm
         outputModifiedImage.TabIndex = 0;
         outputModifiedImage.TabStop = false;
         // 
+        // label3
+        // 
+        label3.AutoSize = true;
+        label3.Location = new Point(527, 15);
+        label3.Name = "label3";
+        label3.Size = new Size(150, 15);
+        label3.TabIndex = 4;
+        label3.Text = "Modified Image Histogram";
+        // 
+        // label2
+        // 
+        label2.AutoSize = true;
+        label2.Location = new Point(199, 15);
+        label2.Name = "label2";
+        label2.Size = new Size(126, 15);
+        label2.TabIndex = 4;
+        label2.Text = "Base Image Histogram";
+        // 
         // outputModifiedHist
         // 
-        outputModifiedHist.Location = new Point(527, 24);
+        outputModifiedHist.BackColor = SystemColors.Control;
+        outputModifiedHist.BorderStyle = BorderStyle.FixedSingle;
+        outputModifiedHist.Location = new Point(527, 33);
         outputModifiedHist.Name = "outputModifiedHist";
         outputModifiedHist.Size = new Size(300, 150);
         outputModifiedHist.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -135,7 +159,9 @@ partial class MainForm
         // 
         // outputBaseHist
         // 
-        outputBaseHist.Location = new Point(199, 24);
+        outputBaseHist.BackColor = SystemColors.Control;
+        outputBaseHist.BorderStyle = BorderStyle.FixedSingle;
+        outputBaseHist.Location = new Point(199, 33);
         outputBaseHist.Name = "outputBaseHist";
         outputBaseHist.Size = new Size(300, 150);
         outputBaseHist.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -145,46 +171,49 @@ partial class MainForm
         // inputIsB
         // 
         inputIsB.AutoSize = true;
-        inputIsB.Location = new Point(120, 125);
+        inputIsB.Location = new Point(116, 125);
         inputIsB.Name = "inputIsB";
         inputIsB.Size = new Size(32, 19);
         inputIsB.TabIndex = 1;
         inputIsB.TabStop = true;
         inputIsB.Text = "B";
         inputIsB.UseVisualStyleBackColor = true;
+        inputIsB.CheckedChanged += InputChannel_CheckedChanged;
         // 
         // inputIsG
         // 
         inputIsG.AutoSize = true;
-        inputIsG.Location = new Point(120, 100);
+        inputIsG.Location = new Point(116, 100);
         inputIsG.Name = "inputIsG";
         inputIsG.Size = new Size(33, 19);
         inputIsG.TabIndex = 1;
         inputIsG.TabStop = true;
         inputIsG.Text = "G";
         inputIsG.UseVisualStyleBackColor = true;
+        inputIsG.CheckedChanged += InputChannel_CheckedChanged;
         // 
         // inputIsR
         // 
         inputIsR.AutoSize = true;
         inputIsR.Checked = true;
-        inputIsR.Location = new Point(120, 75);
+        inputIsR.Location = new Point(116, 75);
         inputIsR.Name = "inputIsR";
         inputIsR.Size = new Size(32, 19);
         inputIsR.TabIndex = 1;
         inputIsR.TabStop = true;
         inputIsR.Text = "R";
         inputIsR.UseVisualStyleBackColor = true;
+        inputIsR.CheckedChanged += InputChannel_CheckedChanged;
         // 
         // label1
         // 
         label1.AutoSize = true;
         label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-        label1.Location = new Point(112, 50);
+        label1.Location = new Point(105, 50);
         label1.Name = "label1";
-        label1.Size = new Size(44, 15);
+        label1.Size = new Size(51, 15);
         label1.TabIndex = 0;
-        label1.Text = "Chanel";
+        label1.Text = "Channel";
         // 
         // menuStrip
         // 
@@ -235,6 +264,7 @@ partial class MainForm
         Controls.Add(splitContainer1);
         MainMenuStrip = menuStrip;
         Name = "MainForm";
+        StartPosition = FormStartPosition.CenterScreen;
         Text = "Перекраска изображения по видоизменнёной гистограмме";
         splitContainer1.Panel1.ResumeLayout(false);
         splitContainer1.Panel2.ResumeLayout(false);
@@ -272,4 +302,6 @@ partial class MainForm
     private PictureBox outputModifiedHist;
     private OpenFileDialog inputOpenFileDialog;
     private SaveFileDialog inputSaveFileDialog;
+    private Label label3;
+    private Label label2;
 }
