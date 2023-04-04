@@ -28,44 +28,45 @@
         /// </summary>
         private void InitializeComponent()
         {
-            inputHistogram = new PictureBox();
-            applyHistogram = new Button();
-            ((System.ComponentModel.ISupportInitialize)inputHistogram).BeginInit();
-            SuspendLayout();
+            this.inputHistogram = new System.Windows.Forms.PictureBox();
+            this.applyHistogram = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.inputHistogram)).BeginInit();
+            this.SuspendLayout();
             // 
             // inputHistogram
             // 
-            inputHistogram.BorderStyle = BorderStyle.FixedSingle;
-            inputHistogram.Location = new Point(25, 25);
-            inputHistogram.Name = "inputHistogram";
-            inputHistogram.Size = new Size(300, 150);
-            inputHistogram.TabIndex = 0;
-            inputHistogram.TabStop = false;
-            inputHistogram.MouseMove += InputHistogram_MouseMove;
+            this.inputHistogram.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.inputHistogram.Location = new System.Drawing.Point(25, 25);
+            this.inputHistogram.Name = "inputHistogram";
+            this.inputHistogram.Size = new System.Drawing.Size(256, 150);
+            this.inputHistogram.TabIndex = 0;
+            this.inputHistogram.TabStop = false;
+            this.inputHistogram.MouseMove += new System.Windows.Forms.MouseEventHandler(this.InputHistogram_MouseMove);
             // 
             // applyHistogram
             // 
-            applyHistogram.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            applyHistogram.Location = new Point(366, 80);
-            applyHistogram.Name = "applyHistogram";
-            applyHistogram.Size = new Size(81, 45);
-            applyHistogram.TabIndex = 1;
-            applyHistogram.Text = "Apply Histogram";
-            applyHistogram.UseVisualStyleBackColor = true;
-            applyHistogram.Click += ApplyHistogram_Click;
+            this.applyHistogram.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.applyHistogram.Location = new System.Drawing.Point(366, 80);
+            this.applyHistogram.Name = "applyHistogram";
+            this.applyHistogram.Size = new System.Drawing.Size(81, 45);
+            this.applyHistogram.TabIndex = 1;
+            this.applyHistogram.Text = "Apply Histogram";
+            this.applyHistogram.UseVisualStyleBackColor = true;
+            this.applyHistogram.Click += new System.EventHandler(this.ApplyHistogram_Click);
             // 
             // ChangingHistogramForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(484, 211);
-            Controls.Add(applyHistogram);
-            Controls.Add(inputHistogram);
-            FormBorderStyle = FormBorderStyle.FixedToolWindow;
-            Name = "ChangingHistogramForm";
-            Text = "Changing Histogram";
-            ((System.ComponentModel.ISupportInitialize)inputHistogram).EndInit();
-            ResumeLayout(false);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(484, 211);
+            this.Controls.Add(this.applyHistogram);
+            this.Controls.Add(this.inputHistogram);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Name = "ChangingHistogramForm";
+            this.Text = "Changing Histogram";
+            ((System.ComponentModel.ISupportInitialize)(this.inputHistogram)).EndInit();
+            this.ResumeLayout(false);
+
         }
 
         #endregion

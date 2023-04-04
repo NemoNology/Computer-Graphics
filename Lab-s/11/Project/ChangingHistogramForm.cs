@@ -51,20 +51,48 @@
 
         private void ApplyHistogram_Click(object sender, EventArgs e)
         {
-            // TODO: Filling and sending _colorValues
+            Bitmap bmp = (Bitmap)inputHistogram.Image;
 
+            byte colorValue;
+           
             if (_color.R == byte.MaxValue)
             {
+                for (int y = 0; y < bmp.Height; y++)
+                {
+                    for (int x = 0; x < bmp.Width; x++)
+                    {
+                        colorValue = bmp.GetPixel(x, y).R;
 
+                        _colorValues[colorValue]++;
+                    }
+                }
             }
             else if (_color.G == byte.MaxValue)
             {
+                for (int y = 0; y < bmp.Height; y++)
+                {
+                    for (int x = 0; x < bmp.Width; x++)
+                    {
+                        colorValue = bmp.GetPixel(x, y).G;
 
+                        _colorValues[colorValue]++;
+                    }
+                }
             }
             else
             {
+                for (int y = 0; y < bmp.Height; y++)
+                {
+                    for (int x = 0; x < bmp.Width; x++)
+                    {
+                        colorValue = bmp.GetPixel(x, y).B;
 
+                        _colorValues[colorValue]++;
+                    }
+                }
             }
+
+            OnHistogramChanged?.Invoke(_colorValues);
         }
     }
 }
