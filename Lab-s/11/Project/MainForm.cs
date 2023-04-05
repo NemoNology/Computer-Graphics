@@ -1,5 +1,3 @@
-using System.Windows.Forms;
-
 namespace Project;
 
 public partial class MainForm : Form
@@ -7,12 +5,17 @@ public partial class MainForm : Form
     public MainForm()
     {
         InitializeComponent();
+
+        _baseImageHistBuffer = new List<(int x, int y)>[byte.MaxValue + 1];
+
+        for (int i = 0; i < _baseImageHistBuffer.Length; i++)
+        {
+            _baseImageHistBuffer[i] = new List<(int x, int y)>();
+        }
     }
 
-    private Bitmap _baseImage;
-
-    private MyPoint[] _baseImageHistBuffer = new MyPoint[byte.MaxValue + 1];
-    private uint[] _modifiedImageHistBuffer = new uint[byte.MaxValue + 1];
+    private List<(int x, int y)>[] _baseImageHistBuffer;
+    private uint[] _modifiedImageHistBuffer;
 
     private ChangingHistogramForm _changingHistogramForm;
 
@@ -69,53 +72,51 @@ public partial class MainForm : Form
         var bmp = (Bitmap)outputBaseImage.Image;
         byte color;
 
-        _baseImageHistBuffer = new MyPoint[byte.MaxValue + 1];
         _modifiedImageHistBuffer = new uint[byte.MaxValue + 1];
 
+        for (int i = 0; i < _baseImageHistBuffer.Length; i++)
+        {
+            _baseImageHistBuffer[i].Clear();
+        }
+
+        // R
         if (inputIsR.Checked)
         {
-            for (int i = 0; i < bmp.Height; i++)
+            for (int y = 0; y < bmp.Height; y++)
             {
-                for (int j = 0; j < bmp.Width; j++)
+                for (int x = 0; x < bmp.Width; x++)
                 {
-                    color = bmp.GetPixel(j, i).R;
+                    color = bmp.GetPixel(x, y).R;
 
-                    _baseImageHistBuffer[color].Value = color;
-                    _baseImageHistBuffer[color].X = (uint)j;
-                    _baseImageHistBuffer[color].Y = (uint)i;
-
+                    _baseImageHistBuffer[color].Add((x, y));
                     _modifiedImageHistBuffer[color]++;
                 }
             }
         }
+        // G
         else if (inputIsG.Checked)
         {
-            for (int i = 0; i < bmp.Height; i++)
+            for (int y = 0; y < bmp.Height; y++)
             {
-                for (int j = 0; j < bmp.Width; j++)
+                for (int x = 0; x < bmp.Width; x++)
                 {
-                    color = bmp.GetPixel(j, i).G;
+                    color = bmp.GetPixel(x, y).G;
 
-                    _baseImageHistBuffer[color].Value = color;
-                    _baseImageHistBuffer[color].X = (uint)j;
-                    _baseImageHistBuffer[color].Y = (uint)i;
-
+                    _baseImageHistBuffer[color].Add((x, y));
                     _modifiedImageHistBuffer[color]++;
                 }
             }
         }
+        // B
         else
         {
-            for (int i = 0; i < bmp.Height; i++)
+            for (int y = 0; y < bmp.Height; y++)
             {
-                for (int j = 0; j < bmp.Width; j++)
+                for (int x = 0; x < bmp.Width; x++)
                 {
-                    color = bmp.GetPixel(j, i).B;
+                    color = bmp.GetPixel(x, y).B;
 
-                    _baseImageHistBuffer[color].Value = color;
-                    _baseImageHistBuffer[color].X = (uint)j;
-                    _baseImageHistBuffer[color].Y = (uint)i;
-
+                    _baseImageHistBuffer[color].Add((x, y));
                     _modifiedImageHistBuffer[color]++;
                 }
             }
@@ -166,11 +167,16 @@ public partial class MainForm : Form
         uint newSize = 0;
         uint oldSize = 0;
 
-        Bitmap bmp = (Bitmap)outputModifiedHist.Image;
-        MyPoint[] baseImageHistBuffer = _baseImageHistBuffer;
+        outputModifiedImage.Image = (Bitmap)outputBaseImage.Image;
+
+        Bitmap bmp = (Bitmap)outputModifiedImage.Image;
+        List<(int x, int y)>[] baseImageHistBuffer = _baseImageHistBuffer;
 
         bool isR = inputIsR.Checked;
         bool isG = inputIsG.Checked;
+
+        ////////////////////////////////////////////////////
+        // Recalculate color values for new color values
 
         foreach (var colorValue in newColorValues)
         {
@@ -182,60 +188,114 @@ public partial class MainForm : Form
             oldSize += colorValue;
         }
 
-        var k = newSize * 1f / oldSize;
+        var k = oldSize * 1f / newSize;
 
         for (int i = 0; i < newColorValues.Length; i++)
         {
             newColorValues[i] = (uint)(newColorValues[i] * k);
         }
 
-        uint max = newColorValues.Max();
+        Random rnd = new Random(DateTime.Now.Millisecond);
 
-        while (max > 0)
+        int max0;
+        int max;
+
+        while (newColorValues.Where(x => x > 0).Count() > 0 &&
+            baseImageHistBuffer.Where(x => x.Count() > 0).Count() > 0)
         {
-            var pointBuffer = baseImageHistBuffer.MaxBy(x => x.Value);
+            ////////////////////////////////////////////////////
+            // Finding most colorful value
 
-            var color = bmp.GetPixel((int)pointBuffer.X, (int)pointBuffer.Y);
+            max0 = byte.MaxValue;
+            max = byte.MaxValue;
 
-            var indexMax = Array.IndexOf(newColorValues, max);
-
-            if (isR)
+            while (max >= 0 && newColorValues[max] == 0)
             {
-                bmp.SetPixel((int)pointBuffer.X, (int)pointBuffer.Y,
-                    Color.FromArgb(
-                        (int)max, 
-                        color.G, 
-                        color.B
-                        ));
-            }
-            else if (isG)
-            {
-                bmp.SetPixel((int)pointBuffer.X, (int)pointBuffer.Y,
-                    Color.FromArgb(
-                        color.R,
-                        (int)max,
-                        color.B
-                        ));
-            }
-            else
-            {
-                bmp.SetPixel((int)pointBuffer.X, (int)pointBuffer.Y,
-                    Color.FromArgb(
-                        color.R,
-                        color.G,
-                        (int)max
-                        ));
+                max--;
             }
 
-            newColorValues.SetValue(max - 1, indexMax);
-            max = newColorValues.Max();
+            while (max0 >= 0 && baseImageHistBuffer[max0].Count == 0)
+            {
+                max0--;
+            }
 
-            var pointIndex = Array.IndexOf(_baseImageHistBuffer, pointBuffer);
+            ////////////////////////////////////////////////////
+            // Start repaint pixels by new histogram values
 
-            pointBuffer.Value--;
+            while (max >= 0 && max0 >= 0)
+            {
+                // Find point where color value >= max color value in new color values
 
-            baseImageHistBuffer.SetValue(pointBuffer, pointIndex);
+                int randomCount = rnd.Next(baseImageHistBuffer[max0].Count + 1);
+
+                while (randomCount > 0 && max >= 0)
+                {
+                    var pointBuffer = baseImageHistBuffer[max0][rnd.Next(baseImageHistBuffer[max0].Count)];
+
+                    var x = pointBuffer.x;
+                    var y = pointBuffer.y;
+
+                    var color = bmp.GetPixel(pointBuffer.x, pointBuffer.y);
+
+                    // Repaint pixel with new color value
+                    if (isR)
+                    {
+                        bmp.SetPixel(x, y,
+                            Color.FromArgb(
+                                max,
+                                color.G,
+                                color.B
+                                ));
+                    }
+                    else if (isG)
+                    {
+                        bmp.SetPixel(x, y,
+                            Color.FromArgb(
+                                color.R,
+                                max,
+                                color.B
+                                ));
+                    }
+                    else
+                    {
+                        bmp.SetPixel(x, y,
+                            Color.FromArgb(
+                                color.R,
+                                color.G,
+                                max
+                                ));
+                    }
+
+                    // Decrease points with max color value in new color values amount
+                    newColorValues[max]--;
+
+                    // Remove already repaint point
+                    baseImageHistBuffer[max0].RemoveAt(0);
+
+                    // If there is no more points with current color value => going to less color value
+                    while (max >= 0 && newColorValues[max] == 0)
+                    {
+                        max--;
+                    }
+
+                    randomCount--;
+                }
+
+                // If there is no more points with current color value => going to less color value
+                while (max >= 0 && newColorValues[max] == 0)
+                {
+                    max--;
+                }
+
+                while (max0 >= 0 && baseImageHistBuffer[max0].Count == 0)
+                {
+                    max0--;
+                }
+            }
         }
+
+        ////////////////////////////////////////////////////
+        // Update image and modified image histogram
 
         outputModifiedImage.Image = bmp;
 
@@ -244,7 +304,7 @@ public partial class MainForm : Form
 
     private void RedrawModifiedHistogram()
     {
-        var bmp = (Bitmap)outputBaseImage.Image;
+        var bmp = (Bitmap)outputModifiedImage.Image.Clone();
         byte color;
 
         _modifiedImageHistBuffer = new uint[byte.MaxValue + 1];
@@ -257,9 +317,7 @@ public partial class MainForm : Form
                 {
                     color = bmp.GetPixel(j, i).R;
 
-                    _baseImageHistBuffer[color].Value = color;
-                    _baseImageHistBuffer[color].X = (uint)j;
-                    _baseImageHistBuffer[color].Y = (uint)i;
+                    _modifiedImageHistBuffer[color]++;
                 }
             }
         }
@@ -271,9 +329,7 @@ public partial class MainForm : Form
                 {
                     color = bmp.GetPixel(j, i).G;
 
-                    _baseImageHistBuffer[color].Value = color;
-                    _baseImageHistBuffer[color].X = (uint)j;
-                    _baseImageHistBuffer[color].Y = (uint)i;
+                    _modifiedImageHistBuffer[color]++;
                 }
             }
         }
@@ -285,51 +341,66 @@ public partial class MainForm : Form
                 {
                     color = bmp.GetPixel(j, i).B;
 
-                    _baseImageHistBuffer[color].Value = color;
-                    _baseImageHistBuffer[color].X = (uint)j;
-                    _baseImageHistBuffer[color].Y = (uint)i;
+                    _modifiedImageHistBuffer[color]++;
                 }
             }
         }
+
+        //////////////////////////////////////////////////////////////////
+        // Redraw hist
+
+        bmp = new Bitmap(outputBaseHist.Width, outputBaseHist.Height);
+
+        Color paintColor = inputIsR.Checked ? Color.Red :
+            (inputIsG.Checked ? Color.Green : Color.Blue);
+        var h = bmp.Height - 1;
+        var max = _modifiedImageHistBuffer.Max() * 1f / h;
+
+        for (int i = 0; i < _modifiedImageHistBuffer.Length; i++)
+        {
+            DrawVertical(ref bmp, i,
+                h - (int)(_modifiedImageHistBuffer[i] / max), paintColor);
+        }
+
+        outputModifiedHist.Image = bmp;
     }
 
-    private void OutputModifiedHist_DoubleClick(object sender, EventArgs e)
+    private void OutputModifiedHist_Click(object sender, EventArgs e)
     {
         if (outputBaseImage.Image == null)
         {
             return;
         }
 
-        if (_changingHistogramForm == null || _changingHistogramForm.Disposing)
+        if (_changingHistogramForm != null)
         {
-            Color color = inputIsR.Checked ? Color.Red :
-            (inputIsG.Checked ? Color.Green : Color.Blue);
-
-            _changingHistogramForm = new ChangingHistogramForm(
-                _modifiedImageHistBuffer, 
-                color, 
-                (Bitmap)outputModifiedHist.Image
-                );
-
-            _changingHistogramForm.OnHistogramChanged += ApplyHistToImage;
-
-            _changingHistogramForm.Show();
+            _changingHistogramForm.Close();
         }
 
-        _changingHistogramForm.Focus();
+        Color color = inputIsR.Checked ? Color.Red :
+            (inputIsG.Checked ? Color.Green : Color.Blue);
+
+        _changingHistogramForm = new ChangingHistogramForm(
+            (uint[])_modifiedImageHistBuffer.Clone(),
+            color,
+            (Bitmap)outputModifiedHist.Image.Clone()
+            );
+
+        _changingHistogramForm.OnHistogramChanged += ApplyHistToImage;
+
+        _changingHistogramForm.Show();
     }
 
-    // TODO: Tests...
 
 
 }
 
 struct MyPoint
 {
-    public uint Value { get; set; }
+    public byte Value { get; set; }
 
-    public uint X { get; set; }
-    public uint Y { get; set; }
+    public int X { get; set; }
+    public int Y { get; set; }
 
     public MyPoint()
     {
@@ -338,7 +409,7 @@ struct MyPoint
         Y = 0;
     }
 
-    public MyPoint(uint value, uint x, uint y)
+    public MyPoint(byte value, int x, int y)
     {
         Value = value;
         X = x;

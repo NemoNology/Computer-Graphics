@@ -11,9 +11,23 @@
             inputHistogram.Image = histogram;
             _colorValues = colorValues;
             _color = color;
+
+            var max = colorValues.Max();
+
+            if (inputHistogram.Height == 0)
+            {
+                _k = _height = 0;
+                return;
+            }
+
+            _height = inputHistogram.Height;
+
+            _k = max * 1f / _height;
         }
 
         private uint[] _colorValues = new uint[byte.MaxValue + 1];
+        private int _height;
+        private float _k;
         private Color _color;
 
         private void DrawLineDown(ref Bitmap bmp, int x, int y)
@@ -43,56 +57,53 @@
         {
             if (e.Button == MouseButtons.Left)
             {
+                if (e.X < 0 || e.X >= inputHistogram.Image.Width)
+                {
+                    return;
+                }
+
                 var histBuffer = (Bitmap)inputHistogram.Image;
                 DrawLineDown(ref histBuffer, e.X, e.Y);
+
+                UpdateColorValues(e.X, (uint)((_height - e.Y) * _k));
+
+                inputHistogram.Image = histBuffer;
+            }
+        }
+
+        private void InputHistogram_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                if (e.X < 0 || e.X >= inputHistogram.Image.Width)
+                {
+                    return;
+                }
+
+                var histBuffer = (Bitmap)inputHistogram.Image;
+                DrawLineDown(ref histBuffer, e.X, e.Y);
+
+                UpdateColorValues(e.X, (uint)((_height - e.Y) * _k));
+
                 inputHistogram.Image = histBuffer;
             }
         }
 
         private void ApplyHistogram_Click(object sender, EventArgs e)
         {
-            Bitmap bmp = (Bitmap)inputHistogram.Image;
-
-            byte colorValue;
-           
-            if (_color.R == byte.MaxValue)
-            {
-                for (int y = 0; y < bmp.Height; y++)
-                {
-                    for (int x = 0; x < bmp.Width; x++)
-                    {
-                        colorValue = bmp.GetPixel(x, y).R;
-
-                        _colorValues[colorValue]++;
-                    }
-                }
-            }
-            else if (_color.G == byte.MaxValue)
-            {
-                for (int y = 0; y < bmp.Height; y++)
-                {
-                    for (int x = 0; x < bmp.Width; x++)
-                    {
-                        colorValue = bmp.GetPixel(x, y).G;
-
-                        _colorValues[colorValue]++;
-                    }
-                }
-            }
-            else
-            {
-                for (int y = 0; y < bmp.Height; y++)
-                {
-                    for (int x = 0; x < bmp.Width; x++)
-                    {
-                        colorValue = bmp.GetPixel(x, y).B;
-
-                        _colorValues[colorValue]++;
-                    }
-                }
-            }
-
             OnHistogramChanged?.Invoke(_colorValues);
         }
+
+        private void On_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //OnHistogramChanged?.Invoke(_colorValues);
+        }
+
+        private void UpdateColorValues(int index, uint newColorValue)
+        {
+            _colorValues[index] = newColorValue;
+        }
+
+
     }
 }

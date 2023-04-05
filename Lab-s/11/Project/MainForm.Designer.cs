@@ -28,266 +28,262 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.outputBaseImage = new System.Windows.Forms.PictureBox();
-            this.outputModifiedImage = new System.Windows.Forms.PictureBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.outputModifiedHist = new System.Windows.Forms.PictureBox();
-            this.outputBaseHist = new System.Windows.Forms.PictureBox();
-            this.inputIsB = new System.Windows.Forms.RadioButton();
-            this.inputIsG = new System.Windows.Forms.RadioButton();
-            this.inputIsR = new System.Windows.Forms.RadioButton();
-            this.label1 = new System.Windows.Forms.Label();
-            this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.imageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.inputOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.inputSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.outputBaseImage)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.outputModifiedImage)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.outputModifiedHist)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.outputBaseHist)).BeginInit();
-            this.menuStrip.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.BackColor = System.Drawing.SystemColors.Control;
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.splitContainer1.Panel2.Controls.Add(this.label3);
-            this.splitContainer1.Panel2.Controls.Add(this.label2);
-            this.splitContainer1.Panel2.Controls.Add(this.outputModifiedHist);
-            this.splitContainer1.Panel2.Controls.Add(this.outputBaseHist);
-            this.splitContainer1.Panel2.Controls.Add(this.inputIsB);
-            this.splitContainer1.Panel2.Controls.Add(this.inputIsG);
-            this.splitContainer1.Panel2.Controls.Add(this.inputIsR);
-            this.splitContainer1.Panel2.Controls.Add(this.label1);
-            this.splitContainer1.Panel2.Controls.Add(this.menuStrip);
-            this.splitContainer1.Size = new System.Drawing.Size(877, 637);
-            this.splitContainer1.SplitterDistance = 432;
-            this.splitContainer1.SplitterWidth = 10;
-            this.splitContainer1.TabIndex = 0;
-            // 
-            // splitContainer2
-            // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Name = "splitContainer2";
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.outputBaseImage);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.outputModifiedImage);
-            this.splitContainer2.Size = new System.Drawing.Size(877, 432);
-            this.splitContainer2.SplitterDistance = 440;
-            this.splitContainer2.SplitterWidth = 10;
-            this.splitContainer2.TabIndex = 0;
-            // 
-            // outputBaseImage
-            // 
-            this.outputBaseImage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.outputBaseImage.Location = new System.Drawing.Point(0, 0);
-            this.outputBaseImage.Name = "outputBaseImage";
-            this.outputBaseImage.Size = new System.Drawing.Size(440, 432);
-            this.outputBaseImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.outputBaseImage.TabIndex = 0;
-            this.outputBaseImage.TabStop = false;
-            // 
-            // outputModifiedImage
-            // 
-            this.outputModifiedImage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.outputModifiedImage.Location = new System.Drawing.Point(0, 0);
-            this.outputModifiedImage.Name = "outputModifiedImage";
-            this.outputModifiedImage.Size = new System.Drawing.Size(427, 432);
-            this.outputModifiedImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.outputModifiedImage.TabIndex = 0;
-            this.outputModifiedImage.TabStop = false;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(527, 15);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(150, 15);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Modified Image Histogram";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(199, 15);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(126, 15);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Base Image Histogram";
-            // 
-            // outputModifiedHist
-            // 
-            this.outputModifiedHist.BackColor = System.Drawing.SystemColors.Control;
-            this.outputModifiedHist.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.outputModifiedHist.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.outputModifiedHist.Location = new System.Drawing.Point(527, 33);
-            this.outputModifiedHist.Name = "outputModifiedHist";
-            this.outputModifiedHist.Size = new System.Drawing.Size(256, 150);
-            this.outputModifiedHist.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.outputModifiedHist.TabIndex = 2;
-            this.outputModifiedHist.TabStop = false;
-            this.outputModifiedHist.DoubleClick += new System.EventHandler(this.OutputModifiedHist_DoubleClick);
-            // 
-            // outputBaseHist
-            // 
-            this.outputBaseHist.BackColor = System.Drawing.SystemColors.Control;
-            this.outputBaseHist.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.outputBaseHist.Location = new System.Drawing.Point(199, 33);
-            this.outputBaseHist.Name = "outputBaseHist";
-            this.outputBaseHist.Size = new System.Drawing.Size(256, 150);
-            this.outputBaseHist.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.outputBaseHist.TabIndex = 2;
-            this.outputBaseHist.TabStop = false;
-            // 
-            // inputIsB
-            // 
-            this.inputIsB.AutoSize = true;
-            this.inputIsB.Location = new System.Drawing.Point(116, 125);
-            this.inputIsB.Name = "inputIsB";
-            this.inputIsB.Size = new System.Drawing.Size(32, 19);
-            this.inputIsB.TabIndex = 1;
-            this.inputIsB.TabStop = true;
-            this.inputIsB.Text = "B";
-            this.inputIsB.UseVisualStyleBackColor = true;
-            this.inputIsB.CheckedChanged += new System.EventHandler(this.InputChannel_CheckedChanged);
-            // 
-            // inputIsG
-            // 
-            this.inputIsG.AutoSize = true;
-            this.inputIsG.Location = new System.Drawing.Point(116, 100);
-            this.inputIsG.Name = "inputIsG";
-            this.inputIsG.Size = new System.Drawing.Size(33, 19);
-            this.inputIsG.TabIndex = 1;
-            this.inputIsG.TabStop = true;
-            this.inputIsG.Text = "G";
-            this.inputIsG.UseVisualStyleBackColor = true;
-            this.inputIsG.CheckedChanged += new System.EventHandler(this.InputChannel_CheckedChanged);
-            // 
-            // inputIsR
-            // 
-            this.inputIsR.AutoSize = true;
-            this.inputIsR.Checked = true;
-            this.inputIsR.Location = new System.Drawing.Point(116, 75);
-            this.inputIsR.Name = "inputIsR";
-            this.inputIsR.Size = new System.Drawing.Size(32, 19);
-            this.inputIsR.TabIndex = 1;
-            this.inputIsR.TabStop = true;
-            this.inputIsR.Text = "R";
-            this.inputIsR.UseVisualStyleBackColor = true;
-            this.inputIsR.CheckedChanged += new System.EventHandler(this.InputChannel_CheckedChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(105, 50);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(51, 15);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Channel";
-            // 
-            // menuStrip
-            // 
-            this.menuStrip.Dock = System.Windows.Forms.DockStyle.Left;
-            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.imageToolStripMenuItem});
-            this.menuStrip.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(58, 195);
-            this.menuStrip.TabIndex = 3;
-            this.menuStrip.Text = "menuStrip1";
-            // 
-            // imageToolStripMenuItem
-            // 
-            this.imageToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadToolStripMenuItem,
-            this.saveToolStripMenuItem});
-            this.imageToolStripMenuItem.Name = "imageToolStripMenuItem";
-            this.imageToolStripMenuItem.Size = new System.Drawing.Size(45, 19);
-            this.imageToolStripMenuItem.Text = "Image";
-            // 
-            // loadToolStripMenuItem
-            // 
-            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.loadToolStripMenuItem.Text = "Load";
-            this.loadToolStripMenuItem.Click += new System.EventHandler(this.ImageLoad_Click);
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.saveToolStripMenuItem.Text = "Save";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.ImageSave_Click);
-            // 
-            // inputOpenFileDialog
-            // 
-            this.inputOpenFileDialog.FileName = "openFileDialog1";
-            // 
-            // inputSaveFileDialog
-            // 
-            this.inputSaveFileDialog.Filter = "png files|*.png";
-            // 
-            // MainForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(877, 637);
-            this.Controls.Add(this.splitContainer1);
-            this.MainMenuStrip = this.menuStrip;
-            this.Name = "MainForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Перекраска изображения по видоизменнёной гистограмме";
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-            this.splitContainer2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.outputBaseImage)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.outputModifiedImage)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.outputModifiedHist)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.outputBaseHist)).EndInit();
-            this.menuStrip.ResumeLayout(false);
-            this.menuStrip.PerformLayout();
-            this.ResumeLayout(false);
-
+        splitContainer1 = new SplitContainer();
+        splitContainer2 = new SplitContainer();
+        outputBaseImage = new PictureBox();
+        outputModifiedImage = new PictureBox();
+        label3 = new Label();
+        label2 = new Label();
+        outputModifiedHist = new PictureBox();
+        outputBaseHist = new PictureBox();
+        inputIsB = new RadioButton();
+        inputIsG = new RadioButton();
+        inputIsR = new RadioButton();
+        label1 = new Label();
+        menuStrip = new MenuStrip();
+        imageToolStripMenuItem = new ToolStripMenuItem();
+        loadToolStripMenuItem = new ToolStripMenuItem();
+        saveToolStripMenuItem = new ToolStripMenuItem();
+        inputOpenFileDialog = new OpenFileDialog();
+        inputSaveFileDialog = new SaveFileDialog();
+        ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+        splitContainer1.Panel1.SuspendLayout();
+        splitContainer1.Panel2.SuspendLayout();
+        splitContainer1.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
+        splitContainer2.Panel1.SuspendLayout();
+        splitContainer2.Panel2.SuspendLayout();
+        splitContainer2.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)outputBaseImage).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)outputModifiedImage).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)outputModifiedHist).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)outputBaseHist).BeginInit();
+        menuStrip.SuspendLayout();
+        SuspendLayout();
+        // 
+        // splitContainer1
+        // 
+        splitContainer1.BackColor = SystemColors.Control;
+        splitContainer1.Dock = DockStyle.Fill;
+        splitContainer1.Location = new Point(0, 0);
+        splitContainer1.Name = "splitContainer1";
+        splitContainer1.Orientation = Orientation.Horizontal;
+        // 
+        // splitContainer1.Panel1
+        // 
+        splitContainer1.Panel1.Controls.Add(splitContainer2);
+        // 
+        // splitContainer1.Panel2
+        // 
+        splitContainer1.Panel2.BackColor = SystemColors.ScrollBar;
+        splitContainer1.Panel2.Controls.Add(label3);
+        splitContainer1.Panel2.Controls.Add(label2);
+        splitContainer1.Panel2.Controls.Add(outputModifiedHist);
+        splitContainer1.Panel2.Controls.Add(outputBaseHist);
+        splitContainer1.Panel2.Controls.Add(inputIsB);
+        splitContainer1.Panel2.Controls.Add(inputIsG);
+        splitContainer1.Panel2.Controls.Add(inputIsR);
+        splitContainer1.Panel2.Controls.Add(label1);
+        splitContainer1.Panel2.Controls.Add(menuStrip);
+        splitContainer1.Size = new Size(877, 637);
+        splitContainer1.SplitterDistance = 432;
+        splitContainer1.SplitterWidth = 10;
+        splitContainer1.TabIndex = 0;
+        // 
+        // splitContainer2
+        // 
+        splitContainer2.Dock = DockStyle.Fill;
+        splitContainer2.Location = new Point(0, 0);
+        splitContainer2.Name = "splitContainer2";
+        // 
+        // splitContainer2.Panel1
+        // 
+        splitContainer2.Panel1.Controls.Add(outputBaseImage);
+        // 
+        // splitContainer2.Panel2
+        // 
+        splitContainer2.Panel2.Controls.Add(outputModifiedImage);
+        splitContainer2.Size = new Size(877, 432);
+        splitContainer2.SplitterDistance = 440;
+        splitContainer2.SplitterWidth = 10;
+        splitContainer2.TabIndex = 0;
+        // 
+        // outputBaseImage
+        // 
+        outputBaseImage.Dock = DockStyle.Fill;
+        outputBaseImage.Location = new Point(0, 0);
+        outputBaseImage.Name = "outputBaseImage";
+        outputBaseImage.Size = new Size(440, 432);
+        outputBaseImage.SizeMode = PictureBoxSizeMode.StretchImage;
+        outputBaseImage.TabIndex = 0;
+        outputBaseImage.TabStop = false;
+        // 
+        // outputModifiedImage
+        // 
+        outputModifiedImage.Dock = DockStyle.Fill;
+        outputModifiedImage.Location = new Point(0, 0);
+        outputModifiedImage.Name = "outputModifiedImage";
+        outputModifiedImage.Size = new Size(427, 432);
+        outputModifiedImage.SizeMode = PictureBoxSizeMode.StretchImage;
+        outputModifiedImage.TabIndex = 0;
+        outputModifiedImage.TabStop = false;
+        // 
+        // label3
+        // 
+        label3.AutoSize = true;
+        label3.Location = new Point(527, 15);
+        label3.Name = "label3";
+        label3.Size = new Size(150, 15);
+        label3.TabIndex = 4;
+        label3.Text = "Modified Image Histogram";
+        // 
+        // label2
+        // 
+        label2.AutoSize = true;
+        label2.Location = new Point(199, 15);
+        label2.Name = "label2";
+        label2.Size = new Size(126, 15);
+        label2.TabIndex = 4;
+        label2.Text = "Base Image Histogram";
+        // 
+        // outputModifiedHist
+        // 
+        outputModifiedHist.BackColor = SystemColors.Control;
+        outputModifiedHist.BorderStyle = BorderStyle.FixedSingle;
+        outputModifiedHist.Cursor = Cursors.Hand;
+        outputModifiedHist.Location = new Point(527, 33);
+        outputModifiedHist.Name = "outputModifiedHist";
+        outputModifiedHist.Size = new Size(256, 150);
+        outputModifiedHist.SizeMode = PictureBoxSizeMode.StretchImage;
+        outputModifiedHist.TabIndex = 2;
+        outputModifiedHist.TabStop = false;
+        outputModifiedHist.Click += OutputModifiedHist_Click;
+        // 
+        // outputBaseHist
+        // 
+        outputBaseHist.BackColor = SystemColors.Control;
+        outputBaseHist.BorderStyle = BorderStyle.FixedSingle;
+        outputBaseHist.Location = new Point(199, 33);
+        outputBaseHist.Name = "outputBaseHist";
+        outputBaseHist.Size = new Size(256, 150);
+        outputBaseHist.SizeMode = PictureBoxSizeMode.StretchImage;
+        outputBaseHist.TabIndex = 2;
+        outputBaseHist.TabStop = false;
+        // 
+        // inputIsB
+        // 
+        inputIsB.AutoSize = true;
+        inputIsB.Location = new Point(116, 125);
+        inputIsB.Name = "inputIsB";
+        inputIsB.Size = new Size(32, 19);
+        inputIsB.TabIndex = 1;
+        inputIsB.TabStop = true;
+        inputIsB.Text = "B";
+        inputIsB.UseVisualStyleBackColor = true;
+        inputIsB.CheckedChanged += InputChannel_CheckedChanged;
+        // 
+        // inputIsG
+        // 
+        inputIsG.AutoSize = true;
+        inputIsG.Location = new Point(116, 100);
+        inputIsG.Name = "inputIsG";
+        inputIsG.Size = new Size(33, 19);
+        inputIsG.TabIndex = 1;
+        inputIsG.TabStop = true;
+        inputIsG.Text = "G";
+        inputIsG.UseVisualStyleBackColor = true;
+        inputIsG.CheckedChanged += InputChannel_CheckedChanged;
+        // 
+        // inputIsR
+        // 
+        inputIsR.AutoSize = true;
+        inputIsR.Checked = true;
+        inputIsR.Location = new Point(116, 75);
+        inputIsR.Name = "inputIsR";
+        inputIsR.Size = new Size(32, 19);
+        inputIsR.TabIndex = 1;
+        inputIsR.TabStop = true;
+        inputIsR.Text = "R";
+        inputIsR.UseVisualStyleBackColor = true;
+        inputIsR.CheckedChanged += InputChannel_CheckedChanged;
+        // 
+        // label1
+        // 
+        label1.AutoSize = true;
+        label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+        label1.Location = new Point(105, 50);
+        label1.Name = "label1";
+        label1.Size = new Size(51, 15);
+        label1.TabIndex = 0;
+        label1.Text = "Channel";
+        // 
+        // menuStrip
+        // 
+        menuStrip.Dock = DockStyle.Left;
+        menuStrip.Items.AddRange(new ToolStripItem[] { imageToolStripMenuItem });
+        menuStrip.Location = new Point(0, 0);
+        menuStrip.Name = "menuStrip";
+        menuStrip.Size = new Size(58, 195);
+        menuStrip.TabIndex = 3;
+        menuStrip.Text = "menuStrip1";
+        // 
+        // imageToolStripMenuItem
+        // 
+        imageToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { loadToolStripMenuItem, saveToolStripMenuItem });
+        imageToolStripMenuItem.Name = "imageToolStripMenuItem";
+        imageToolStripMenuItem.Size = new Size(45, 19);
+        imageToolStripMenuItem.Text = "Image";
+        // 
+        // loadToolStripMenuItem
+        // 
+        loadToolStripMenuItem.Name = "loadToolStripMenuItem";
+        loadToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.O;
+        loadToolStripMenuItem.Size = new Size(143, 22);
+        loadToolStripMenuItem.Text = "Load";
+        loadToolStripMenuItem.Click += ImageLoad_Click;
+        // 
+        // saveToolStripMenuItem
+        // 
+        saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+        saveToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
+        saveToolStripMenuItem.Size = new Size(143, 22);
+        saveToolStripMenuItem.Text = "Save";
+        saveToolStripMenuItem.Click += ImageSave_Click;
+        // 
+        // inputOpenFileDialog
+        // 
+        inputOpenFileDialog.FileName = "openFileDialog1";
+        // 
+        // inputSaveFileDialog
+        // 
+        inputSaveFileDialog.Filter = "png files|*.png";
+        // 
+        // MainForm
+        // 
+        AutoScaleDimensions = new SizeF(7F, 15F);
+        AutoScaleMode = AutoScaleMode.Font;
+        ClientSize = new Size(877, 637);
+        Controls.Add(splitContainer1);
+        MainMenuStrip = menuStrip;
+        Name = "MainForm";
+        StartPosition = FormStartPosition.CenterScreen;
+        Text = "Перекраска изображения по видоизменнёной гистограмме";
+        splitContainer1.Panel1.ResumeLayout(false);
+        splitContainer1.Panel2.ResumeLayout(false);
+        splitContainer1.Panel2.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+        splitContainer1.ResumeLayout(false);
+        splitContainer2.Panel1.ResumeLayout(false);
+        splitContainer2.Panel2.ResumeLayout(false);
+        ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
+        splitContainer2.ResumeLayout(false);
+        ((System.ComponentModel.ISupportInitialize)outputBaseImage).EndInit();
+        ((System.ComponentModel.ISupportInitialize)outputModifiedImage).EndInit();
+        ((System.ComponentModel.ISupportInitialize)outputModifiedHist).EndInit();
+        ((System.ComponentModel.ISupportInitialize)outputBaseHist).EndInit();
+        menuStrip.ResumeLayout(false);
+        menuStrip.PerformLayout();
+        ResumeLayout(false);
     }
 
     #endregion
