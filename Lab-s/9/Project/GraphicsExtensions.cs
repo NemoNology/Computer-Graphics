@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace WF
+namespace GraphicUnit
 {
     internal class GraphicsExtensions
     {
