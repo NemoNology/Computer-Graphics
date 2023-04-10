@@ -28,11 +28,33 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
-        this.components = new System.ComponentModel.Container();
-        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(800, 450);
-        this.Text = "Form1";
+        mainView = new PictureBox();
+        ((System.ComponentModel.ISupportInitialize)mainView).BeginInit();
+        SuspendLayout();
+        // 
+        // mainView
+        // 
+        mainView.Dock = DockStyle.Fill;
+        mainView.Location = new Point(0, 0);
+        mainView.Name = "mainView";
+        mainView.Size = new Size(800, 450);
+        mainView.TabIndex = 0;
+        mainView.TabStop = false;
+        // 
+        // MainForm
+        // 
+        AutoScaleDimensions = new SizeF(7F, 15F);
+        AutoScaleMode = AutoScaleMode.Font;
+        ClientSize = new Size(800, 450);
+        Controls.Add(mainView);
+        Name = "MainForm";
+        Text = "Fire on the floor";
+        Resize += MainForm_Resize;
+        ((System.ComponentModel.ISupportInitialize)mainView).EndInit();
+        ResumeLayout(false);
     }
 
     #endregion
+
+    private PictureBox mainView;
 }
