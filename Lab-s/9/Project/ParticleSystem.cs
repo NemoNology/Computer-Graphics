@@ -28,9 +28,6 @@ namespace Project
             byte maxFading = 20
         )
         {
-            Coordinates = coordinates;
-            ParticlesAmount = particlesAmount;
-
             _particleGenerator = new ParticleGenerator(
                 coordinates,
                 particleSprite,
@@ -39,6 +36,9 @@ namespace Project
                 maxFading
             );
 
+            Coordinates = coordinates;
+            ParticlesAmount = particlesAmount;
+            
             _particles = _particleGenerator.Generate(particlesAmount);
         }
 
