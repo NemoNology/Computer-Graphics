@@ -10,6 +10,7 @@ public partial class MainForm : Form
     }
 
     private const float R = 0.01f;
+    private ParticleSystem _particleSystem;
 
     private GraphicUnit.GraphicsExtensions _ge = new GraphicUnit.GraphicsExtensions();
 
@@ -28,5 +29,6 @@ public partial class MainForm : Form
                 0);
         }
     }
-        
+
+
 }
