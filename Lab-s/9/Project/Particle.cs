@@ -36,11 +36,8 @@ namespace Project
             Coordinates += Velocity;
             Velocity += Acceleration;
 
-            if (Velocity.X < 0)
-            {
-                Velocity = new Vector3(0, Velocity.Y, Velocity.Z);
-                Acceleration = new Vector3(0, Acceleration.Y, Acceleration.Z);
-            }
+            Velocity = new Vector3(0, Velocity.Y, Velocity.Z);
+            Acceleration = new Vector3(0, Acceleration.Y, Acceleration.Z);
 
             if (Velocity.Y < 0)
             {
@@ -48,11 +45,8 @@ namespace Project
                 Acceleration = new Vector3(Acceleration.X, 0, Acceleration.Z);
             }
 
-            if (Velocity.Z < 0)
-            {
-                Velocity = new Vector3(Velocity.X, Velocity.Y, 0);
-                Acceleration = new Vector3(Acceleration.X, Acceleration.Y, 0);
-            }
+            Velocity = new Vector3(Velocity.X, Velocity.Y, 0);
+            Acceleration = new Vector3(Acceleration.X, Acceleration.Y, 0);
 
             Sprite = Fade().Result;
 

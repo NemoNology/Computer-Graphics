@@ -51,14 +51,14 @@ namespace Project
                 return new Particle(
                     Coordinates, Sprite, 
                     new Vector3(
-                        rnd.NextSingle() * MaxVelocity.X, 
+                        rnd.NextSingle() * MaxVelocity.X * (rnd.Next(2) == 0 ? 1 : -1), 
                         rnd.NextSingle() * MaxVelocity.Y, 
-                        rnd.NextSingle() * MaxVelocity.Z 
+                        rnd.NextSingle() * MaxVelocity.Z * (rnd.Next(2) == 0 ? 1 : -1) 
                     ),
                     new Vector3(
-                        rnd.NextSingle() * MinAcceleration.X, 
-                        rnd.NextSingle() * MinAcceleration.Y, 
-                        rnd.NextSingle() * MinAcceleration.Z 
+                        rnd.NextSingle() * -MinAcceleration.X, 
+                        rnd.NextSingle() * -MinAcceleration.Y, 
+                        rnd.NextSingle() * -MinAcceleration.Z 
                     ),
                     (byte)rnd.Next(MaxFading)
                 );
