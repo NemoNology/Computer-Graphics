@@ -110,6 +110,7 @@ partial class MainForm
         // 
         // outputBaseImage
         // 
+        outputBaseImage.BackColor = SystemColors.GrayText;
         outputBaseImage.Dock = DockStyle.Fill;
         outputBaseImage.Location = new Point(0, 0);
         outputBaseImage.Name = "outputBaseImage";
@@ -120,6 +121,7 @@ partial class MainForm
         // 
         // outputModifiedImage
         // 
+        outputModifiedImage.BackColor = SystemColors.GrayText;
         outputModifiedImage.Dock = DockStyle.Fill;
         outputModifiedImage.Location = new Point(0, 0);
         outputModifiedImage.Name = "outputModifiedImage";
@@ -157,7 +159,7 @@ partial class MainForm
         outputModifiedHist.SizeMode = PictureBoxSizeMode.StretchImage;
         outputModifiedHist.TabIndex = 2;
         outputModifiedHist.TabStop = false;
-        outputModifiedHist.Click += OutputModifiedHist_Click;
+        outputModifiedHist.Click += OutputModifiedHistogram_Click;
         // 
         // outputBaseHist
         // 
