@@ -6,18 +6,20 @@ public partial class MainForm : Form
     {
         InitializeComponent();
 
-        _baseImageHistBuffer = new List<(int x, int y)>[byte.MaxValue + 1];
-
-        for (int i = 0; i < _baseImageHistBuffer.Length; i++)
-        {
-            _baseImageHistBuffer[i] = new List<(int x, int y)>();
-        }
+        _baseImageHistograms =
+            new List<List<(int x, int y)>[]>(ChannelsAmount);
+        _modifiedImageHistograms = new List<uint[]>(ChannelsAmount);
     }
 
-    private List<(int x, int y)>[] _baseImageHistBuffer;
-    private uint[] _modifiedImageHistBuffer;
+    private const int ChannelsAmount = 3;
 
-    private ChangingHistogramForm _changingHistogramForm;
+    private List<List<(int x, int y)>[]> _baseImageHistograms;
+
+    private List<uint[]> _modifiedImageHistograms;
+
+    private int _colorChannelIndex = 0;
+
+    private ChangingHistogramForm? _changingHistogramForm;
 
     private void ImageLoad_Click(object sender, EventArgs e)
     {
@@ -27,8 +29,18 @@ public partial class MainForm : Form
             {
                 outputBaseImage.Image = new Bitmap(inputOpenFileDialog.FileName);
                 outputModifiedImage.Image = outputBaseImage.Image;
-                FillColorValueBuffer();
-                FillHists();
+
+                if (outputBaseImage.Image.Width * outputBaseImage.Image.Height > int.MaxValue)
+                {
+                    MessageBox.Show("Image is have big-ass resolution", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    outputBaseImage.Image = outputModifiedImage.Image = null;
+                    return;
+                }
+
+                FillColorValues();
+                FillBaseHistogram();
+                FillModifiedHistogram();
             }
             catch
             {
@@ -62,7 +74,7 @@ public partial class MainForm : Form
         }
     }
 
-    private void FillColorValueBuffer()
+    private void FillColorValues()
     {
         if (outputBaseImage.Image == null)
         {
@@ -70,60 +82,45 @@ public partial class MainForm : Form
         }
 
         var bmp = (Bitmap)outputBaseImage.Image;
-        byte color;
+        Color color;
 
-        _modifiedImageHistBuffer = new uint[byte.MaxValue + 1];
+        // CLear values
+        _baseImageHistograms.Clear();
+        _modifiedImageHistograms.Clear();
 
-        for (int i = 0; i < _baseImageHistBuffer.Length; i++)
+        Parallel.For(0, ChannelsAmount, i =>
         {
-            _baseImageHistBuffer[i].Clear();
-        }
+            _baseImageHistograms.Add(new List<(int x, int y)>[byte.MaxValue + 1]);
+            _modifiedImageHistograms.Add(new uint[byte.MaxValue + 1]);
+        });
 
-        // R
-        if (inputIsR.Checked)
+        Parallel.For(0, ChannelsAmount, i =>
         {
-            for (int y = 0; y < bmp.Height; y++)
+            Parallel.For(0, _baseImageHistograms[i].Length, j =>
             {
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    color = bmp.GetPixel(x, y).R;
+                _baseImageHistograms[i][j] = new List<(int x, int y)>();
+            });
+        });
 
-                    _baseImageHistBuffer[color].Add((x, y));
-                    _modifiedImageHistBuffer[color]++;
-                }
-            }
-        }
-        // G
-        else if (inputIsG.Checked)
+        // Filling color values
+        for (int y = 0; y < bmp.Height; y++)
         {
-            for (int y = 0; y < bmp.Height; y++)
+            for (int x = 0; x < bmp.Height; x++)
             {
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    color = bmp.GetPixel(x, y).G;
+                color = bmp.GetPixel(x, y);
 
-                    _baseImageHistBuffer[color].Add((x, y));
-                    _modifiedImageHistBuffer[color]++;
-                }
-            }
-        }
-        // B
-        else
-        {
-            for (int y = 0; y < bmp.Height; y++)
-            {
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    color = bmp.GetPixel(x, y).B;
+                _baseImageHistograms[0][color.R].Add((x, y));
+                _baseImageHistograms[1][color.G].Add((x, y));
+                _baseImageHistograms[2][color.B].Add((x, y));
 
-                    _baseImageHistBuffer[color].Add((x, y));
-                    _modifiedImageHistBuffer[color]++;
-                }
+                _modifiedImageHistograms[0][color.R]++;
+                _modifiedImageHistograms[1][color.G]++;
+                _modifiedImageHistograms[2][color.B]++;
             }
         }
     }
 
-    private void FillHists()
+    private void FillBaseHistogram()
     {
         if (outputBaseImage.Image == null)
         {
@@ -132,23 +129,40 @@ public partial class MainForm : Form
 
         Bitmap bmp = new Bitmap(outputBaseHist.Width, outputBaseHist.Height);
 
-        Color color = inputIsR.Checked ? Color.Red :
-            (inputIsG.Checked ? Color.Green : Color.Blue);
-        var h = bmp.Height - 1;
-        var max = _modifiedImageHistBuffer.Max() * 1f / h;
+        List<(int x, int y)>[] baseImageHistogram =
+            (List<(int x, int y)>[])_baseImageHistograms[_colorChannelIndex].Clone();
 
-        for (int i = 0; i < _modifiedImageHistBuffer.Length; i++)
+        Color color = _colorChannelIndex == 0 ? Color.Red :
+            (_colorChannelIndex == 1 ? Color.Green : Color.Blue);
+        var h = bmp.Height - 1;
+        var max = baseImageHistogram
+            .AsParallel()
+            .MaxBy(x => x.Count())
+            ?.Count * 1f / h;
+
+
+        for (int i = 0; i < baseImageHistogram.Length; i++)
         {
             DrawVertical(ref bmp, i,
-                h - (int)(_modifiedImageHistBuffer[i] / max), color);
+                h - (int)(baseImageHistogram[i].Count / max), color);
         }
 
         outputBaseHist.Image = bmp;
-        outputModifiedHist.Image = bmp;
     }
 
     private void DrawVertical(ref Bitmap bmp, int x, int y, Color color)
     {
+        if (y < 0 ||
+            y > bmp.Height)
+        {
+            throw new ArgumentOutOfRangeException(nameof(y));
+        }
+        if (x < 0 ||
+            x > bmp.Width)
+        {
+            throw new ArgumentOutOfRangeException(nameof(x));
+        }
+
         for (int i = y; i < bmp.Height; i++)
         {
             bmp.SetPixel(x, y, color);
@@ -158,19 +172,36 @@ public partial class MainForm : Form
 
     private void InputChannel_CheckedChanged(object sender, EventArgs e)
     {
-        FillColorValueBuffer();
-        FillHists();
+        _colorChannelIndex = (inputIsR.Checked ? 0
+            : (inputIsG.Checked ? 1 : 2));
+
+        FillBaseHistogram();
+        FillModifiedHistogram();
     }
 
-    private void ApplyHistToImage(uint[] newColorValues)
+    private void ApplyHistogramToImage(uint[] newColorValues)
     {
         uint newSize = 0;
         uint oldSize = 0;
 
         outputModifiedImage.Image = (Bitmap)outputBaseImage.Image;
 
-        Bitmap bmp = (Bitmap)outputModifiedImage.Image;
-        List<(int x, int y)>[] baseImageHistBuffer = _baseImageHistBuffer;
+        var size = _baseImageHistograms[_colorChannelIndex].Length;
+
+        Bitmap bmp = new Bitmap(outputModifiedImage.Image);
+
+        List<(int x, int y)>[] baseImageHistogramBuffer = 
+            new List<(int x, int y)>[_baseImageHistograms[_colorChannelIndex].Length];
+
+        for (int i = 0; i < _baseImageHistograms[_colorChannelIndex].Length; i++)
+        {
+            baseImageHistogramBuffer[i] = new List<(int x, int y)>();
+
+            for (int j = 0; j < _baseImageHistograms[_colorChannelIndex][i].Count; j++)
+            {
+                baseImageHistogramBuffer[i].Add(_baseImageHistograms[_colorChannelIndex][i][j]);
+            }
+        }
 
         bool isR = inputIsR.Checked;
         bool isG = inputIsG.Checked;
@@ -178,119 +209,114 @@ public partial class MainForm : Form
         ////////////////////////////////////////////////////
         // Recalculate color values for new color values
 
-        foreach (var colorValue in newColorValues)
+        Parallel.ForEach(newColorValues, colorValue =>
         {
             newSize += colorValue;
-        }
+        });
 
-        foreach (var colorValue in _modifiedImageHistBuffer)
-        {
-            oldSize += colorValue;
-        }
+        Parallel.ForEach(
+            _modifiedImageHistograms[_colorChannelIndex],
+            colorValue =>
+            {
+                oldSize += colorValue;
+            });
 
         var k = oldSize * 1f / newSize;
 
-        for (int i = 0; i < newColorValues.Length; i++)
+        Parallel.For(0, newColorValues.Length, i =>
         {
             newColorValues[i] = (uint)(newColorValues[i] * k);
-        }
+        });
+
+        newColorValues.CopyTo(_modifiedImageHistograms[_colorChannelIndex], 0);
 
         Random rnd = new Random(DateTime.Now.Millisecond);
 
         int max0;
         int max;
 
-        while (newColorValues.Where(x => x > 0).Count() > 0 &&
-            baseImageHistBuffer.Where(x => x.Count() > 0).Count() > 0)
+        ////////////////////////////////////////////////////
+        // Finding most colorful value
+
+        max0 = byte.MaxValue;
+        max = byte.MaxValue;
+
+        while (max >= 0 && newColorValues[max] == 0)
         {
-            ////////////////////////////////////////////////////
-            // Finding most colorful value
+            max--;
+        }
 
-            max0 = byte.MaxValue;
-            max = byte.MaxValue;
+        while (max0 >= 0 && baseImageHistogramBuffer[max0].Count == 0)
+        {
+            max0--;
+        }
 
+        ////////////////////////////////////////////////////
+        // Start repaint pixels by new histogram values
+
+        while (max >= 0 && max0 >= 0)
+        {
+            // Find point where color value >= max color value in new color values
+
+            var randomPointIndex = rnd.Next(baseImageHistogramBuffer[max0].Count);
+
+            var pointBuffer = baseImageHistogramBuffer[max0][randomPointIndex];
+
+            var x = pointBuffer.x;
+            var y = pointBuffer.y;
+
+            var color = bmp.GetPixel(pointBuffer.x, pointBuffer.y);
+
+            // Repaint pixel with new color value
+            if (isR)
+            {
+                bmp.SetPixel(x, y,
+                    Color.FromArgb(
+                        max,
+                        color.G,
+                        color.B
+                        ));
+            }
+            else if (isG)
+            {
+                bmp.SetPixel(x, y,
+                    Color.FromArgb(
+                        color.R,
+                        max,
+                        color.B
+                        ));
+            }
+            else
+            {
+                bmp.SetPixel(x, y,
+                    Color.FromArgb(
+                        color.R,
+                        color.G,
+                        max
+                        ));
+            }
+
+            // Decrease points with max color value in new color values amount
+            newColorValues[max]--;
+
+            // Remove already repaint point
+            baseImageHistogramBuffer[max0].RemoveAt(randomPointIndex);
+
+            // If there is no more points with current color value => going to less color value
             while (max >= 0 && newColorValues[max] == 0)
             {
                 max--;
             }
 
-            while (max0 >= 0 && baseImageHistBuffer[max0].Count == 0)
+            // If there is no more points with current color value => going to less color value
+            while (max >= 0 && newColorValues[max] == 0)
             {
-                max0--;
+                max--;
             }
 
-            ////////////////////////////////////////////////////
-            // Start repaint pixels by new histogram values
-
-            while (max >= 0 && max0 >= 0)
+            while (max0 >= 0 && baseImageHistogramBuffer[max0].Count == 0)
             {
-                // Find point where color value >= max color value in new color values
-
-                int randomCount = rnd.Next(baseImageHistBuffer[max0].Count + 1);
-
-                while (randomCount > 0 && max >= 0)
-                {
-                    var pointBuffer = baseImageHistBuffer[max0][rnd.Next(baseImageHistBuffer[max0].Count)];
-
-                    var x = pointBuffer.x;
-                    var y = pointBuffer.y;
-
-                    var color = bmp.GetPixel(pointBuffer.x, pointBuffer.y);
-
-                    // Repaint pixel with new color value
-                    if (isR)
-                    {
-                        bmp.SetPixel(x, y,
-                            Color.FromArgb(
-                                max,
-                                color.G,
-                                color.B
-                                ));
-                    }
-                    else if (isG)
-                    {
-                        bmp.SetPixel(x, y,
-                            Color.FromArgb(
-                                color.R,
-                                max,
-                                color.B
-                                ));
-                    }
-                    else
-                    {
-                        bmp.SetPixel(x, y,
-                            Color.FromArgb(
-                                color.R,
-                                color.G,
-                                max
-                                ));
-                    }
-
-                    // Decrease points with max color value in new color values amount
-                    newColorValues[max]--;
-
-                    // Remove already repaint point
-                    baseImageHistBuffer[max0].RemoveAt(0);
-
-                    // If there is no more points with current color value => going to less color value
-                    while (max >= 0 && newColorValues[max] == 0)
-                    {
-                        max--;
-                    }
-
-                    randomCount--;
-                }
-
-                // If there is no more points with current color value => going to less color value
-                while (max >= 0 && newColorValues[max] == 0)
-                {
-                    max--;
-                }
-
-                while (max0 >= 0 && baseImageHistBuffer[max0].Count == 0)
-                {
-                    max0--;
-                }
+                max0--;
             }
         }
 
@@ -299,73 +325,36 @@ public partial class MainForm : Form
 
         outputModifiedImage.Image = bmp;
 
-        RedrawModifiedHistogram();
+        FillModifiedHistogram();
     }
 
-    private void RedrawModifiedHistogram()
+    private void FillModifiedHistogram()
     {
-        var bmp = (Bitmap)outputModifiedImage.Image.Clone();
-        byte color;
-
-        _modifiedImageHistBuffer = new uint[byte.MaxValue + 1];
-
-        if (inputIsR.Checked)
+        if (outputBaseImage.Image == null)
         {
-            for (int i = 0; i < bmp.Height; i++)
-            {
-                for (int j = 0; j < bmp.Width; j++)
-                {
-                    color = bmp.GetPixel(j, i).R;
-
-                    _modifiedImageHistBuffer[color]++;
-                }
-            }
-        }
-        else if (inputIsG.Checked)
-        {
-            for (int i = 0; i < bmp.Height; i++)
-            {
-                for (int j = 0; j < bmp.Width; j++)
-                {
-                    color = bmp.GetPixel(j, i).G;
-
-                    _modifiedImageHistBuffer[color]++;
-                }
-            }
-        }
-        else
-        {
-            for (int i = 0; i < bmp.Height; i++)
-            {
-                for (int j = 0; j < bmp.Width; j++)
-                {
-                    color = bmp.GetPixel(j, i).B;
-
-                    _modifiedImageHistBuffer[color]++;
-                }
-            }
+            return;
         }
 
-        //////////////////////////////////////////////////////////////////
-        // Redraw hist
+        uint[] modifiedImageHistogramBuffer =
+            (uint[])_modifiedImageHistograms[_colorChannelIndex].Clone();
 
-        bmp = new Bitmap(outputBaseHist.Width, outputBaseHist.Height);
+        Bitmap bmp = new Bitmap(outputBaseHist.Width, outputBaseHist.Height);
 
         Color paintColor = inputIsR.Checked ? Color.Red :
             (inputIsG.Checked ? Color.Green : Color.Blue);
         var h = bmp.Height - 1;
-        var max = _modifiedImageHistBuffer.Max() * 1f / h;
+        var max = _modifiedImageHistograms[_colorChannelIndex].Max() * 1f / h;
 
-        for (int i = 0; i < _modifiedImageHistBuffer.Length; i++)
+        for (int i = 0; i < modifiedImageHistogramBuffer.Length; i++)
         {
             DrawVertical(ref bmp, i,
-                h - (int)(_modifiedImageHistBuffer[i] / max), paintColor);
+                h - (int)(modifiedImageHistogramBuffer[i] / max), paintColor);
         }
 
         outputModifiedHist.Image = bmp;
     }
 
-    private void OutputModifiedHist_Click(object sender, EventArgs e)
+    private void OutputModifiedHistogram_Click(object sender, EventArgs e)
     {
         if (outputBaseImage.Image == null)
         {
@@ -381,38 +370,16 @@ public partial class MainForm : Form
             (inputIsG.Checked ? Color.Green : Color.Blue);
 
         _changingHistogramForm = new ChangingHistogramForm(
-            (uint[])_modifiedImageHistBuffer.Clone(),
+            (uint[])_modifiedImageHistograms[_colorChannelIndex].Clone(),
             color,
             (Bitmap)outputModifiedHist.Image.Clone()
             );
 
-        _changingHistogramForm.OnHistogramChanged += ApplyHistToImage;
+        _changingHistogramForm.OnHistogramChanged += ApplyHistogramToImage;
 
         _changingHistogramForm.Show();
     }
 
 
 
-}
-
-struct MyPoint
-{
-    public byte Value { get; set; }
-
-    public int X { get; set; }
-    public int Y { get; set; }
-
-    public MyPoint()
-    {
-        Value = 0;
-        X = 0;
-        Y = 0;
-    }
-
-    public MyPoint(byte value, int x, int y)
-    {
-        Value = value;
-        X = x;
-        Y = y;
-    }
 }
