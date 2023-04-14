@@ -19,7 +19,6 @@ namespace Project
             Points.Add(new Vector3(-0.5f, 0, -0.5f));
         }
 
-    
         public Square3D(Vector3 squareLeftUpPoint, float sideLength)
         {
             var x = squareLeftUpPoint.X;
@@ -32,6 +31,9 @@ namespace Project
             Points.Add(new Vector3(x, y, z - sideLength));
         }
 
+        /// <summary>
+        /// Square edges as list of pairs of points
+        /// </summary>
         public List<Tuple<Vector3, Vector3>> Edges
         {
             get
@@ -44,5 +46,37 @@ namespace Project
                 };
             }
         }
+
+        /// <summary>
+        /// Move square by Dx, Dy, Dz
+        /// </summary>
+        /// <param name="Dx"> The value, along the X axis, by which the square will move </param>
+        /// <param name="Dy"> The value, along the Y axis, by which the square will move </param>
+        /// <param name="Dz"> The value, along the Z axis, by which the square will move </param>
+        public async void Translate(float Dx, float Dy = 0, float Dz = 0)
+        {
+            var translateMatrix = new Matrix4x4(
+                1,  0,  0,  0,
+                0,  1,  0,  0,
+                0,  0,  1,  0,
+                Dx, Dy, Dz, 1
+            );
+
+            await Task.Run(() =>
+            {
+                for (int i = 0; i < Points.Count; i++)
+                {
+                    var buffer = new Vector4(Points[i], 1);
+                    buffer = Vector4.Transform(buffer, translateMatrix);
+                    Points[i] = new Vector3(
+                        buffer.X,
+                        buffer.Y,
+                        buffer.Z
+                        );
+                }
+            });
+        }
+    
+        // TODO: Rotation
     }
 }
