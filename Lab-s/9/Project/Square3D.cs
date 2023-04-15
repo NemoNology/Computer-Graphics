@@ -13,13 +13,13 @@ namespace Project
 
         public Square3D()
         {
-            Points.Add(new Vector3(-0.5f, 0, 0.5f));
-            Points.Add(new Vector3(0.5f, 0, 0.5f));
-            Points.Add(new Vector3(0.5f, 0, -0.5f));
-            Points.Add(new Vector3(-0.5f, 0, -0.5f));
+            Points.Add(new Point3D(-0.5f, 0, 0.5f));
+            Points.Add(new Point3D(0.5f, 0, 0.5f));
+            Points.Add(new Point3D(0.5f, 0, -0.5f));
+            Points.Add(new Point3D(-0.5f, 0, -0.5f));
         }
 
-        public Square3D(Vector3 squareLeftUpPoint, float sideLength)
+        public Square3D(Point3D squareLeftUpPoint, float sideLength)
         {
             var x = squareLeftUpPoint.X;
             var y = squareLeftUpPoint.Y;
@@ -64,7 +64,7 @@ namespace Project
             };
         }
 
-        public void Translate(float Dx, float Dy = 0, float Dz = 0)
+        public void Translate(float Dx = 0, float Dy = 0, float Dz = 0)
         {
             Parallel.ForEach(Points, point =>
             {
@@ -87,10 +87,53 @@ namespace Project
 
         public void Rotate(float rotationAngleDegree, int rotationAxis)
         {
-            Parallel.ForEach(Points, point =>
+            Matrix4x4 rotationMatrix;
+
+            var degreeToRadians = Math.PI / 180;
+
+            float sin = (float)Math.Sin(degreeToRadians * rotationAngleDegree);
+            float cos = (float)Math.Cos(degreeToRadians * rotationAngleDegree);
+
+            if (rotationAxis == 0)
             {
-                point.Rotate(rotationAngleDegree, rotationAxis);
-            });
+                rotationMatrix = new Matrix4x4
+                    (
+                        1, 0.0f, 0.0f, 1,
+                        0, +cos, +sin, 0,
+                        0, -sin, +cos, 0,
+                        0, 0.0f, 0.0f, 1
+                    );
+
+                Transform(rotationMatrix);
+            }
+            else if (rotationAxis == 1)
+            {
+                rotationMatrix = new Matrix4x4
+                    (
+                        +cos, 0, -sin, 0,
+                        0.0f, 1, 0.0f, 0,
+                        +sin, 0, +cos, 0,
+                        0.0f, 0, 0.0f, 1
+                    );
+
+                Transform(rotationMatrix);
+            }
+            else if (rotationAxis == 2)
+            {
+                rotationMatrix = new Matrix4x4
+                    (
+                        +cos, +sin, 0, 0,
+                        -sin, +cos, 0, 0,
+                        0.0f, 0.0f, 1, 0,
+                        0.0f, 0.0f, 0, 1
+                    );
+
+                Transform(rotationMatrix);
+            }
+            else
+            {
+                return;
+            }
         }
 
         public void Transform(Matrix4x4 transformMatrix)
@@ -100,5 +143,24 @@ namespace Project
                 point.Transform(transformMatrix);
             });
         }
+
+        /// <summary>
+        /// Center point of square
+        /// </summary>
+        public Point3D CenterPoint
+        {
+            get
+            {
+                var a = A;
+                var c = C;
+
+                return new Point3D(
+                    (a.X + c.X) / 2,
+                    (a.Y + c.Y) / 2,
+                    (a.Z + c.Z) / 2
+                    );
+            }
+        }
+
     }
 }
