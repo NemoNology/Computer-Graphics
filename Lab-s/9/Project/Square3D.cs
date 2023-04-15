@@ -2,14 +2,14 @@ using System.Numerics;
 
 namespace Project
 {
-    public class Square3D
+    public class Square3D : IObject3D
     {
-        public List<Vector3> Points { get; } = new List<Vector3>(4);
+        public List<Point3D> Points { get; } = new List<Point3D>(4);
 
-        public Vector3 A => Points[0];
-        public Vector3 B => Points[1];
-        public Vector3 C => Points[2];
-        public Vector3 D => Points[3];
+        public Point3D A => Points[0];
+        public Point3D B => Points[1];
+        public Point3D C => Points[2];
+        public Point3D D => Points[3];
 
         public Square3D()
         {
@@ -25,154 +25,80 @@ namespace Project
             var y = squareLeftUpPoint.Y;
             var z = squareLeftUpPoint.Z;
 
-            Points.Add(new Vector3(x, y, z));
-            Points.Add(new Vector3(x + sideLength, y, z));
-            Points.Add(new Vector3(x + sideLength, y, z - sideLength));
-            Points.Add(new Vector3(x, y, z - sideLength));
+            Points.Add(new Point3D(x, y, z));
+            Points.Add(new Point3D(x + sideLength, y, z));
+            Points.Add(new Point3D(x + sideLength, y, z - sideLength));
+            Points.Add(new Point3D(x, y, z - sideLength));
         }
 
         /// <summary>
         /// Square edges as list of pairs of points
         /// </summary>
-        public List<Tuple<Vector3, Vector3>> Edges
+        public List<(Point3D point1, Point3D point2)> Edges
         {
             get
             {
-                return new List<Tuple<Vector3, Vector3>> {
-                    new Tuple<Vector3, Vector3>(A, B),
-                    new Tuple<Vector3, Vector3>(B, C),
-                    new Tuple<Vector3, Vector3>(C, D),
-                    new Tuple<Vector3, Vector3>(D, A)
+                return new List<(Point3D point1, Point3D point2)> {
+                    (A, B),
+                    (B, C),
+                    (C, D),
+                    (D, A)
                 };
             }
         }
 
-        /// <summary>
-        /// Move square by Dx, Dy, Dz
-        /// </summary>
-        /// <param name="Dx"> The value, along the X axis, by which the square will move </param>
-        /// <param name="Dy"> The value, along the Y axis, by which the square will move </param>
-        /// <param name="Dz"> The value, along the Z axis, by which the square will move </param>
+
+        public List<(
+            (float X, float Y) point1, 
+            (float X, float Y) point2
+            )> GetEdgesInCentralProjection(float r = 0.01f, int axis = 0)
+        {
+            return new List<(
+                (float X, float Y) point1,
+                (float X, float Y) point2)>
+            {
+                (A.GetCentralProjection(r, axis), B.GetCentralProjection(r, axis)),
+                (B.GetCentralProjection(r, axis), C.GetCentralProjection(r, axis)),
+                (C.GetCentralProjection(r, axis), D.GetCentralProjection(r, axis)),
+                (D.GetCentralProjection(r, axis), A.GetCentralProjection(r, axis))
+            };
+        }
+
         public void Translate(float Dx, float Dy = 0, float Dz = 0)
         {
-            var translateMatrix = new Matrix4x4(
-
-                1,  0,  0,  0,
-                0,  1,  0,  0,
-                0,  0,  1,  0,
-                Dx, Dy, Dz, 1
-            );
-
-            for (int i = 0; i < Points.Count; i++)
+            Parallel.ForEach(Points, point =>
             {
-                var buffer = new Vector4(Points[i], 1);
-                buffer = Vector4.Transform(buffer, translateMatrix);
-                Points[i] = new Vector3(
-                    buffer.X,
-                    buffer.Y,
-                    buffer.Z
-                    );
-            }
+                point.Translate(Dx, Dy, Dz);
+            });
         }
 
         /// <summary>
-        /// Move square by translation matrix
-        /// </summary>
-        public void Translate(Matrix4x4 translateMatrix)
-        {
-            for (int i = 0; i < Points.Count; i++)
-            {
-                var buffer = new Vector4(Points[i], 1);
-                buffer = Vector4.Transform(buffer, translateMatrix);
-                Points[i] = new Vector3(
-                    buffer.X,
-                    buffer.Y,
-                    buffer.Z
-                    );
-            }
-        }
-
-        /// <summary>
-        /// Rotation of a square around a rotation center point by certain angles
+        /// Rotate square around a rotation center point by inputted angle on inputted Axis
         /// </summary>
         /// <param name="rotationCenterPoint"> The point around which the square revolves </param>
-        /// <param name="angleDegreeByX"> Angle in degrees along the X axis by which the square will rotate </param>
-        /// <param name="angleDegreeByY"> Angle in degrees along the Y axis by which the square will rotate </param>
-        /// <param name="angleDegreeByZ"> Angle in degrees along the Z axis by which the square will rotate </param>
-        public void RotateAt(Vector3 rotationCenterPoint, float angleDegreeByX = 0,
-            float angleDegreeByY = 0, float angleDegreeByZ = 0)
+        /// <param name="rotationAngleDegree"> Rotation angle in degrees </param>
+        /// <param name="rotationAxis"> Axis X - 0 <br/> Axis Y - 1 <br/> Axis Z - 2 </param>
+        public void RotateAt(Point3D rotationCenterPoint,
+            float rotationAngleDegree, int rotationAxis)
         {
-            double rad = -Math.PI / 180;
-
-            float cosX = (float)Math.Cos(rad * angleDegreeByX);
-            float sinX = (float)Math.Sin(rad * angleDegreeByX);
-
-            float cosY = (float)Math.Cos(rad * angleDegreeByY);
-            float sinY = (float)Math.Sin(rad * angleDegreeByY);
-
-            float cosZ = (float)Math.Cos(rad * angleDegreeByZ);
-            float sinZ = (float)Math.Sin(rad * angleDegreeByZ);
-
-            var rotationMatrixX = new Matrix4x4(
-                1, 0_00f, 0_00f, 0,
-                0, cosX,  sinX,  0,
-                0, -sinX, cosX,  0,
-                0, 0_00f, 0_00f, 1
-            );
-
-            var rotationMatrixY = new Matrix4x4(
-                cosY,  0, sinY,  0,
-                0_00f, 1, 0_00f, 0,
-                -sinY, 0, cosY,  0,
-                0_00f, 0, 0_00f, 1
-            );
-
-            var rotationMatrixZ = new Matrix4x4(
-                 cosZ, sinZ,  0, 0,
-                -sinZ, cosZ,  0, 0,
-                0_00f, 0_00f, 1, 0,
-                0_00f, 0_00f, 0, 1
-            );
-
-            Matrix4x4 rotationMatrix = 
-                rotationMatrixX * rotationMatrixY * rotationMatrixZ;
-
-            for (int i = 0; i < Points.Count; i++)
-            {
-                var buffer = new Vector4(Points[i], 1);
-                buffer = Vector4.Transform(buffer, rotationMatrix);
-                Points[i] = new Vector3(
-                    buffer.X,
-                    buffer.Y,
-                    buffer.Z
-                    );
-            }
-
-            var translateMatrix = new Matrix4x4(
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                rotationCenterPoint.X, rotationCenterPoint.Y, rotationCenterPoint.Z, 1
-            );
-
-            Translate(translateMatrix);
+            Rotate(rotationAngleDegree, rotationAxis);
+            Translate(rotationCenterPoint.X, rotationCenterPoint.Y, rotationCenterPoint.Z);
         }
 
-        /// <summary>
-        /// Rotation of a square by rotation matrix
-        /// </summary>
-        public void Rotate(Matrix4x4 rotationMatrix)
+        public void Rotate(float rotationAngleDegree, int rotationAxis)
         {
-            for (int i = 0; i < Points.Count; i++)
+            Parallel.ForEach(Points, point =>
             {
-                var buffer = new Vector4(Points[i], 1);
-                buffer = Vector4.Transform(buffer, rotationMatrix);
-                Points[i] = new Vector3(
-                    buffer.X,
-                    buffer.Y,
-                    buffer.Z
-                    );
-            }
+                point.Rotate(rotationAngleDegree, rotationAxis);
+            });
+        }
+
+        public void Transform(Matrix4x4 transformMatrix)
+        {
+            Parallel.ForEach(Points, point =>
+            {
+                point.Transform(transformMatrix);
+            });
         }
     }
 }
