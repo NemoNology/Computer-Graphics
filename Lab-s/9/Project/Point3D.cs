@@ -8,7 +8,7 @@ namespace Project
         public float Y { get; set; }
         public float Z { get; set; }
 
-        public void Translate(float Dx, float Dy, float Dz)
+        public void Translate(float Dx = 0, float Dy = 0, float Dz = 0)
         {
             X += Dx;
             Y += Dy;
@@ -18,7 +18,7 @@ namespace Project
         /// <summary>
         /// New Vector3 by XYZ values
         /// </summary>
-        public Vector3 Vector => new Vector3(X, Y, Z);
+        public Vector3 Vector3 => new Vector3(X, Y, Z);
 
         public void Rotate(float rotationAngleDegree, int rotationAxis)
         {
@@ -108,7 +108,8 @@ namespace Project
                     projectionMatrix
                     );
 
-                return (pointBuffer.X, pointBuffer.Y);
+                return (pointBuffer.X / pointBuffer.W, 
+                    pointBuffer.Y / pointBuffer.W);
             }
             else if (axis == 1)
             {
@@ -124,7 +125,8 @@ namespace Project
                     projectionMatrix
                     );
 
-                return (pointBuffer.X, pointBuffer.Y);
+                return (pointBuffer.X / pointBuffer.W,
+                    pointBuffer.Y / pointBuffer.W);
             }
             else if (axis == 2)
             {
@@ -140,7 +142,8 @@ namespace Project
                     projectionMatrix
                     );
 
-                return (pointBuffer.X, pointBuffer.Y);
+                return (pointBuffer.X / pointBuffer.W,
+                    pointBuffer.Y / pointBuffer.W);
             }
             else
             {
