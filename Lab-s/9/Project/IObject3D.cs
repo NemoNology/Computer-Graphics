@@ -18,8 +18,7 @@ namespace Project
         /// <param name="rotationPoint"> The point around which the Object3D revolves </param>
         /// <param name="rotationAngleDegree"> Rotation angle in degrees </param>
         /// <param name="rotationAxis"> Axis X - 0 <br/> Axis Y - 1 <br/> Axis Z - 2 </param>
-        public void RotateAt(Vector3 rotationPoint, 
-            float rotationAngleDegree, int rotationAxis);
+        public void RotateAt(float rotationAngleDegree, int rotationAxis);
 
         /// <summary>
         /// Transform Object3D by transform matrix
