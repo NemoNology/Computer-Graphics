@@ -148,5 +148,19 @@ namespace Project
             }
         }
 
+        public Point3D(float x, float y, float z)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
+
+        public Point3D()
+        {
+            X = 0;
+            Y = 0;
+            Z = 0;
+        }
+
     }
 }
