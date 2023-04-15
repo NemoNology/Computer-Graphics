@@ -2,7 +2,7 @@
 
 namespace Project
 {
-    internal class Point3D : IObject3D
+    public class Point3D : IObject3D
     {
         public float X { get; set; }
         public float Y { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Project
 {
-    internal interface IObject3D
+    public interface IObject3D
     {
         /// <summary>
         /// Move Object3D by Dx, Dy, Dz
