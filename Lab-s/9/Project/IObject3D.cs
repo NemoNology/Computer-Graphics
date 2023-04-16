@@ -13,14 +13,6 @@ namespace Project
         public void Translate(float Dx, float Dy, float Dz);
 
         /// <summary>
-        /// Rotate Object3D around a Start of coordinates (0, 0, 0) by inputted angle on inputted Axis
-        /// </summary>
-        /// <param name="rotationPoint"> The point around which the Object3D revolves </param>
-        /// <param name="rotationAngleDegree"> Rotation angle in degrees </param>
-        /// <param name="rotationAxis"> Axis X - 0 <br/> Axis Y - 1 <br/> Axis Z - 2 </param>
-        public void Rotate(float rotationAngleDegree, int rotationAxis);
-
-        /// <summary>
         /// Transform Object3D by transform matrix
         /// </summary>
         /// <param name="transformMatrix"> Matrix with which Object3D will be transformed </param>
