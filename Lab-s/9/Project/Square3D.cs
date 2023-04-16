@@ -13,12 +13,13 @@ namespace Project
 
         public Square3D()
         {
-            Points = new List<Point3D>(4);
-
-            Points.Add(new Point3D(-0.5f, 0, 0.5f));
-            Points.Add(new Point3D(0.5f, 0, 0.5f));
-            Points.Add(new Point3D(0.5f, 0, -0.5f));
-            Points.Add(new Point3D(-0.5f, 0, -0.5f));
+            Points = new List<Point3D>(4)
+            {
+                new Point3D(-0.5f, 0, 0.5f),
+                new Point3D(0.5f, 0, 0.5f),
+                new Point3D(0.5f, 0, -0.5f),
+                new Point3D(-0.5f, 0, -0.5f)
+            };
         }
 
         public Square3D(Point3D squareLeftUpPoint, float sideLength)
@@ -27,12 +28,13 @@ namespace Project
             var y = squareLeftUpPoint.Y;
             var z = squareLeftUpPoint.Z;
 
-            Points = new List<Point3D>(4);
-
-            Points.Add(new Point3D(x, y, z));
-            Points.Add(new Point3D(x + sideLength, y, z));
-            Points.Add(new Point3D(x + sideLength, y, z - sideLength));
-            Points.Add(new Point3D(x, y, z - sideLength));
+            Points = new List<Point3D>(4)
+            {
+                new Point3D(x, y, z),
+                new Point3D(x + sideLength, y, z),
+                new Point3D(x + sideLength, y, z - sideLength),
+                new Point3D(x, y, z - sideLength)
+            };
         }
 
         /// <summary>
@@ -50,7 +52,6 @@ namespace Project
                 };
             }
         }
-
 
         public List<(
             (float X, float Y) point1, 
@@ -75,7 +76,6 @@ namespace Project
                 point.Translate(Dx, Dy, Dz);
             });
         }
-
 
         /// <summary>
         /// Rotate square around a center point by inputted angle on inputted Axis
@@ -118,6 +118,8 @@ namespace Project
                     );
             }
         }
+
+        
 
     }
 }
