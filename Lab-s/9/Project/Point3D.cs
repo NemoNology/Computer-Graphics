@@ -107,38 +107,43 @@ namespace Project
         /// <summary>
         /// Rotate point around a center point by inputted angle on inputted Axis
         /// </summary>
-        /// <param name="centerPoint"> The point around which the rotation will be reproduced </param>
+        /// <param name="rotationCenterPoint"> The point around which the rotation will be reproduced </param>
         /// <param name="rotationAngleDegree"> Rotation angle in degrees </param>
         /// <param name="rotationAxis"> The axis along which the rotation will be reproduced <br/>
         /// Axis X - 0 <br/> Axis Y - 1 <br/> Axis Z - 2 </param>
-        public void RotateAt(Point3D centerPoint, 
+        public void RotateAt(Point3D rotationCenterPoint, 
             float rotationAngleDegree, int rotationAxis = 0)
         {
-            var x = centerPoint.X;
-            var y = centerPoint.Y;
-            var z = centerPoint.Z;
+            var x = rotationCenterPoint.X;
+            var y = rotationCenterPoint.Y;
+            var z = rotationCenterPoint.Z;
 
-            var degreeToRadians = Math.PI / 180;
+            var angle = (Math.PI / 180) * rotationAngleDegree;
 
-            (var sin, var cos) = Math.SinCos(degreeToRadians * rotationAngleDegree);
+            var sin = (float)Math.Sin(angle);
+            var cos = (float)Math.Cos(angle);
+
+            var buffX = X;
+            var buffY = Y;
+            var buffZ = Z;
 
             // X
             if (rotationAxis == 0)
             {
-                Z = (float)((Z - z) * cos - (Y - y) * sin + z);
-                Y = (float)((Z - z) * sin + (Y - y) * cos + y);
+                Z = (buffZ - z) * cos - (buffY - y) * sin + z;
+                Y = (buffZ - z) * sin + (buffY - y) * cos + y;
             }
             // Y
             else if (rotationAxis == 1)
             {
-                X = (float)((Z - z) * cos - (X - x) * sin + x);
-                Z = (float)((Z - z) * sin + (X - x) * cos + z);
+                Z = (buffZ - z) * cos - (buffX - x) * sin + z;
+                X = (buffZ - z) * sin + (buffX - x) * cos + x;
             }
             // Z
             else if (rotationAxis == 2)
             {
-                X = (float)((X - x) * cos - (Y - y) * sin + x);
-                Y = (float)((X - x) * sin + (Y - y) * cos + y);
+                X = (buffX - x) * cos - (buffY - y) * sin + x;
+                Y = (buffX - x) * sin + (buffY - y) * cos + y;
             }
             else
             {
