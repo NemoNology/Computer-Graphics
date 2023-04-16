@@ -154,5 +154,8 @@ namespace Project
 
         }
 
+        public Point3D Clone => new Point3D(X, Y, Z);
+
+
     }
 }
