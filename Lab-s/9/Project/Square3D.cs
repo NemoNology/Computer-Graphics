@@ -72,17 +72,21 @@ namespace Project
             });
         }
 
+
         /// <summary>
-        /// Rotate square around a rotation center point by inputted angle on inputted Axis
+        /// Rotate point around a center point by inputted angle on inputted Axis
         /// </summary>
-        /// <param name="rotationCenterPoint"> The point around which the square revolves </param>
+        /// <param name="centerPoint"> The point around which the rotation will be reproduced </param>
         /// <param name="rotationAngleDegree"> Rotation angle in degrees </param>
-        /// <param name="rotationAxis"> Axis X - 0 <br/> Axis Y - 1 <br/> Axis Z - 2 </param>
-        public void RotateAt(Point3D rotationCenterPoint,
-            float rotationAngleDegree, int rotationAxis)
+        /// <param name="rotationAxis"> The axis along which the rotation will be reproduced <br/>
+        /// Axis X - 0 <br/> Axis Y - 1 <br/> Axis Z - 2 </param>
+        public void RotateAt(Point3D centerPoint, 
+            float rotationAngleDegree, int rotationAxis = 0)
         {
-            Rotate(rotationAngleDegree, rotationAxis);
-            Translate(rotationCenterPoint.X, rotationCenterPoint.Y, rotationCenterPoint.Z);
+            Parallel.ForEach(Points, point =>
+            {
+                point.RotateAt(centerPoint, rotationAngleDegree, rotationAxis);
+            });
         }
 
         public void Rotate(float rotationAngleDegree, int rotationAxis)
