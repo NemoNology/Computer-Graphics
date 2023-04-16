@@ -81,13 +81,15 @@ namespace Project
                 projectionMatrix
                 );
 
-            if (pointBuffer.W == 0)
+            var w = pointBuffer.W;
+
+            if (w == 0)
             {
                 return (0, 0);
             }
 
-            return (pointBuffer.X / pointBuffer.W,
-                pointBuffer.Y / pointBuffer.W);
+            return (pointBuffer.X / w,
+                pointBuffer.Y / w);
         }
 
         public Point3D(float x, float y, float z)
