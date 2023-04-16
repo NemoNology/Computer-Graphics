@@ -89,7 +89,8 @@ namespace Project
         /// <param name="r"> Focus distance? Center point something... </param>
         /// <param name="axis"> Axis by that will be transformed vector 
         /// <br/> Axis Z - 0 <br/> Axis Y - 1 <br/> Axis X - 2 </param>
-        public (float X, float Y) GetCentralProjection(float r = 0.01f, int axis = 0)
+        public (float X, float Y) GetCentralProjection(
+            float r = 0.01f, int axis = 0)
         {
             Matrix4x4 projectionMatrix;
             Vector4 pointBuffer;
@@ -172,7 +173,8 @@ namespace Project
         /// <param name="rotationAngleDegree"> Rotation angle in degrees </param>
         /// <param name="rotationAxis"> The axis along which the rotation will be reproduced <br/>
         /// Axis X - 0 <br/> Axis Y - 1 <br/> Axis Z - 2 </param>
-        public void RotateAt(Point3D centerPoint, float rotationAngleDegree, int rotationAxis = 0)
+        public void RotateAt(Point3D centerPoint, 
+            float rotationAngleDegree, int rotationAxis = 0)
         {
             var x = centerPoint.X;
             var y = centerPoint.Y;
