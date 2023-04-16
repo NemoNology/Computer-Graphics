@@ -74,7 +74,7 @@ namespace Project
 
 
         /// <summary>
-        /// Rotate point around a center point by inputted angle on inputted Axis
+        /// Rotate square around a center point by inputted angle on inputted Axis
         /// </summary>
         /// <param name="centerPoint"> The point around which the rotation will be reproduced </param>
         /// <param name="rotationAngleDegree"> Rotation angle in degrees </param>
