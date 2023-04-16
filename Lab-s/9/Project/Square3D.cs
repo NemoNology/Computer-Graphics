@@ -4,7 +4,7 @@ namespace Project
 {
     public class Square3D : IObject3D
     {
-        public List<Point3D> Points { get; } = new List<Point3D>(4);
+        public List<Point3D> Points { get; private set; }
 
         public Point3D A => Points[0];
         public Point3D B => Points[1];
@@ -13,6 +13,8 @@ namespace Project
 
         public Square3D()
         {
+            Points = new List<Point3D>(4);
+
             Points.Add(new Point3D(-0.5f, 0, 0.5f));
             Points.Add(new Point3D(0.5f, 0, 0.5f));
             Points.Add(new Point3D(0.5f, 0, -0.5f));
@@ -24,6 +26,8 @@ namespace Project
             var x = squareLeftUpPoint.X;
             var y = squareLeftUpPoint.Y;
             var z = squareLeftUpPoint.Z;
+
+            Points = new List<Point3D>(4);
 
             Points.Add(new Point3D(x, y, z));
             Points.Add(new Point3D(x + sideLength, y, z));
@@ -87,57 +91,6 @@ namespace Project
             {
                 point.RotateAt(centerPoint, rotationAngleDegree, rotationAxis);
             });
-        }
-
-        public void Rotate(float rotationAngleDegree, int rotationAxis)
-        {
-            Matrix4x4 rotationMatrix;
-
-            var degreeToRadians = Math.PI / 180;
-
-            float sin = (float)Math.Sin(degreeToRadians * rotationAngleDegree);
-            float cos = (float)Math.Cos(degreeToRadians * rotationAngleDegree);
-
-            if (rotationAxis == 0)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        1, 0.0f, 0.0f, 1,
-                        0, +cos, +sin, 0,
-                        0, -sin, +cos, 0,
-                        0, 0.0f, 0.0f, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else if (rotationAxis == 1)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        +cos, 0, -sin, 0,
-                        0.0f, 1, 0.0f, 0,
-                        +sin, 0, +cos, 0,
-                        0.0f, 0, 0.0f, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else if (rotationAxis == 2)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        +cos, +sin, 0, 0,
-                        -sin, +cos, 0, 0,
-                        0.0f, 0.0f, 1, 0,
-                        0.0f, 0.0f, 0, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else
-            {
-                return;
-            }
         }
 
         public void Transform(Matrix4x4 transformMatrix)
