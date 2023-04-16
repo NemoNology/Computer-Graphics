@@ -165,5 +165,48 @@ namespace Project
             Z = 0;
         }
 
+        /// <summary>
+        /// Rotate point around a center point by inputted angle on inputted Axis
+        /// </summary>
+        /// <param name="centerPoint"> The point around which the rotation will be reproduced </param>
+        /// <param name="rotationAngleDegree"> Rotation angle in degrees </param>
+        /// <param name="rotationAxis"> The axis along which the rotation will be reproduced <br/>
+        /// Axis X - 0 <br/> Axis Y - 1 <br/> Axis Z - 2 </param>
+        public void RotateAt(Point3D centerPoint, float rotationAngleDegree, int rotationAxis = 0)
+        {
+            var x = centerPoint.X;
+            var y = centerPoint.Y;
+            var z = centerPoint.Z;
+
+            var degreeToRadians = Math.PI / 180;
+
+            float sin = (float)Math.Sin(degreeToRadians * rotationAngleDegree);
+            float cos = (float)Math.Cos(degreeToRadians * rotationAngleDegree);
+
+            // X
+            if (rotationAxis == 0)
+            {
+                Z = (Z - z) * cos - (Y - y) * sin + z;
+                Y = (Z - z) * sin + (Y - y) * cos + y;
+            }
+            // Y
+            else if (rotationAxis == 1)
+            {
+                X = (Z - z) * cos - (X - x) * sin + x;
+                Z = (Z - z) * sin + (X - x) * cos + z;
+            }
+            // Z
+            else if (rotationAxis == 2)
+            {
+                X = (X - x) * cos - (Y - y) * sin + x;
+                Y = (X - x) * sin + (Y - y) * cos + y;
+            }
+            else
+            {
+                return;
+            }
+
+        }
+
     }
 }
