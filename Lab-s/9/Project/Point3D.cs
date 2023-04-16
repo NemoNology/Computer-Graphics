@@ -20,57 +20,6 @@ namespace Project
         /// </summary>
         public Vector3 Vector3 => new Vector3(X, Y, Z);
 
-        public void Rotate(float rotationAngleDegree, int rotationAxis)
-        {
-            Matrix4x4 rotationMatrix;
-
-            var degreeToRadians = Math.PI / 180;
-
-            float sin = (float)Math.Sin(degreeToRadians * rotationAngleDegree);
-            float cos = (float)Math.Cos(degreeToRadians * rotationAngleDegree);
-
-            if (rotationAxis == 0)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        1, 0.0f, 0.0f, 1,
-                        0, +cos, +sin, 0,
-                        0, -sin, +cos, 0,
-                        0, 0.0f, 0.0f, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else if (rotationAxis == 1)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        +cos, 0, -sin, 0,
-                        0.0f, 1, 0.0f, 0,
-                        +sin, 0, +cos, 0,
-                        0.0f, 0, 0.0f, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else if (rotationAxis == 2)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        +cos, +sin, 0, 0,
-                        -sin, +cos, 0, 0,
-                        0.0f, 0.0f, 1, 0,
-                        0.0f, 0.0f, 0, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else
-            {
-                return;
-            }
-        }
-
         public void Transform(Matrix4x4 transformMatrix)
         {
             var transformedVector = 
@@ -103,14 +52,6 @@ namespace Project
                         0, 0, 0, r,
                         0, 0, 0, 1
                         );
-
-                pointBuffer = Vector4.Transform(
-                    new Vector4(X, Y, Z, 1),
-                    projectionMatrix
-                    );
-
-                return (pointBuffer.X / pointBuffer.W, 
-                    pointBuffer.Y / pointBuffer.W);
             }
             else if (axis == 1)
             {
@@ -120,14 +61,6 @@ namespace Project
                         0, 0, 1, 0,
                         0, 0, 0, 1
                         );
-
-                pointBuffer = Vector4.Transform(
-                    new Vector4(X, Y, Z, 1),
-                    projectionMatrix
-                    );
-
-                return (pointBuffer.X / pointBuffer.W,
-                    pointBuffer.Y / pointBuffer.W);
             }
             else if (axis == 2)
             {
@@ -137,19 +70,24 @@ namespace Project
                         0, 0, 1, 0,
                         0, 0, 0, 1
                         );
-
-                pointBuffer = Vector4.Transform(
-                    new Vector4(X, Y, Z, 1),
-                    projectionMatrix
-                    );
-
-                return (pointBuffer.X / pointBuffer.W,
-                    pointBuffer.Y / pointBuffer.W);
             }
             else
             {
                 return (0, 0);
             }
+
+            pointBuffer = Vector4.Transform(
+                new Vector4(X, Y, Z, 1),
+                projectionMatrix
+                );
+
+            if (pointBuffer.W == 0)
+            {
+                return (0, 0);
+            }
+
+            return (pointBuffer.X / pointBuffer.W,
+                pointBuffer.Y / pointBuffer.W);
         }
 
         public Point3D(float x, float y, float z)
@@ -182,26 +120,25 @@ namespace Project
 
             var degreeToRadians = Math.PI / 180;
 
-            float sin = (float)Math.Sin(degreeToRadians * rotationAngleDegree);
-            float cos = (float)Math.Cos(degreeToRadians * rotationAngleDegree);
+            (var sin, var cos) = Math.SinCos(degreeToRadians * rotationAngleDegree);
 
             // X
             if (rotationAxis == 0)
             {
-                Z = (Z - z) * cos - (Y - y) * sin + z;
-                Y = (Z - z) * sin + (Y - y) * cos + y;
+                Z = (float)((Z - z) * cos - (Y - y) * sin + z);
+                Y = (float)((Z - z) * sin + (Y - y) * cos + y);
             }
             // Y
             else if (rotationAxis == 1)
             {
-                X = (Z - z) * cos - (X - x) * sin + x;
-                Z = (Z - z) * sin + (X - x) * cos + z;
+                X = (float)((Z - z) * cos - (X - x) * sin + x);
+                Z = (float)((Z - z) * sin + (X - x) * cos + z);
             }
             // Z
             else if (rotationAxis == 2)
             {
-                X = (X - x) * cos - (Y - y) * sin + x;
-                Y = (X - x) * sin + (Y - y) * cos + y;
+                X = (float)((X - x) * cos - (Y - y) * sin + x);
+                Y = (float)((X - x) * sin + (Y - y) * cos + y);
             }
             else
             {
