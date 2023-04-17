@@ -41,7 +41,7 @@ namespace Project
                 }
             }
         }
-    
+
         /// <summary>
         /// Floor lines for floor drawing
         /// </summary>
@@ -98,7 +98,7 @@ namespace Project
         /// <param name="rotationAngleDegree"> Rotation angle in degrees </param>
         /// <param name="rotationAxis"> The axis along which the rotation will be reproduced <br/>
         /// Axis X - 0 <br/> Axis Y - 1 <br/> Axis Z - 2 </param>
-        public void RotateAt(Point3D centerPoint, 
+        public void RotateAt(Point3D centerPoint,
             float rotationAngleDegree, int rotationAxis = 0)
         {
             Border.RotateAt(centerPoint, rotationAngleDegree, rotationAxis);
@@ -155,5 +155,7 @@ namespace Project
 
             return res;
         }
+
+
     }
 }
