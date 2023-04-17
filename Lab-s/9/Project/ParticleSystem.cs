@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace Project
 {
     public class ParticleSystem
@@ -8,7 +6,9 @@ namespace Project
         private ParticleGenerator _particleGenerator;
         private int _particlesAmount;
 
-        public Vector3 Coordinates { get; set; }
+        public List<Particle> Particles => _particles;
+
+        public Point3D Coordinates { get; set; }
         public int ParticlesAmount
         {
             get => _particlesAmount;
@@ -21,9 +21,9 @@ namespace Project
 
         public ParticleSystem(
             Image particleSprite,
-            Vector3 coordinates,
-            Vector3 maxVelocity,
-            Vector3 minAcceleration,
+            Point3D coordinates,
+            Point3D maxVelocity,
+            Point3D minAcceleration,
             int particlesAmount = 25,
             byte maxFading = 20
         )
@@ -38,26 +38,19 @@ namespace Project
 
             Coordinates = coordinates;
             ParticlesAmount = particlesAmount;
-            
+
             _particles = _particleGenerator.Generate(particlesAmount);
         }
 
         public void MoveAll()
         {
-            Parallel.For(0, _particlesAmount, MoveOne);
-        }
-
-        public void MoveOne(int index)
-        {
-            if (index >= _particlesAmount)
+            Parallel.ForEach(_particles, particle =>
             {
-                throw new IndexOutOfRangeException();
-            }
-
-            if (_particles[index].Move())
-            {
-                _particles[index] = _particleGenerator.RandomParticle;
-            }
+                if (particle.Move())
+                {
+                    particle = _particleGenerator.RandomParticle;
+                }
+            });
         }
     }
 }

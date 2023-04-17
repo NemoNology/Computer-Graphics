@@ -1,20 +1,18 @@
-using System.Numerics;
-
 namespace Project
 {
-    internal class Particle
+    public class Particle
     {
-        public Vector3 Coordinates { get; set; }
+        public Point3D Coordinates { get; set; }
         public Image Sprite { get; set; }
-        public Vector3 Velocity { get; set; }
-        public Vector3 Acceleration { get; set; }
+        public Point3D Velocity { get; set; }
+        public Point3D Acceleration { get; set; }
         public byte Fading { get; set; }
 
         public Particle(
-            Vector3 coordinates,
+            Point3D coordinates,
             Image sprite,
-            Vector3 velocity,
-            Vector3 acceleration,
+            Point3D velocity,
+            Point3D acceleration,
             byte fading
         )
         {
@@ -36,19 +34,19 @@ namespace Project
             Coordinates += Velocity;
             Velocity += Acceleration;
 
-            Velocity = new Vector3(0, Velocity.Y, Velocity.Z);
-            Acceleration = new Vector3(0, Acceleration.Y, Acceleration.Z);
+            //Velocity = new Point3D(0, Velocity.Y, Velocity.Z);
+            //Acceleration = new Point3D(0, Acceleration.Y, Acceleration.Z);
 
-            if (Velocity.Y < 0)
-            {
-                Velocity = new Vector3(Velocity.X, 0, Velocity.Z);
-                Acceleration = new Vector3(Acceleration.X, 0, Acceleration.Z);
-            }
+            //if (Velocity.Y < 0)
+            //{
+            //    Velocity = new Point3D(Velocity.X, 0, Velocity.Z);
+            //    Acceleration = new Point3D(Acceleration.X, 0, Acceleration.Z);
+            //}
 
-            Velocity = new Vector3(Velocity.X, Velocity.Y, 0);
-            Acceleration = new Vector3(Acceleration.X, Acceleration.Y, 0);
+            //Velocity = new Point3D(Velocity.X, Velocity.Y, 0);
+            //Acceleration = new Point3D(Acceleration.X, Acceleration.Y, 0);
 
-            Sprite = Fade().Result;
+            Sprite = Fade();
 
             return IsTransparent;
         }
@@ -61,54 +59,44 @@ namespace Project
                 var h = sprite.Height;
                 var w = sprite.Width;
 
-                Task<bool> res = Task.Run(() =>
-                {
-                    for (int x = 0; x < w; x++)
-                    {
-                        for (int y = 0; y < h; y++)
-                        {
-                            var color = sprite.GetPixel(x, y);
-
-                            if (color.A > 0)
-                            {
-                                return false;
-                            }
-                        }
-                    }
-
-                    return true;
-                });
-
-                return res.Result;
-            }
-        }
-
-        private async Task<Bitmap> Fade()
-        {
-            var sprite = (Bitmap)Sprite;
-            var h = sprite.Height;
-            var w = sprite.Width;
-
-            Task res = Task.Run(() =>
-            {
                 for (int x = 0; x < w; x++)
                 {
                     for (int y = 0; y < h; y++)
                     {
                         var color = sprite.GetPixel(x, y);
-                        var transparency = color.A;
 
-                        if (transparency - Fading < 0)
+                        if (color.A > 0)
                         {
-                            transparency = Fading;
+                            return false;
                         }
-
-                        sprite.SetPixel(x, y, Color.FromArgb(transparency - Fading, color));
                     }
                 }
-            });
 
-            await res;
+                return true;
+            }
+        }
+
+        private Bitmap Fade()
+        {
+            var sprite = (Bitmap)Sprite.Clone();
+            var h = sprite.Height;
+            var w = sprite.Width;
+
+            for (int x = 0; x < w; x++)
+            {
+                for (int y = 0; y < h; y++)
+                {
+                    var color = sprite.GetPixel(x, y);
+                    var transparency = color.A;
+
+                    if (transparency - Fading < 0)
+                    {
+                        transparency = Fading;
+                    }
+
+                    sprite.SetPixel(x, y, Color.FromArgb(transparency - Fading, color));
+                }
+            }
 
             return sprite;
         }

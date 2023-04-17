@@ -1,20 +1,18 @@
-using System.Numerics;
-
 namespace Project
 {
-    internal class ParticleGenerator
+    public class ParticleGenerator
     {
-        public Vector3 Coordinates { get; set; }
+        public Point3D Coordinates { get; set; }
         public Image Sprite { get; set; }
-        public Vector3 MaxVelocity { get; set; }
-        public Vector3 MinAcceleration { get; set; }
+        public Point3D MaxVelocity { get; set; }
+        public Point3D MinAcceleration { get; set; }
         public byte MaxFading { get; set; }
 
         public ParticleGenerator(
-            Vector3 coordinates,
+            Point3D coordinates,
             Image particleSprite,
-            Vector3 maxVelocity,
-            Vector3 minAcceleration,
+            Point3D maxVelocity,
+            Point3D minAcceleration,
             byte maxFading = 20
             )
         {
@@ -48,17 +46,20 @@ namespace Project
             {
                 Random rnd = new Random();
 
+                var maxVelocity = MaxVelocity.Clone;
+                var minAcceleration = MinAcceleration.Clone;
+
                 return new Particle(
-                    Coordinates, Sprite, 
-                    new Vector3(
-                        rnd.NextSingle() * MaxVelocity.X * (rnd.Next(2) == 0 ? 1 : -1), 
-                        rnd.NextSingle() * MaxVelocity.Y, 
-                        rnd.NextSingle() * MaxVelocity.Z * (rnd.Next(2) == 0 ? 1 : -1) 
+                    Coordinates.Clone, (Image)Sprite.Clone(),
+                    new Point3D(
+                        rnd.NextSingle() * maxVelocity.X * (rnd.Next(2) == 0 ? 1 : -1),
+                        rnd.NextSingle() * maxVelocity.Y,
+                        rnd.NextSingle() * maxVelocity.Z * (rnd.Next(2) == 0 ? 1 : -1)
                     ),
-                    new Vector3(
-                        rnd.NextSingle() * -MinAcceleration.X, 
-                        rnd.NextSingle() * -MinAcceleration.Y, 
-                        rnd.NextSingle() * -MinAcceleration.Z 
+                    new Point3D(
+                        rnd.NextSingle() * -minAcceleration.X * (rnd.Next(2) == 0 ? 1 : -1),
+                        rnd.NextSingle() * -minAcceleration.Y,
+                        rnd.NextSingle() * -minAcceleration.Z * (rnd.Next(2) == 0 ? 1 : -1)
                     ),
                     (byte)rnd.Next(MaxFading)
                 );
