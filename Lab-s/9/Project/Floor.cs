@@ -4,9 +4,9 @@ namespace Project
 {
     public class Floor3D : IObject3D
     {
-        private List<Square3D> _cells = new List<Square3D>();
+        private List<Square3D> _cells;
 
-        public Square3D Border { get; } = new Square3D();
+        public Square3D Border { get; private set; }
 
         public Point3D A => Border.A;
         public Point3D B => Border.B;
@@ -15,47 +15,30 @@ namespace Project
 
         public Floor3D(Point3D floorCenter, float sideLength, int cellsAmountInRow = 8)
         {
-            var half = sideLength / 2f;
+            var half = sideLength / 2;
 
-            var x = floorCenter.X;
-            var y = floorCenter.Y;
-            var z = floorCenter.Z;
+            Point3D leftUpPoint = new Point3D(
+                floorCenter.X - half,
+                floorCenter.Y,
+                floorCenter.Z + half
+                );
 
-            Border.Points.Add(new Point3D(x - half, y, z + half));
-            Border.Points.Add(new Point3D(x + half, y, z + half));
-            Border.Points.Add(new Point3D(x + half, y, z - half));
-            Border.Points.Add(new Point3D(x - half, y, z - half));
+            Border = new Square3D(leftUpPoint, sideLength);
+
+            _cells = new List<Square3D>(cellsAmountInRow * cellsAmountInRow);
 
             float squareSideLength = sideLength / cellsAmountInRow;
-            Point3D point = A;
+            Point3D point = leftUpPoint;
 
             for (int Z = 0; Z < cellsAmountInRow; Z++)
             {
                 for (int X = 0; X < cellsAmountInRow; X++)
                 {
                     var square = new Square3D(point, squareSideLength);
-                    square.Translate(X * squareSideLength, 0, Z * squareSideLength);
+                    square.Translate(X * squareSideLength, 0, -Z * squareSideLength);
 
                     _cells.Add(square);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Floor edges as list of pairs of points of cells
-        /// </summary>
-        public List<(Point3D point1, Point3D point2)> Edges
-        {
-            get
-            {
-                var res = new List<(Point3D point1, Point3D point2)>();
-
-                foreach (var square in _cells)
-                {
-                    res.AddRange(square.Edges);
-                }
-
-                return res;
             }
         }
     
@@ -66,14 +49,8 @@ namespace Project
         {
             get
             {
-                var cellsAmountInRow = (int)Math.Sqrt(_cells.Count);
-
-                var a = A;
-                var b = B;
-                var d = D;
-
-                var cellsAmount = _cells.Count - 1;
-                var cellSideLength = (int)Vector3.Distance(a.Vector3, b.Vector3) / cellsAmountInRow;
+                var cellsAmount = _cells.Count;
+                var cellsAmountInRow = (int)Math.Sqrt(cellsAmount);
 
                 var res = new List<(Point3D point1, Point3D point2)>(Border.Points.Count + (cellsAmountInRow - 1) * 2)
                 {
@@ -83,25 +60,32 @@ namespace Project
                     (D, A)
                 };
 
+                //var a = A.Clone;
+                //var b = B.Clone;
+                //var d = D.Clone;
+
+                //var cellSideLength = (int)Vector3.Distance(a.Vector3, b.Vector3) / _cells.Count;
+
+
                 // Horizontals
                 for (int i = 1; i < cellsAmountInRow; i++)
                 {
-                    var p1 = _cells[i * cellSideLength].D;
-                    var p2 = _cells[(i + 1) * cellSideLength - 1].C;
+                    var p1 = _cells[i * cellsAmountInRow].A;
+                    var p2 = _cells[(i + 1) * cellsAmountInRow - 1].B;
 
                     res.Add((p1, p2));
                 }
 
-                //// Verticals
-                //for (int i = 1; i < cellsAmountInRow; i++)
-                //{
-                //    var Dx = i * cellSideLength;
+                int lastRow = cellsAmount - cellsAmountInRow;
 
-                //    var p1 = new Vector3(a.X + Dx, a.Y, a.Z);
-                //    var p2 = new Vector3(d.X + Dx, d.Y, d.Z);
+                // Verticals
+                for (int i = 1; i < cellsAmountInRow; i++)
+                {
+                    var p1 = _cells[i].A;
+                    var p2 = _cells[lastRow + (i - 1)].C;
 
-                //    res.Add((p1, p2));
-                //}
+                    res.Add((p1, p2));
+                }
 
                 return res;
             }
@@ -135,57 +119,6 @@ namespace Project
             });
         }
 
-        public void Rotate(float rotationAngleDegree, int rotationAxis)
-        {
-            Matrix4x4 rotationMatrix;
-
-            var degreeToRadians = Math.PI / 180;
-
-            float sin = (float)Math.Sin(degreeToRadians * rotationAngleDegree);
-            float cos = (float)Math.Cos(degreeToRadians * rotationAngleDegree);
-
-            if (rotationAxis == 0)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        1, 0.0f, 0.0f, 1,
-                        0, +cos, +sin, 0,
-                        0, -sin, +cos, 0,
-                        0, 0.0f, 0.0f, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else if (rotationAxis == 1)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        +cos, 0, -sin, 0,
-                        0.0f, 1, 0.0f, 0,
-                        +sin, 0, +cos, 0,
-                        0.0f, 0, 0.0f, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else if (rotationAxis == 2)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        +cos, +sin, 0, 0,
-                        -sin, +cos, 0, 0,
-                        0.0f, 0.0f, 1, 0,
-                        0.0f, 0.0f, 0, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else
-            {
-                return;
-            }
-        }
-
         public void Transform(Matrix4x4 transformMatrix)
         {
             Parallel.ForEach(Border.Points, point =>
@@ -203,5 +136,24 @@ namespace Project
         /// Center point of floor
         /// </summary>
         public Point3D CenterPoint => Border.CenterPoint;
+
+        /// <summary>
+        /// List of floor polygons
+        /// </summary>
+        /// <param name="r"> Focus distance? Something... </param>
+        /// <param name="axis"> Projection Axis <br/> Axis Z - 0 <br/> Axis Y - 1 <br/> Axis X - 2 </param>
+        public List<PointF[]> GetPolygonPointsInCentralProjection(float r = 0.01f, int axis = 0)
+        {
+            var cellsAmount = _cells.Count;
+
+            List<PointF[]> res = new List<PointF[]>(cellsAmount);
+
+            for (int i = 0; i < cellsAmount; i++)
+            {
+                res.Add(_cells[i].GetPolygonPointsInCentralProjection(r, axis));
+            }
+
+            return res;
+        }
     }
 }
