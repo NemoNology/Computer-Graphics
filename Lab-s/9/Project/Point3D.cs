@@ -14,7 +14,7 @@ namespace Project
             Y += Dy;
             Z += Dz;
         }
-        
+
         /// <summary>
         /// New Vector3 by XYZ values
         /// </summary>
@@ -22,7 +22,7 @@ namespace Project
 
         public void Transform(Matrix4x4 transformMatrix)
         {
-            var transformedVector = 
+            var transformedVector =
                 Vector4.Transform(
                     new Vector4(X, Y, Z, 1),
                     transformMatrix);
@@ -46,7 +46,7 @@ namespace Project
 
             if (axis == 0)
             {
-                projectionMatrix =  new Matrix4x4(
+                projectionMatrix = new Matrix4x4(
                         1, 0, 0, 0,
                         0, 1, 0, 0,
                         0, 0, 0, r,
@@ -113,7 +113,7 @@ namespace Project
         /// <param name="rotationAngleDegree"> Rotation angle in degrees </param>
         /// <param name="rotationAxis"> The axis along which the rotation will be reproduced <br/>
         /// Axis X - 0 <br/> Axis Y - 1 <br/> Axis Z - 2 </param>
-        public void RotateAt(Point3D rotationCenterPoint, 
+        public void RotateAt(Point3D rotationCenterPoint,
             float rotationAngleDegree, int rotationAxis = 0)
         {
             var x = rotationCenterPoint.X;
@@ -156,6 +156,25 @@ namespace Project
 
         public Point3D Clone => new Point3D(X, Y, Z);
 
+        public static Point3D operator +(Point3D point1, Point3D point2)
+        {
+            return new Point3D(
+                point1.X + point2.X,
+                point1.Y + point2.Y,
+                point1.Z + point2.Z);
+        }
+
+        /// <summary>
+        /// New PointF by X and Y values
+        /// </summary>
+        public PointF PointF => new PointF(X, Y);
+
+        public PointF PointFInCentralProjection(float r = 0.01f, int axis = 0)
+        {
+            var p = GetCentralProjection(r, axis);
+
+            return new PointF(p.X, p.Y);
+        }
 
     }
 }
