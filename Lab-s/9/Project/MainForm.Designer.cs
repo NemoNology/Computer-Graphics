@@ -40,6 +40,7 @@ partial class MainForm
         mainView.Size = new Size(800, 450);
         mainView.TabIndex = 0;
         mainView.TabStop = false;
+        mainView.PreviewKeyDown += MainView_PreviewKeyDown;
         // 
         // MainForm
         // 
@@ -49,6 +50,7 @@ partial class MainForm
         Controls.Add(mainView);
         Name = "MainForm";
         Text = "Fire on the floor";
+        PreviewKeyDown += MainView_PreviewKeyDown;
         Resize += MainForm_Resize;
         ((System.ComponentModel.ISupportInitialize)mainView).EndInit();
         ResumeLayout(false);

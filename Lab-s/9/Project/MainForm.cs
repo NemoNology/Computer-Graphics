@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace Project;
 
 public partial class MainForm : Form
@@ -15,23 +13,26 @@ public partial class MainForm : Form
             mainView.Image.Height * 0.8f,
             0);
 
-        // _particleSystem = new ParticleSystem(
-        //     FireSprite, new Vector3(0, 0, 100),
-        //     new Vector3(15, 15, 15), 
-        //     new Vector3(-3, -3, -3));
-
         _floor = new Floor3D(
             new Point3D(
                 0,
                 -_screenCenter.Y * 0.2f,
                 mainView.Width / 2f),
-            mainView.Width
-            );
+            mainView.Width);
 
-        DrawFloor();
+        _particleSystem = new ParticleSystem(
+            FireSprite, _floor.CenterPoint,
+            new Point3D(15f, 15f, 15f),
+            new Point3D(-5, -5, -5));
+
+        //DrawFloor();
+
+        _g = Graphics.FromImage(mainView.Image);
+
+        DrawFire().Start();
     }
 
-    private const float R = 1 / 200f;
+    private const float R = 1 / 100f;
     private ParticleSystem _particleSystem;
     private Floor3D _floor;
     private Graphics _g;
@@ -51,13 +52,6 @@ public partial class MainForm : Form
             mainView.Image.Height * 0.8f,
             0);
 
-        // TODO: Particle System initialization & Floor Drawing
-
-        //_particleSystem = new ParticleSystem(
-        //    FireSprite, new Vector3(0, 0, 100),
-        //    new Vector3(15, 15, 15), 
-        //    new Vector3(-3, -3, -3));
-
         _floor = new Floor3D(
             new Point3D(
                 0,
@@ -65,37 +59,12 @@ public partial class MainForm : Form
                 mainView.Width / 2f),
             mainView.Width);
 
+        _particleSystem = new ParticleSystem(
+            FireSprite, _floor.CenterPoint,
+            new Point3D(15, 15, 15),
+            new Point3D(-3, -3, -3));
+
         DrawFloor();
-    }
-
-    private void DrawSquare()
-    {
-        MainViewClear();
-
-        var square = new Square3D(new Point3D(-50, -50, 100), 100);
-
-        foreach (var edge in square.GetEdgesInCentralProjection(R))
-        {
-            _g.DrawLine(new Pen(Color.Gray),
-                _screenCenter.X + edge.point1.X, _screenCenter.Y - edge.point1.Y,
-                _screenCenter.X + edge.point2.X, _screenCenter.Y - edge.point2.Y);
-        }
-
-        square.RotateAt(square.CenterPoint, 45);
-
-        _g.DrawEllipse(new Pen(Color.Magenta),
-            square.CenterPoint.GetCentralProjection(R).X,
-            square.CenterPoint.GetCentralProjection(R).Y,
-            2, 2);
-
-        foreach (var edge in square.GetEdgesInCentralProjection(R))
-        {
-            _g.DrawLine(new Pen(Color.Black),
-                _screenCenter.X + edge.point1.X, _screenCenter.Y - edge.point1.Y,
-                _screenCenter.X + edge.point2.X, _screenCenter.Y - edge.point2.Y);
-        }
-
-        mainView.Image = (Bitmap)mainView.Image;
     }
 
     private void DrawFloor()
@@ -107,30 +76,64 @@ public partial class MainForm : Form
 
         MainViewClear();
 
-        foreach (var edge in _floor.Grid)
+        var centerX = _screenCenter.X;
+        var centerY = _screenCenter.Y;
+
+        foreach (var polygon in _floor.GetPolygonPointsInCentralProjection(R))
         {
-            // TODO: if floor cells amount = 4: method TransformVector return infinity
-
-            var p1 = edge.point1.GetCentralProjection(R);
-            var p2 = edge.point2.GetCentralProjection(R);
-
-            var centerX = _screenCenter.X;
-            var centerY = _screenCenter.Y;
-
-            if (centerX + p1.X > float.MaxValue ||
-                centerX + p2.X > float.MaxValue ||
-                centerY - p1.Y < float.MinValue ||
-                centerY - p2.Y < float.MinValue)
+            for (int i = 0; i < polygon.Length; i++)
             {
-                continue;
+                var p = polygon[i];
+
+                if (centerX + p.X > float.MaxValue)
+                {
+                    continue;
+                }
+
+                polygon[i].X += centerX;
+
+                if (centerY - p.Y < float.MinValue)
+                {
+                    continue;
+                }
+
+                polygon[i].Y = centerY - p.Y;
             }
 
-            _g.DrawLine(new Pen(Color.Black),
-                    centerX + p1.X, centerY - p1.Y,
-                    centerX + p2.X, centerY - p2.Y);
+            _g.FillPolygon(PenWithRandomColor.Brush, polygon);
         }
 
         mainView.Image = (Bitmap)mainView.Image;
+    }
+
+    private Task DrawFire()
+    {
+        return new Task(() =>
+        {
+            var floorCenterPointFInCentralProjection = _floor.CenterPoint.PointFInCentralProjection(R);
+            floorCenterPointFInCentralProjection.X += _screenCenter.X;
+            floorCenterPointFInCentralProjection.Y = _screenCenter.Y - floorCenterPointFInCentralProjection.Y;
+
+            while (true)
+            {
+                //DrawFloor();
+
+                for (int i = 0; i < _particleSystem.ParticlesAmount; i++)
+                {
+                    var particle = _particleSystem.Particles[i];
+
+                    _g.DrawImage(particle.Sprite,
+                        floorCenterPointFInCentralProjection);
+                }
+
+                mainView.Image = (Bitmap)mainView.Image;
+                _g = Graphics.FromImage(mainView.Image);
+
+                _particleSystem.MoveAll();
+
+                Task.Delay(300).Wait();
+            }
+        });
     }
 
     private void Translate(float Dx = 0, float Dy = 0, float Dz = 0)
@@ -250,5 +253,19 @@ public partial class MainForm : Form
             }
         }
 
+    }
+
+    private Pen PenWithRandomColor => new Pen(RandomColor);
+
+    private Color RandomColor
+    {
+        get
+        {
+            return Color.FromArgb(
+                new Random().Next(byte.MaxValue + 1),
+                new Random().Next(byte.MaxValue + 1),
+                new Random().Next(byte.MaxValue + 1)
+                );
+        }
     }
 }
