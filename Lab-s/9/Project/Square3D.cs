@@ -53,6 +53,12 @@ namespace Project
             }
         }
 
+        /// <summary>
+        /// List of square edges as pairs of neighbor points
+        /// </summary>
+        /// <param name="r"> Focus distance? Something... </param>
+        /// <param name="axis"> Projection Axis <br/> Axis Z - 0 <br/> Axis Y - 1 <br/> Axis X - 2 </param>
+        /// <returns></returns>
         public List<(
             (float X, float Y) point1, 
             (float X, float Y) point2
@@ -119,7 +125,26 @@ namespace Project
             }
         }
 
-        
+        /// <summary>
+        /// Array of square points as PointF
+        /// </summary>
+        /// <param name="r"> Focus distance? Something... </param>
+        /// <param name="axis"> Projection Axis <br/> Axis Z - 0 <br/> Axis Y - 1 <br/> Axis X - 2 </param>
+        public PointF[] GetPolygonPointsInCentralProjection(float r = 0.01f, int axis = 0)
+        {
+            var pointsAmount = Points.Count;
+
+            PointF[] res = new PointF[pointsAmount];
+
+            for (int i = 0; i < pointsAmount; i++)
+            {
+                var p = Points[i].GetCentralProjection(r, axis);
+
+                res[i] = new PointF(p.X, p.Y);
+            }
+
+            return res;
+        }
 
     }
 }
