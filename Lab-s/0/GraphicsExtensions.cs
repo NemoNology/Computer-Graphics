@@ -55,7 +55,7 @@ namespace GraphicUnit
         /// <summary>
         /// Transform 4d point to usual 3d point after manipulations
         /// </summary>
-        public Vector3 Vector4ToVector3(Vector4 v)
+        // public Vector3 Vector4ToVector3(Vector4 v)
         {
             return new Vector3(
                 v.X / v.W, 
@@ -90,14 +90,6 @@ namespace GraphicUnit
         public void Translate(float Dx, float Dy, float Dz);
 
         /// <summary>
-        /// Rotate Object3D around a Start of coordinates (0, 0, 0) by inputted angle on inputted Axis
-        /// </summary>
-        /// <param name="rotationPoint"> The point around which the Object3D revolves </param>
-        /// <param name="rotationAngleDegree"> Rotation angle in degrees </param>
-        /// <param name="rotationAxis"> Axis X - 0 <br/> Axis Y - 1 <br/> Axis Z - 2 </param>
-        public void Rotate(float rotationAngleDegree, int rotationAxis);
-
-        /// <summary>
         /// Transform Object3D by transform matrix
         /// </summary>
         /// <param name="transformMatrix"> Matrix with which Object3D will be transformed </param>
@@ -123,57 +115,6 @@ namespace GraphicUnit
         /// </summary>
         public Vector3 Vector3 => new Vector3(X, Y, Z);
 
-        public void Rotate(float rotationAngleDegree, int rotationAxis)
-        {
-            Matrix4x4 rotationMatrix;
-
-            var degreeToRadians = Math.PI / 180;
-
-            float sin = (float)Math.Sin(degreeToRadians * rotationAngleDegree);
-            float cos = (float)Math.Cos(degreeToRadians * rotationAngleDegree);
-
-            if (rotationAxis == 0)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        1, 0.0f, 0.0f, 1,
-                        0, +cos, +sin, 0,
-                        0, -sin, +cos, 0,
-                        0, 0.0f, 0.0f, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else if (rotationAxis == 1)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        +cos, 0, -sin, 0,
-                        0.0f, 1, 0.0f, 0,
-                        +sin, 0, +cos, 0,
-                        0.0f, 0, 0.0f, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else if (rotationAxis == 2)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        +cos, +sin, 0, 0,
-                        -sin, +cos, 0, 0,
-                        0.0f, 0.0f, 1, 0,
-                        0.0f, 0.0f, 0, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else
-            {
-                return;
-            }
-        }
-
         public void Transform(Matrix4x4 transformMatrix)
         {
             var transformedVector =
@@ -192,7 +133,8 @@ namespace GraphicUnit
         /// <param name="r"> Focus distance? Center point something... </param>
         /// <param name="axis"> Axis by that will be transformed vector 
         /// <br/> Axis Z - 0 <br/> Axis Y - 1 <br/> Axis X - 2 </param>
-        public (float X, float Y) GetCentralProjection(float r = 0.01f, int axis = 0)
+        public (float X, float Y) GetCentralProjection(
+            float r = 0.01f, int axis = 0)
         {
             Matrix4x4 projectionMatrix;
             Vector4 pointBuffer;
@@ -205,14 +147,6 @@ namespace GraphicUnit
                         0, 0, 0, r,
                         0, 0, 0, 1
                         );
-
-                pointBuffer = Vector4.Transform(
-                    new Vector4(X, Y, Z, 1),
-                    projectionMatrix
-                    );
-
-                return (pointBuffer.X / pointBuffer.W,
-                    pointBuffer.Y / pointBuffer.W);
             }
             else if (axis == 1)
             {
@@ -222,14 +156,6 @@ namespace GraphicUnit
                         0, 0, 1, 0,
                         0, 0, 0, 1
                         );
-
-                pointBuffer = Vector4.Transform(
-                    new Vector4(X, Y, Z, 1),
-                    projectionMatrix
-                    );
-
-                return (pointBuffer.X / pointBuffer.W,
-                    pointBuffer.Y / pointBuffer.W);
             }
             else if (axis == 2)
             {
@@ -239,19 +165,26 @@ namespace GraphicUnit
                         0, 0, 1, 0,
                         0, 0, 0, 1
                         );
-
-                pointBuffer = Vector4.Transform(
-                    new Vector4(X, Y, Z, 1),
-                    projectionMatrix
-                    );
-
-                return (pointBuffer.X / pointBuffer.W,
-                    pointBuffer.Y / pointBuffer.W);
             }
             else
             {
                 return (0, 0);
             }
+
+            pointBuffer = Vector4.Transform(
+                new Vector4(X, Y, Z, 1),
+                projectionMatrix
+                );
+
+            var w = pointBuffer.W;
+
+            if (w == 0)
+            {
+                return (0, 0);
+            }
+
+            return (pointBuffer.X / w,
+                pointBuffer.Y / w);
         }
 
         public Point3D(float x, float y, float z)
@@ -271,38 +204,43 @@ namespace GraphicUnit
         /// <summary>
         /// Rotate point around a center point by inputted angle on inputted Axis
         /// </summary>
-        /// <param name="centerPoint"> The point around which the rotation will be reproduced </param>
+        /// <param name="rotationCenterPoint"> The point around which the rotation will be reproduced </param>
         /// <param name="rotationAngleDegree"> Rotation angle in degrees </param>
         /// <param name="rotationAxis"> The axis along which the rotation will be reproduced <br/>
         /// Axis X - 0 <br/> Axis Y - 1 <br/> Axis Z - 2 </param>
-        public void RotateAt(Point3D centerPoint, float rotationAngleDegree, int rotationAxis = 0)
+        public void RotateAt(Point3D rotationCenterPoint,
+            float rotationAngleDegree, int rotationAxis = 0)
         {
-            var x = centerPoint.X;
-            var y = centerPoint.Y;
-            var z = centerPoint.Z;
+            var x = rotationCenterPoint.X;
+            var y = rotationCenterPoint.Y;
+            var z = rotationCenterPoint.Z;
 
-            var degreeToRadians = Math.PI / 180;
+            var angle = (Math.PI / 180) * rotationAngleDegree;
 
-            float sin = (float)Math.Sin(degreeToRadians * rotationAngleDegree);
-            float cos = (float)Math.Cos(degreeToRadians * rotationAngleDegree);
+            var sin = (float)Math.Sin(angle);
+            var cos = (float)Math.Cos(angle);
+
+            var buffX = X;
+            var buffY = Y;
+            var buffZ = Z;
 
             // X
             if (rotationAxis == 0)
             {
-                Z = (Z - z) * cos - (Y - y) * sin + z;
-                Y = (Z - z) * sin + (Y - y) * cos + y;
+                Z = (buffZ - z) * cos - (buffY - y) * sin + z;
+                Y = (buffZ - z) * sin + (buffY - y) * cos + y;
             }
             // Y
             else if (rotationAxis == 1)
             {
-                X = (Z - z) * cos - (X - x) * sin + x;
-                Z = (Z - z) * sin + (X - x) * cos + z;
+                Z = (buffZ - z) * cos - (buffX - x) * sin + z;
+                X = (buffZ - z) * sin + (buffX - x) * cos + x;
             }
             // Z
             else if (rotationAxis == 2)
             {
-                X = (X - x) * cos - (Y - y) * sin + x;
-                Y = (X - x) * sin + (Y - y) * cos + y;
+                X = (buffX - x) * cos - (buffY - y) * sin + x;
+                Y = (buffX - x) * sin + (buffY - y) * cos + y;
             }
             else
             {
@@ -311,11 +249,32 @@ namespace GraphicUnit
 
         }
 
-    }
+        public Point3D Clone => new Point3D(X, Y, Z);
+
+        public static Point3D operator +(Point3D point1, Point3D point2)
+        {
+            return new Point3D(
+                point1.X + point2.X,
+                point1.Y + point2.Y,
+                point1.Z + point2.Z);
+        }
+
+        /// <summary>
+        /// New PointF by X and Y values
+        /// </summary>
+        public PointF PointF => new PointF(X, Y);
+
+        public PointF PointFInCentralProjection(float r = 0.01f, int axis = 0)
+        {
+            var p = GetCentralProjection(r, axis);
+
+            return new PointF(p.X, p.Y);
+        }
+	}
 
     public class Square3D : IObject3D
     {
-        public List<Point3D> Points { get; } = new List<Point3D>(4);
+        public List<Point3D> Points { get; private set; }
 
         public Point3D A => Points[0];
         public Point3D B => Points[1];
@@ -324,10 +283,13 @@ namespace GraphicUnit
 
         public Square3D()
         {
-            Points.Add(new Point3D(-0.5f, 0, 0.5f));
-            Points.Add(new Point3D(0.5f, 0, 0.5f));
-            Points.Add(new Point3D(0.5f, 0, -0.5f));
-            Points.Add(new Point3D(-0.5f, 0, -0.5f));
+            Points = new List<Point3D>(4)
+            {
+                new Point3D(-0.5f, 0, 0.5f),
+                new Point3D(0.5f, 0, 0.5f),
+                new Point3D(0.5f, 0, -0.5f),
+                new Point3D(-0.5f, 0, -0.5f)
+            };
         }
 
         public Square3D(Point3D squareLeftUpPoint, float sideLength)
@@ -336,10 +298,13 @@ namespace GraphicUnit
             var y = squareLeftUpPoint.Y;
             var z = squareLeftUpPoint.Z;
 
-            Points.Add(new Point3D(x, y, z));
-            Points.Add(new Point3D(x + sideLength, y, z));
-            Points.Add(new Point3D(x + sideLength, y, z - sideLength));
-            Points.Add(new Point3D(x, y, z - sideLength));
+            Points = new List<Point3D>(4)
+            {
+                new Point3D(x, y, z),
+                new Point3D(x + sideLength, y, z),
+                new Point3D(x + sideLength, y, z - sideLength),
+                new Point3D(x, y, z - sideLength)
+            };
         }
 
         /// <summary>
@@ -358,7 +323,12 @@ namespace GraphicUnit
             }
         }
 
-
+        /// <summary>
+        /// List of square edges as pairs of neighbor points
+        /// </summary>
+        /// <param name="r"> Focus distance? Something... </param>
+        /// <param name="axis"> Projection Axis <br/> Axis Z - 0 <br/> Axis Y - 1 <br/> Axis X - 2 </param>
+        /// <returns></returns>
         public List<(
             (float X, float Y) point1,
             (float X, float Y) point2
@@ -383,7 +353,6 @@ namespace GraphicUnit
             });
         }
 
-
         /// <summary>
         /// Rotate square around a center point by inputted angle on inputted Axis
         /// </summary>
@@ -398,57 +367,6 @@ namespace GraphicUnit
             {
                 point.RotateAt(centerPoint, rotationAngleDegree, rotationAxis);
             });
-        }
-
-        public void Rotate(float rotationAngleDegree, int rotationAxis)
-        {
-            Matrix4x4 rotationMatrix;
-
-            var degreeToRadians = Math.PI / 180;
-
-            float sin = (float)Math.Sin(degreeToRadians * rotationAngleDegree);
-            float cos = (float)Math.Cos(degreeToRadians * rotationAngleDegree);
-
-            if (rotationAxis == 0)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        1, 0.0f, 0.0f, 1,
-                        0, +cos, +sin, 0,
-                        0, -sin, +cos, 0,
-                        0, 0.0f, 0.0f, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else if (rotationAxis == 1)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        +cos, 0, -sin, 0,
-                        0.0f, 1, 0.0f, 0,
-                        +sin, 0, +cos, 0,
-                        0.0f, 0, 0.0f, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else if (rotationAxis == 2)
-            {
-                rotationMatrix = new Matrix4x4
-                    (
-                        +cos, +sin, 0, 0,
-                        -sin, +cos, 0, 0,
-                        0.0f, 0.0f, 1, 0,
-                        0.0f, 0.0f, 0, 1
-                    );
-
-                Transform(rotationMatrix);
-            }
-            else
-            {
-                return;
-            }
         }
 
         public void Transform(Matrix4x4 transformMatrix)
@@ -475,6 +393,27 @@ namespace GraphicUnit
                     (a.Z + c.Z) / 2
                     );
             }
+        }
+
+        /// <summary>
+        /// Array of square points as PointF
+        /// </summary>
+        /// <param name="r"> Focus distance? Something... </param>
+        /// <param name="axis"> Projection Axis <br/> Axis Z - 0 <br/> Axis Y - 1 <br/> Axis X - 2 </param>
+        public PointF[] GetPolygonPointsInCentralProjection(float r = 0.01f, int axis = 0)
+        {
+            var pointsAmount = Points.Count;
+
+            PointF[] res = new PointF[pointsAmount];
+
+            for (int i = 0; i < pointsAmount; i++)
+            {
+                var p = Points[i].GetCentralProjection(r, axis);
+
+                res[i] = new PointF(p.X, p.Y);
+            }
+
+            return res;
         }
 
     }
