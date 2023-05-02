@@ -5,8 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Polygon triangulation" 
+        WindowStartupLocation="CenterScreen"
+        Height="450"
+        Width="800">
+
+    <Grid x:Name="mainView"
+          Background="WhiteSmoke"
+          IsHitTestVisible="True"
+          MouseDown="MainView_MouseDown">
+
+        <Polyline x:Name="polygonLines" 
+                  Stroke="Black" 
+                  StrokeStartLineCap="Round"
+                  StrokeEndLineCap="Round"
+                  Fill="LightGray"
+                  />
 
     </Grid>
+    
 </Window>
