@@ -41,12 +41,12 @@ namespace Units
                 (a.Y + b.Y) / 2);
         }
 
-        public static Point MoveSecondPointCloserToFirstPoint(Point p1, Point p2, int partsAmount = 10)
+        public static Point MoveSecondPointCloserToFirstPoint(Point p1, Point p2, int partsAmount = 20)
         {
             var firstPointInLeft = p1.X <= p2.X;
             var firstPointInUp = p1.Y <= p2.Y;
 
-            var Dx = firstPointInLeft ? p1.X - p2.X : p2.X - p1.X;
+            var Dx = firstPointInLeft ? p2.X - p1.X : p1.X - p2.X;
             var Dy = firstPointInUp ? p2.Y - p1.Y : p1.Y - p2.Y;
 
             return new Point(
