@@ -12,15 +12,13 @@
 
     <Grid x:Name="mainView"
           Background="WhiteSmoke"
-          IsHitTestVisible="True"
           MouseDown="MainView_MouseDown">
 
-        <Polyline x:Name="polygonLines" 
-                  Stroke="Black" 
+        <Polyline x:Name="polygonLines"
+                  Stroke="Black"
                   StrokeStartLineCap="Round"
                   StrokeEndLineCap="Round"
-                  Fill="LightGray"
-                  />
+                  Fill="LightGray" />
 
     </Grid>
     
