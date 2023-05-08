@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -17,15 +18,21 @@ namespace ProjectWPF
             InitializeComponent();
         }
 
-        private async void MainView_MouseDown(object sender, MouseButtonEventArgs e)
+        private void MainView_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var point = e.GetPosition(mainView);
             var pointsAmount = polygonLines.Points.Count;
 
-            // Points clearing
+            // Field clearing
             if (e.MiddleButton == MouseButtonState.Pressed)
             {
+                while (mainView.Children.Count > 1)
+                {
+                    mainView.Children.RemoveAt(1);
+                }
+
                 polygonLines.Points.Clear();
+
                 return;
             }
             // Polygon drawing
@@ -36,19 +43,24 @@ namespace ProjectWPF
             // Polygon triangulation
             else if (e.RightButton == MouseButtonState.Pressed)
             {
+                while (mainView.Children.Count > 1)
+                {
+                    mainView.Children.RemoveAt(1);
+                }
+
                 PolygonTriangulation();
             }
             
         }
 
-        private void PolygonTriangulation()
+        private bool IsPolygonSimple()
         {
             var pointsAmount = polygonLines.Points.Count;
 
             if (pointsAmount == 0)
             {
                 MessageBox.Show("Polygon is not drawn");
-                return;
+                return false;
             }
 
             // Checking if this polygon is simple
@@ -72,7 +84,7 @@ namespace ProjectWPF
                         oldLinePoint2))
                     {
                         MessageBox.Show("Polygon is not simple");
-                        return;
+                        return false;
                     }
                 }
 
@@ -96,14 +108,44 @@ namespace ProjectWPF
                         lineBufferPoint2))
                         {
                             MessageBox.Show("Polygon is not simple");
-                            return;
+                            return false;
                         }
                     }
                 }
             }
 
-            // TODO: Triangulation
-            MessageBox.Show("Polygon is simple");
+            return true;
+        }
+
+        private void PolygonTriangulation()
+        {
+            if (!IsPolygonSimple())
+            {
+                return;
+            }
+
+            int index = 0;
+
+            var points = polygonLines.Points.ToList();
+
+            var pointsAmount = points.Count;
+
+            PointCollection triangle = new PointCollection(3);
+
+            while (pointsAmount > 2)
+            {
+                var p1 = points[index % pointsAmount];
+                var p2 = points[(index + 1) % pointsAmount];
+                var p3 = points[(index + 2) % pointsAmount];
+
+                triangle.Add(p1);
+                triangle.Add(p2);
+                triangle.Add(p3);
+
+                
+
+                triangle.Clear();
+            }
         }
 
         private void PolygonPointsAdding(int pointsAmount, Point point)
