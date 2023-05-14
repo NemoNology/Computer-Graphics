@@ -5,8 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Fractals drawing" 
+        Height="450" 
+        Width="800"
+        WindowStartupLocation="CenterScreen" >
+    
     <Grid>
 
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+
+        </Grid.RowDefinitions>
+
+        <Image x:Name="outputView" 
+               RenderOptions.BitmapScalingMode="NearestNeighbor" />
+
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+
+            <ComboBox x:Name="inputFractal" />
+
+            <Button Content="Draw" />
+
+        </StackPanel>
+
     </Grid>
+    
 </Window>
