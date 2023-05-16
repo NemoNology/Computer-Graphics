@@ -16,6 +16,7 @@
 
         <Polyline x:Name="polygonLines"
                   Stroke="Black"
+                  StrokeThickness="3"
                   StrokeStartLineCap="Round"
                   StrokeEndLineCap="Round"
                   Fill="LightGray" />
