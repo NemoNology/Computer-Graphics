@@ -50,101 +50,34 @@ namespace ProjectWPF
 
                 PolygonTriangulation();
             }
-            
-        }
-
-        private bool IsPolygonSimple()
-        {
-            var pointsAmount = polygonLines.Points.Count;
-
-            if (pointsAmount == 0)
-            {
-                MessageBox.Show("Polygon is not drawn");
-                return false;
-            }
-
-            // Checking if this polygon is simple
-            if (pointsAmount > 3)
-            {
-                var points = polygonLines.Points;
-
-                var lastLinePoint1 = points.Last();
-                var lastLinePoint2 = points[0];
-
-                // Checking last line intersection
-                for (int i = 1; i < pointsAmount - 2; i++)
-                {
-                    var oldLinePoint1 = points[i];
-                    var oldLinePoint2 = points[i + 1];
-
-                    if (GeometryUnit.IsLinesIntersect(
-                        lastLinePoint1,
-                        lastLinePoint2,
-                        oldLinePoint1,
-                        oldLinePoint2))
-                    {
-                        MessageBox.Show("Polygon is not simple");
-                        return false;
-                    }
-                }
-
-                for (int i = 0; i < pointsAmount - 2; i++)
-                {
-                    var currentLinePoint1 = points[i];
-                    var currentLinePoint2 = 
-                        GeometryUnit.MoveSecondPointCloserToFirstPoint(
-                            currentLinePoint1,
-                            points[i + 1]);
-
-                    for (int j = i + 1; j < pointsAmount - 2; j++)
-                    {
-                        var lineBufferPoint1 = points[j];
-                        var lineBufferPoint2 = points[j + 1];
-
-                        if (GeometryUnit.IsLinesIntersect(
-                        currentLinePoint1,
-                        currentLinePoint2,
-                        lineBufferPoint1,
-                        lineBufferPoint2))
-                        {
-                            MessageBox.Show("Polygon is not simple");
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            return true;
         }
 
         private void PolygonTriangulation()
         {
-            if (!IsPolygonSimple())
+            var points = polygonLines.Points.ToList();
+
+            if (!GeometryUnit.IsPolygonSimple(points))
             {
                 return;
             }
 
-            int index = 0;
-
-            var points = polygonLines.Points.ToList();
-
-            var pointsAmount = points.Count;
-
-            PointCollection triangle = new PointCollection(3);
-
-            while (pointsAmount > 2)
+            while (mainView.Children.Count > 1)
             {
-                var p1 = points[index % pointsAmount];
-                var p2 = points[(index + 1) % pointsAmount];
-                var p3 = points[(index + 2) % pointsAmount];
+                mainView.Children.RemoveAt(1);
+            }
 
-                triangle.Add(p1);
-                triangle.Add(p2);
-                triangle.Add(p3);
+            var triangles = GeometryUnit.Triangulate_EarClipping(points);
 
-                
-
-                triangle.Clear();
+            foreach (var triangle in triangles) 
+            {
+                mainView.Children.Add(
+                    new Polygon()
+                    {
+                        Stroke = Brushes.DeepSkyBlue,
+                        StrokeThickness = 1,
+                        Points = triangle
+                    }
+                ); 
             }
         }
 
