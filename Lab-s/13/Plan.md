@@ -12,5 +12,6 @@
 	+) https://ru.wikibooks.org/wiki/Реализации_алгоритмов/Задача_о_принадлежности_точки_многоугольнику
 	+) https://e-maxx.ru/algo/segments_intersection_checking#1
 	+) https://grafika.me/node/765 - Триангуляция полигона на Java
+	+) https://github.com/ajaycc17/polygon-triangulation - Триангуляция полигона на Python
 	+) https://ru.stackoverflow.com/questions/167409/Задача-о-триангуляции-многоугольника
 	+) https://opita.net/node/12 - Триангуляция полигона на Pascal
