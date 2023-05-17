@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -21,7 +22,7 @@ namespace ProjectWPF
         private void MainView_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var point = e.GetPosition(mainView);
-            var pointsAmount = polygonLines.Points.Count;
+            var pointsAmount = polygon.Points.Count;
 
             // Field clearing
             if (e.MiddleButton == MouseButtonState.Pressed)
@@ -31,14 +32,14 @@ namespace ProjectWPF
                     mainView.Children.RemoveAt(1);
                 }
 
-                polygonLines.Points.Clear();
+                polygon.Points.Clear();
 
                 return;
             }
             // Polygon drawing
             else if (e.LeftButton == MouseButtonState.Pressed)
             {
-                PolygonPointsAdding(pointsAmount, point);
+                polygon.Points.Add(point);
             }
             // Polygon triangulation
             else if (e.RightButton == MouseButtonState.Pressed)
@@ -54,7 +55,7 @@ namespace ProjectWPF
 
         private void PolygonTriangulation()
         {
-            var points = polygonLines.Points.ToList();
+            var points = polygon.Points.ToList();
 
             if (!GeometryUnit.IsPolygonSimple(points))
             {
@@ -66,32 +67,19 @@ namespace ProjectWPF
                 mainView.Children.RemoveAt(1);
             }
 
-            var triangles = GeometryUnit.Triangulate_EarClipping(points);
+            var triangles = GeometryUnit.Triangulate_Custom(points);
 
             foreach (var triangle in triangles) 
             {
                 mainView.Children.Add(
                     new Polygon()
                     {
-                        Stroke = Brushes.DeepSkyBlue,
+                        Stroke = Brushes.Black,
                         StrokeThickness = 1,
                         Points = triangle
                     }
                 ); 
             }
-        }
-
-        private void PolygonPointsAdding(int pointsAmount, Point point)
-        {
-            if (pointsAmount == 0)
-            {
-                polygonLines.Points.Add(point);
-                polygonLines.Points.Add(point);
-
-                return;
-            }
-
-            polygonLines.Points.Insert(pointsAmount - 1, point);
         }
     }
 }
