@@ -67,7 +67,7 @@ namespace ProjectWPF
                 mainView.Children.RemoveAt(1);
             }
 
-            var triangles = GeometryUnit.Triangulate_Custom(points);
+            var triangles = GeometryUnit.Triangulate_EarClipping(points);
 
             foreach (var triangle in triangles) 
             {
