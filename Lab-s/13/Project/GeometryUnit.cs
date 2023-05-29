@@ -14,61 +14,6 @@ namespace Units
             return (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X);
         }
 
-        public static double GetTriangleArea_2(Point a, Point b, Point c)
-        {
-            var x1 = a.X;
-            var x2 = b.X;
-            var x3 = c.X;
-            var y1 = a.Y;
-            var y2 = b.Y;
-            var y3 = c.Y;
-
-            return Math.Abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2);
-        }
-
-        public static double GetTriangleSum(Point a, Point b, Point c)
-        {
-            var x1 = a.X;
-            var x2 = b.X;
-            var x3 = c.X;
-            var y1 = a.Y;
-            var y2 = b.Y;
-            var y3 = c.Y;
-
-            return x1 * (y3 - y2) + x2 * (y1 - y3) + x3 * (y2 - y1);
-        }
-
-        public static bool IsPointInsideTriangle(Point p, Point a, Point b, Point c)
-        {
-            var area = GetTriangleArea_2(a, b, c);
-            var area1 = GetTriangleArea_2(p, b, c);
-            var area2 = GetTriangleArea_2(p, a, c);
-            var area3 = GetTriangleArea_2(p, a, b);
-            return Math.Abs(area - area1 + area2 + area3) <= 0.001;
-        }
-
-        public static bool IsPointsNotInsideTriangle(
-            Point a,
-            Point b,
-            Point c,
-            List<Point> polygonPoints
-        )
-        {
-            foreach (var point in polygonPoints)
-            {
-                if (point.Equals(a) || point.Equals(b) || point.Equals(c))
-                {
-                    continue;
-                }
-                else if (IsPointInsideTriangle(point, a, b, c))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         private static bool IntersectionCheck(double a, double b, double c, double d)
         {
             if (a > b)
@@ -92,11 +37,6 @@ namespace Units
                 && GetTriangleArea(b1, b2, a1) * GetTriangleArea(b1, b2, a2) <= 0;
         }
 
-        public static Point GetLineCenter(Point a, Point b)
-        {
-            return new Point((a.X + b.X) / 2, (a.Y + b.Y) / 2);
-        }
-
         public static Point MoveSecondPointCloserToFirstPoint(
             Point p1,
             Point p2,
@@ -115,162 +55,60 @@ namespace Units
             );
         }
 
-        private static double Determinant(Point u, Point v)
-        {
-            return u.X * v.Y - u.Y * v.X;
-        }
-
-        private static bool collisionTrianglePoint(Point a, Point b, Point c, Point point)
-        {
-            Point ab = new Point(b.X - a.X, b.Y - a.Y);
-            Point bc = new Point(c.X - b.X, c.Y - b.Y);
-            Point ca = new Point(a.X - c.X, a.Y - c.Y);
-
-            if (
-                Determinant(ab, new Point(point.X - a.X, point.Y - a.Y)) > 0
-                && Determinant(bc, new Point(point.X - b.X, point.Y - b.Y)) > 0
-                && Determinant(ca, new Point(point.X - c.X, point.Y - c.Y)) > 0
-            )
-            {
-                return true;
-            }
-            else
-                return false;
-        }
-
-        /// <summary>
-        /// NOT WORKING
-        /// </summary>
         public static List<PointCollection> Triangulate_EarClipping(List<Point> polygonPoints)
         {
-            var points = polygonPoints.ToList();
+            var diagonals = new List<PointCollection>();
 
-            var triangles = new List<PointCollection>();
-
-            while (points.Count > 3)
+            if (!IsPolygonDirectionIsClockwise(polygonPoints))
             {
-                var i = 0;
-
-                while (!IsTriangleIsEar(points[0], points[i + 1], points[i + 2], points))
-                {
-                    i++;
-                }
-
-                triangles.Add(new PointCollection { points[0], points[i + 2] });
-
-                points.RemoveAt(i + 2);
+                polygonPoints.Reverse();
             }
 
-            return triangles;
-        }
-
-        public static List<PointCollection> Triangulate_Custom(List<Point> polygonPoints)
-        {
-            var points = polygonPoints.ToList();
-
-            var triangles = new List<PointCollection>();
-
-            var pointsAmount = points.Count;
-
-            for (int i = 0; i < pointsAmount; i++)
+            while (polygonPoints.Count > 3)
             {
-                var point = points[i];
-
-                for (int j = 0; j < pointsAmount; j++)
+                for (int i = 0; i < polygonPoints.Count; i++)
                 {
-                    var pointBuffer = points[j];
+                    var p1 = polygonPoints[i];
+                    var p2 = polygonPoints[(i + 1) % polygonPoints.Count];
+                    var p3 = polygonPoints[(i + 2) % polygonPoints.Count];
 
-                    if (IsAllLinePointsInsidePolygon
-                    (
-                        LineSeparation(point, pointBuffer, 20),
-                        points
-                    ))
+                    if (!IsPolygonDirectionIsClockwise(new List<Point>() { p1, p2, p3 }))
                     {
-                        triangles.Add(new PointCollection { point, pointBuffer });
+                        continue;
+                    }
+
+                    var isEar = true;
+
+                    foreach (var point in polygonPoints)
+                    {
+                        if (point == p1 || point == p2 || point == p3)
+                        {
+                            continue;
+                        }
+
+                        if (IsPointInsideTriangle(point, p1, p2, p3))
+                        {
+                            isEar = false;
+                            break;
+                        }
+                    }
+
+                    if (isEar)
+                    {
+                        diagonals.Add(new PointCollection { p1, p3 });
+                        polygonPoints.Remove(p2);
                     }
                 }
             }
 
-            return triangles;
+            return diagonals;
         }
 
-        public static bool IsPointInsidePolygon(Point point, List<Point> polygonPoints)
+        public static bool IsPointInsideTriangle(Point point, Point p1, Point p2, Point p3)
         {
-            bool result = false;
-
-            foreach (var polygonPoint in polygonPoints)
-            {
-                if (point == polygonPoint)
-                {
-                    return false;
-                }
-            }
-
-            var size = polygonPoints.Count;
-
-            int j = size - 1;
-
-            for (int i = 0; i < size; i++)
-            {
-                if (
-                    (
-                        polygonPoints[i].Y < point.Y && polygonPoints[j].Y >= point.Y
-                        || polygonPoints[j].Y < point.Y && polygonPoints[i].Y >= point.Y
-                    )
-                    && (
-                        polygonPoints[i].X
-                            + (point.Y - polygonPoints[i].Y)
-                                / (polygonPoints[j].Y - polygonPoints[i].Y)
-                                * (polygonPoints[j].X - polygonPoints[i].X)
-                        < point.X
-                    )
-                )
-                    result = !result;
-                j = i;
-            }
-
-            return result;
-        }
-
-        public static List<Point> LineSeparation(Point a, Point b, int divisionsAmount)
-        {
-            var Dx = Math.Abs(a.X - b.X) / divisionsAmount;
-            var Dy = Math.Abs(a.Y - b.Y) / divisionsAmount;
-
-            var res = new List<Point>(divisionsAmount);
-
-            if (a.X > b.X)
-            {
-                (a.X, b.X) = (b.X, a.X);
-            }
-
-            if (a.Y > b.Y)
-            {
-                (a.Y, b.Y) = (b.Y, a.Y);
-            }
-
-            for (int i = 0; i < divisionsAmount; i++)
-            {
-                res.Add(new Point(a.X + Dx * i, a.Y + Dy * i));
-            }
-
-            return res;
-        }
-
-        public static bool IsAllLinePointsInsidePolygon(
-            List<Point> linePoints,
-            List<Point> polygonPoints
-        )
-        {
-            for (int i = 1; i < linePoints.Count - 1; i++)
-            {
-                if (!IsPointInsidePolygon(linePoints[i], polygonPoints))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return IsPolygonDirectionIsClockwise(new List<Point>() { point, p1, p2 })
+                && IsPolygonDirectionIsClockwise(new List<Point>() { point, p2, p3 })
+                && IsPolygonDirectionIsClockwise(new List<Point>() { point, p3, p1 });
         }
 
         public static bool IsPolygonSimple(List<Point> polygonPoints)
@@ -360,34 +198,18 @@ namespace Units
             return s > 0;
         }
 
-        public static bool IsTriangleConvex(Point a, Point b, Point c)
+        public static bool IsTriangleIsEar(
+            Point a,
+            Point b,
+            Point c,
+            bool isPolygonDirectionIsClockwise = true
+        )
         {
-            return GetTriangleSum(a, b, c) < 0;
-        }
-
-        public static bool IsTriangleIsEar(Point a, Point b, Point c, List<Point> polygonPoints)
-        {
-            var isPolygonDirectionIsClockwise = IsPolygonDirectionIsClockwise(polygonPoints);
-
             var isTriangleDirectionIsClockwise = IsPolygonDirectionIsClockwise(
                 new List<Point> { a, b, c }
             );
 
-            if (isPolygonDirectionIsClockwise != isTriangleDirectionIsClockwise)
-            {
-                return false;
-            }
-
-            var vertexIndex = polygonPoints.IndexOf(b);
-
-            return true;
-        }
-
-        private static bool IsTriangleIsEar_2(Point a, Point b, Point c, List<Point> polygonPoints)
-        {
-            return IsPointsNotInsideTriangle(a, b, c, polygonPoints)
-                && IsTriangleConvex(a, b, c)
-                && GetTriangleArea_2(a, b, c) > 0;
+            return isPolygonDirectionIsClockwise == isTriangleDirectionIsClockwise;
         }
     }
 }
