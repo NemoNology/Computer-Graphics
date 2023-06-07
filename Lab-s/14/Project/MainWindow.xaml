@@ -7,14 +7,90 @@
         mc:Ignorable="d"
         Title="Sphere with texture" 
         Height="450" Width="800"
-        WindowStartupLocation="CenterScreen" >
+        WindowStartupLocation="CenterScreen" 
+        Focusable="True">
     
-    <Grid>
+    <Grid Focusable="False">
 
-        <Viewport3D x:Name="mainoutput">
+        <Viewport3D Name="mainView"
+                    Focusable="False">
 
-            
-            
+            <Viewport3D.Camera>
+                <PerspectiveCamera LookDirection="0,0,1"
+                                   UpDirection="0,1,0"
+                                   Position="0,0,-10"
+                                   FieldOfView="45" />
+            </Viewport3D.Camera>
+
+            <Viewport3D.Children>
+
+                <ModelVisual3D>
+                    <ModelVisual3D.Content>
+
+                        <Model3DGroup>
+                            <Model3DGroup.Children>
+
+                               <PointLight Color="White"
+                                            Position="0,0,-3" />
+
+                                <GeometryModel3D>
+
+                                    <GeometryModel3D.Geometry>
+
+                                        <MeshGeometry3D Positions="
+                                                        -1,1,1 1,1,1 
+                                                        -1,-1,1 1,-1,1"
+                                                        TriangleIndices="0,1,2 1,3,2"
+                                                        />
+
+                                    </GeometryModel3D.Geometry>
+
+                                    <GeometryModel3D.Material>
+                                        <DiffuseMaterial>
+                                            <DiffuseMaterial.Brush>
+                                                <SolidColorBrush Color="DeepSkyBlue" />
+                                            </DiffuseMaterial.Brush>
+                                        </DiffuseMaterial>
+                                    </GeometryModel3D.Material>
+
+                                    <GeometryModel3D.Transform>
+                                        <Transform3DGroup>
+
+                                            <RotateTransform3D>
+                                                <RotateTransform3D.Rotation>
+                                                    <AxisAngleRotation3D x:Name="inputRotationAxisX"
+                                                                         Axis="1,0,0" />
+                                                </RotateTransform3D.Rotation>
+                                            </RotateTransform3D>
+
+                                            <RotateTransform3D>
+                                                <RotateTransform3D.Rotation>
+                                                    <AxisAngleRotation3D x:Name="inputRotationAxisY"
+                                                                         Axis="0,1,0" />
+                                                </RotateTransform3D.Rotation>
+                                            </RotateTransform3D>
+
+                                            <RotateTransform3D>
+                                                <RotateTransform3D.Rotation>
+                                                    <AxisAngleRotation3D x:Name="inputRotationAxisZ"
+                                                                         Axis="0,0,1" />
+                                                </RotateTransform3D.Rotation>
+                                            </RotateTransform3D>
+
+                                        </Transform3DGroup>
+                                    </GeometryModel3D.Transform>
+
+                                </GeometryModel3D>
+
+                            </Model3DGroup.Children>
+                        </Model3DGroup>
+
+                    </ModelVisual3D.Content>
+
+                </ModelVisual3D>
+
+            </Viewport3D.Children>
+
         </Viewport3D>
 
     </Grid>
